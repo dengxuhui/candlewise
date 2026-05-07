@@ -4,6 +4,184 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useProgress } from '../hooks/useProgress.js'
 import { CURRICULUM } from '../data/curriculum.js'
+import CandleChart from '../components/CandleChart.jsx'
+
+// ── 静态示例K线数据集（按 candle-demo 键索引）────────────────────────────
+
+// lesson_1_1: 一根阳线 + 一根阴线
+const DEMO_CANDLES = [
+  { date: '2024-01-01', open: 100, high: 115, low: 93,  close: 112, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 112, high: 118, low: 98,  close: 102, ma5: null, ma20: null },
+]
+
+// lesson_1_2
+const DEMO_OHlC_STRUCTURE = [
+  { date: '2024-01-01', open: 100, high: 120, low: 85, close: 110, ma5: null, ma20: null },
+]
+const DEMO_OHLC_BULLISH = [
+  { date: '2024-01-01', open: 95, high: 118, low: 90, close: 115, ma5: null, ma20: null },
+]
+const DEMO_OHLC_BEARISH = [
+  { date: '2024-01-01', open: 115, high: 120, low: 88, close: 92, ma5: null, ma20: null },
+]
+
+// lesson_1_3
+const DEMO_UPPER_SHADOW = [
+  { date: '2024-01-01', open: 100, high: 128, low: 97, close: 103, ma5: null, ma20: null },
+]
+const DEMO_LOWER_SHADOW = [
+  { date: '2024-01-01', open: 100, high: 105, low: 72, close: 98, ma5: null, ma20: null },
+]
+const DEMO_HAMMER = [
+  { date: '2024-01-01', open: 100, high: 104, low: 72, close: 102, ma5: null, ma20: null },
+]
+const DEMO_SHOOTING_STAR = [
+  { date: '2024-01-01', open: 100, high: 128, low: 97, close: 98, ma5: null, ma20: null },
+]
+const DEMO_DOJI = [
+  { date: '2024-01-01', open: 100, high: 115, low: 85, close: 100, ma5: null, ma20: null },
+]
+
+// lesson_2_1
+const DEMO_MORNING_STAR = [
+  { date: '2024-01-01', open: 110, high: 112, low: 95,  close: 96,  ma5: null, ma20: null },
+  { date: '2024-01-02', open: 94,  high: 97,  low: 90,  close: 93,  ma5: null, ma20: null },
+  { date: '2024-01-03', open: 94,  high: 115, low: 93,  close: 113, ma5: null, ma20: null },
+]
+const DEMO_EVENING_STAR = [
+  { date: '2024-01-01', open: 92,  high: 115, low: 91,  close: 113, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 114, high: 118, low: 112, close: 115, ma5: null, ma20: null },
+  { date: '2024-01-03', open: 113, high: 114, low: 93,  close: 94,  ma5: null, ma20: null },
+]
+
+// lesson_2_2
+const DEMO_BULLISH_ENGULFING = [
+  { date: '2024-01-01', open: 108, high: 110, low: 100, close: 102, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 99,  high: 115, low: 97,  close: 113, ma5: null, ma20: null },
+]
+const DEMO_BEARISH_ENGULFING = [
+  { date: '2024-01-01', open: 100, high: 112, low: 98,  close: 110, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 113, high: 115, low: 97,  close: 99,  ma5: null, ma20: null },
+]
+
+// lesson_2_3
+const DEMO_THREE_WHITE_SOLDIERS = [
+  { date: '2024-01-01', open: 100, high: 108, low: 99,  close: 106, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 104, high: 114, low: 103, close: 112, ma5: null, ma20: null },
+  { date: '2024-01-03', open: 110, high: 122, low: 109, close: 120, ma5: null, ma20: null },
+]
+const DEMO_THREE_BLACK_CROWS = [
+  { date: '2024-01-01', open: 120, high: 121, low: 111, close: 113, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 115, high: 116, low: 105, close: 107, ma5: null, ma20: null },
+  { date: '2024-01-03', open: 109, high: 110, low: 99,  close: 101, ma5: null, ma20: null },
+]
+
+// lesson_3_1 — support/resistance shown via price + MA lines acting as levels
+const DEMO_SUPPORT_LEVEL = [
+  { date: '2024-01-01', open: 115, high: 120, low: 100, close: 118, ma5: 100, ma20: 100 },
+  { date: '2024-01-02', open: 112, high: 116, low: 100, close: 114, ma5: 100, ma20: 100 },
+  { date: '2024-01-03', open: 108, high: 113, low: 100, close: 111, ma5: 100, ma20: 100 },
+  { date: '2024-01-04', open: 104, high: 110, low: 100, close: 108, ma5: 100, ma20: 100 },
+  { date: '2024-01-05', open: 102, high: 108, low: 100, close: 106, ma5: 100, ma20: 100 },
+]
+const DEMO_RESISTANCE_LEVEL = [
+  { date: '2024-01-01', open: 90,  high: 100, low: 86,  close: 92,  ma5: 100, ma20: 100 },
+  { date: '2024-01-02', open: 93,  high: 100, low: 89,  close: 96,  ma5: 100, ma20: 100 },
+  { date: '2024-01-03', open: 97,  high: 100, low: 93,  close: 94,  ma5: 100, ma20: 100 },
+  { date: '2024-01-04', open: 93,  high: 100, low: 89,  close: 91,  ma5: 100, ma20: 100 },
+  { date: '2024-01-05', open: 90,  high: 100, low: 85,  close: 88,  ma5: 100, ma20: 100 },
+]
+const DEMO_SUPPORT_RESISTANCE_FORMATION = [
+  { date: '2024-01-01', open: 90,  high: 105, low: 88,  close: 103, ma5: 88, ma20: 88 },
+  { date: '2024-01-02', open: 104, high: 115, low: 102, close: 113, ma5: 88, ma20: 88 },
+  { date: '2024-01-03', open: 112, high: 118, low: 100, close: 102, ma5: 88, ma20: 88 },
+  { date: '2024-01-04', open: 101, high: 116, low: 99,  close: 114, ma5: 88, ma20: 88 },
+  { date: '2024-01-05', open: 113, high: 119, low: 101, close: 103, ma5: 88, ma20: 88 },
+  { date: '2024-01-06', open: 102, high: 118, low: 100, close: 116, ma5: 88, ma20: 88 },
+]
+
+// lesson_3_2
+const DEMO_RESISTANCE_TO_SUPPORT = [
+  { date: '2024-01-01', open: 88,  high: 100, low: 85,  close: 92,  ma5: 100, ma20: 100 },
+  { date: '2024-01-02', open: 93,  high: 100, low: 90,  close: 97,  ma5: 100, ma20: 100 },
+  { date: '2024-01-03', open: 98,  high: 108, low: 97,  close: 106, ma5: 100, ma20: 100 },
+  { date: '2024-01-04', open: 105, high: 107, low: 100, close: 101, ma5: 100, ma20: 100 },
+  { date: '2024-01-05', open: 101, high: 112, low: 99,  close: 110, ma5: 100, ma20: 100 },
+]
+const DEMO_SUPPORT_TO_RESISTANCE = [
+  { date: '2024-01-01', open: 110, high: 114, low: 100, close: 112, ma5: 100, ma20: 100 },
+  { date: '2024-01-02', open: 111, high: 113, low: 100, close: 108, ma5: 100, ma20: 100 },
+  { date: '2024-01-03', open: 107, high: 109, low: 92,  close: 94,  ma5: 100, ma20: 100 },
+  { date: '2024-01-04', open: 95,  high: 100, low: 91,  close: 97,  ma5: 100, ma20: 100 },
+  { date: '2024-01-05', open: 97,  high: 100, low: 86,  close: 88,  ma5: 100, ma20: 100 },
+]
+
+// lesson_3_3 — MA lines convey the cross / support / resistance
+const DEMO_GOLDEN_CROSS = [
+  { date: '2024-01-01', open: 95,  high: 97,  low: 92,  close: 94,  ma5: 93,  ma20: 98  },
+  { date: '2024-01-02', open: 94,  high: 97,  low: 93,  close: 96,  ma5: 95,  ma20: 97  },
+  { date: '2024-01-03', open: 97,  high: 101, low: 96,  close: 100, ma5: 97,  ma20: 97  },
+  { date: '2024-01-04', open: 100, high: 105, low: 99,  close: 104, ma5: 100, ma20: 97  },
+  { date: '2024-01-05', open: 104, high: 109, low: 103, close: 108, ma5: 104, ma20: 98  },
+]
+const DEMO_DEATH_CROSS = [
+  { date: '2024-01-01', open: 105, high: 108, low: 103, close: 106, ma5: 107, ma20: 102 },
+  { date: '2024-01-02', open: 105, high: 107, low: 102, close: 103, ma5: 105, ma20: 103 },
+  { date: '2024-01-03', open: 102, high: 103, low: 98,  close: 99,  ma5: 103, ma20: 103 },
+  { date: '2024-01-04', open: 98,  high: 100, low: 94,  close: 95,  ma5: 100, ma20: 103 },
+  { date: '2024-01-05', open: 94,  high: 96,  low: 90,  close: 91,  ma5: 97,  ma20: 103 },
+]
+const DEMO_MA20_SUPPORT = [
+  { date: '2024-01-01', open: 112, high: 118, low: 108, close: 116, ma5: 114, ma20: 108 },
+  { date: '2024-01-02', open: 115, high: 117, low: 108, close: 110, ma5: 113, ma20: 109 },
+  { date: '2024-01-03', open: 109, high: 114, low: 108, close: 113, ma5: 112, ma20: 110 },
+  { date: '2024-01-04', open: 113, high: 120, low: 111, close: 119, ma5: 113, ma20: 111 },
+  { date: '2024-01-05', open: 119, high: 125, low: 117, close: 124, ma5: 116, ma20: 112 },
+]
+const DEMO_MA20_RESISTANCE = [
+  { date: '2024-01-01', open: 90,  high: 95,  low: 86,  close: 88,  ma5: 92,  ma20: 98  },
+  { date: '2024-01-02', open: 88,  high: 93,  low: 85,  close: 91,  ma5: 91,  ma20: 97  },
+  { date: '2024-01-03', open: 91,  high: 97,  low: 89,  close: 93,  ma5: 90,  ma20: 97  },
+  { date: '2024-01-04', open: 92,  high: 97,  low: 88,  close: 89,  ma5: 90,  ma20: 97  },
+  { date: '2024-01-05', open: 88,  high: 93,  low: 83,  close: 85,  ma5: 89,  ma20: 96  },
+]
+
+// 每个 candle-demo key 对应的 { candles, caption }
+const CANDLE_DEMO_MAP = {
+  // original (no suffix)
+  '': { candles: DEMO_CANDLES, caption: '上影线 = 最高价 − max(开盘, 收盘) | 下影线 = min(开盘, 收盘) − 最低价' },
+  // lesson_1_2
+  'ohlc-structure':  { candles: DEMO_OHlC_STRUCTURE,  caption: '一根K线包含四个价格：开（O）高（H）低（L）收（C）' },
+  'ohlc-bullish':    { candles: DEMO_OHLC_BULLISH,    caption: '阳线：收盘价 > 开盘价，实体为绿色' },
+  'ohlc-bearish':    { candles: DEMO_OHLC_BEARISH,    caption: '阴线：收盘价 < 开盘价，实体为红色' },
+  // lesson_1_3
+  'upper-shadow':    { candles: DEMO_UPPER_SHADOW,    caption: '上影线：最高价高出收盘/开盘价的部分，代表上方卖压' },
+  'lower-shadow':    { candles: DEMO_LOWER_SHADOW,    caption: '下影线：开盘/收盘低于最低价的反弹，代表下方买盘' },
+  'hammer':          { candles: DEMO_HAMMER,          caption: '锤子线：长下影线，短实体，出现在下跌末端' },
+  'shooting-star':   { candles: DEMO_SHOOTING_STAR,   caption: '流星线：长上影线，短实体，出现在上涨末端' },
+  'doji':            { candles: DEMO_DOJI,            caption: '十字星：开盘价 ≈ 收盘价，多空力量均衡' },
+  // lesson_2_1
+  'morning-star':    { candles: DEMO_MORNING_STAR,    caption: '启明星：阴线 + 小星线 + 阳线，下跌末端反转信号' },
+  'evening-star':    { candles: DEMO_EVENING_STAR,    caption: '黄昏之星：阳线 + 小星线 + 阴线，上涨末端反转信号' },
+  // lesson_2_2
+  'bullish-engulfing': { candles: DEMO_BULLISH_ENGULFING, caption: '阳线吞没：阳线实体完全包住前一根阴线，看涨反转' },
+  'bearish-engulfing': { candles: DEMO_BEARISH_ENGULFING, caption: '阴线吞没：阴线实体完全包住前一根阳线，看跌反转' },
+  // lesson_2_3
+  'three-white-soldiers': { candles: DEMO_THREE_WHITE_SOLDIERS, caption: '三只白兵：连续三根有秩序的阳线，上涨趋势强势信号' },
+  'three-black-crows':    { candles: DEMO_THREE_BLACK_CROWS,    caption: '三只乌鸦：连续三根有秩序的阴线，下跌趋势强势信号' },
+  // lesson_3_1
+  'support-level':                { candles: DEMO_SUPPORT_LEVEL,                caption: '支撑位：价格多次下跌后被托住、反弹的价格区域（MA线示意支撑）' },
+  'resistance-level':             { candles: DEMO_RESISTANCE_LEVEL,             caption: '阻力位：价格多次上涨后被压回、回落的价格区域（MA线示意阻力）' },
+  'support-resistance-formation': { candles: DEMO_SUPPORT_RESISTANCE_FORMATION, caption: '支撑/阻力的形成：多次触碰同一价位后，该位置成为关键区域' },
+  // lesson_3_2
+  'resistance-to-support': { candles: DEMO_RESISTANCE_TO_SUPPORT, caption: '阻力变支撑：价格突破阻力位后，原阻力位成为支撑（MA线示意）' },
+  'support-to-resistance': { candles: DEMO_SUPPORT_TO_RESISTANCE, caption: '支撑变阻力：价格跌破支撑位后，原支撑位成为阻力（MA线示意）' },
+  // lesson_3_3
+  'golden-cross':    { candles: DEMO_GOLDEN_CROSS,    caption: '金叉：MA5（绿）从下方穿越MA20（橙），看涨信号' },
+  'death-cross':     { candles: DEMO_DEATH_CROSS,     caption: '死叉：MA5（绿）从上方穿越MA20（橙），看跌信号' },
+  'ma20-support':    { candles: DEMO_MA20_SUPPORT,    caption: 'MA20 动态支撑：上升趋势中价格触碰MA20后反弹' },
+  'ma20-resistance': { candles: DEMO_MA20_RESISTANCE, caption: 'MA20 动态阻力：下降趋势中价格反弹至MA20后再跌' },
+}
 
 // 课时路由 lessonId → 文件名 / 数据 mapping
 const LESSON_DATA = {
@@ -74,8 +252,24 @@ const mdComponents = {
       {children}
     </blockquote>
   ),
-  code: ({ inline, children }) =>
-    inline ? (
+  code: ({ inline, className, children }) => {
+    const language = (className || '').replace('language-', '')
+    if (!inline && language.startsWith('candle-demo')) {
+      const key = language.replace('candle-demo', '').replace(/^:/, '')
+      const demo = CANDLE_DEMO_MAP[key] || CANDLE_DEMO_MAP['']
+      return (
+        <div className="my-6">
+          <div
+            className="rounded-xl overflow-hidden border mb-3"
+            style={{ borderColor: '#2a2d3a' }}
+          >
+            <CandleChart candles={demo.candles} patternIndex={-1} height={160} />
+          </div>
+          <p className="text-xs text-slate-500 text-center mt-2">{demo.caption}</p>
+        </div>
+      )
+    }
+    return inline ? (
       <code
         className="px-1.5 py-0.5 rounded text-sm font-mono"
         style={{ backgroundColor: '#1e2130', color: '#00c896' }}
@@ -89,7 +283,8 @@ const mdComponents = {
       >
         <code>{children}</code>
       </pre>
-    ),
+    )
+  },
   table: ({ children }) => (
     <div className="overflow-x-auto mb-6">
       <table className="w-full text-sm border-collapse">{children}</table>

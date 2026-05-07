@@ -11,7 +11,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useCases } from '../hooks/useCases.js'
 import { useProgress } from '../hooks/useProgress.js'
-import { CURRICULUM } from '../data/curriculum.js'
+import { CURRICULUM, MODULE_MAP } from '../data/curriculum.js'
 import { getPatternName, getDistractors } from '../data/patternMeta.js'
 import CandleChart from '../components/CandleChart.jsx'
 import ProgressBar from '../components/ProgressBar.jsx'
@@ -44,8 +44,13 @@ function buildQuestion(caseData) {
   const shuffled = shuffle([correctName, ...distractors])
   const correctIndex = shuffled.indexOf(correctName)
 
+  const patternDate = caseData.candles?.[caseData.pattern_index]?.date ?? ''
+  const question = patternDate
+    ? `请观察 ${patternDate} 附近被标注的K线，它属于哪种形态？`
+    : '图中出现了什么K线形态？'
+
   return {
-    question:     '图中出现了什么K线形态？',
+    question,
     options:      shuffled,
     correctIndex,
     caseData,
@@ -260,10 +265,12 @@ export default function Practice() {
     const finalScore = answers.filter((a) => a.correct).length
     return (
       <div className="max-w-3xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
-        <nav className="text-sm text-slate-500 mb-6 sm:mb-8 flex items-center gap-1">
+      <nav className="text-sm text-slate-500 mb-6 sm:mb-8 flex items-center gap-1">
           <Link to="/" className="hover:text-white transition-colors whitespace-nowrap">课程</Link>
           <span className="mx-1">/</span>
-          <Link to={`/module/${moduleId}`} className="hover:text-white transition-colors whitespace-nowrap">模块</Link>
+          <Link to={`/module/${moduleId}`} className="hover:text-white transition-colors whitespace-nowrap">
+            {MODULE_MAP[moduleId]?.title ?? '模块'}
+          </Link>
           <span className="mx-1">/</span>
           <span className="text-slate-300">练习结果</span>
         </nav>
@@ -293,7 +300,9 @@ export default function Practice() {
       <nav className="text-sm text-slate-500 mb-4 sm:mb-6 flex items-center gap-1 overflow-hidden">
         <Link to="/" className="hover:text-white transition-colors whitespace-nowrap">课程</Link>
         <span className="mx-1">/</span>
-        <Link to={`/module/${moduleId}`} className="hover:text-white transition-colors whitespace-nowrap">模块</Link>
+        <Link to={`/module/${moduleId}`} className="hover:text-white transition-colors whitespace-nowrap">
+          {MODULE_MAP[moduleId]?.title ?? '模块'}
+        </Link>
         <span className="mx-1">/</span>
         <span className="text-slate-300 truncate">练习</span>
       </nav>
