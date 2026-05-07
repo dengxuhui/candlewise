@@ -11,44 +11,17 @@ const n=`# 单根K线的四个价格
 
 ## 四价与K线结构的对应关系
 
-\`\`\`
-      最高价 (High)
-         │
-  ┌──────┤  ← 上影线 = High - max(Open, Close)
-  │      │
-  │  实体 │  ← 实体 = |Close - Open|
-  │      │
-  └──────┤  ← 下影线 = min(Open, Close) - Low
-         │
-      最低价 (Low)
+\`\`\`candle-demo:ohlc-structure
 \`\`\`
 
 ### 阳线（收盘 > 开盘）
 
-\`\`\`
-       High（最高价）
-        │
-      ══╪══ ← Close 收盘价（实体上边）
-      ║   ║
-      ║   ║   绿色实体
-      ║   ║
-      ══╪══ ← Open  开盘价（实体下边）
-        │
-       Low（最低价）
+\`\`\`candle-demo:ohlc-bullish
 \`\`\`
 
 ### 阴线（收盘 < 开盘）
 
-\`\`\`
-       High（最高价）
-        │
-      ══╪══ ← Open  开盘价（实体上边）
-      ║   ║
-      ║   ║   红色实体
-      ║   ║
-      ══╪══ ← Close 收盘价（实体下边）
-        │
-       Low（最低价）
+\`\`\`candle-demo:ohlc-bearish
 \`\`\`
 
 ## 影线的计算公式
