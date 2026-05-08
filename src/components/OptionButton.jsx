@@ -8,6 +8,8 @@
  *   state    {string}   'idle' | 'correct' | 'wrong' | 'disabled'
  */
 
+import { useState } from 'react'
+
 const STATE_STYLES = {
   idle: {
     border:     '#2a2d3a',
@@ -15,8 +17,6 @@ const STATE_STYLES = {
     textColor:  '#cbd5e1',
     labelBg:    '#2a2d3a',
     labelColor: '#94a3b8',
-    cursor:     'cursor-pointer',
-    opacity:    '',
   },
   correct: {
     border:     '#00c896',
@@ -24,8 +24,6 @@ const STATE_STYLES = {
     textColor:  '#00c896',
     labelBg:    '#00c896',
     labelColor: '#0f1117',
-    cursor:     'cursor-default',
-    opacity:    '',
   },
   wrong: {
     border:     '#ff4d6a',
@@ -33,8 +31,6 @@ const STATE_STYLES = {
     textColor:  '#ff4d6a',
     labelBg:    '#ff4d6a',
     labelColor: '#0f1117',
-    cursor:     'cursor-default',
-    opacity:    '',
   },
   disabled: {
     border:     '#2a2d3a',
@@ -42,36 +38,58 @@ const STATE_STYLES = {
     textColor:  '#475569',
     labelBg:    '#1e2130',
     labelColor: '#475569',
-    cursor:     'cursor-default',
-    opacity:    'opacity-50',
   },
+}
+
+const HOVER_STYLE = {
+  border:     '#475569',
+  background: '#1a1d27',
 }
 
 export default function OptionButton({ label, text, onClick, state = 'idle' }) {
   const s = STATE_STYLES[state] ?? STATE_STYLES.idle
-  const isClickable = state === 'idle'
+  const isIdle = state === 'idle'
+  const isDisabled = state === 'disabled'
+  const [hovered, setHovered] = useState(false)
+
+  const borderColor = isIdle && hovered ? HOVER_STYLE.border : s.border
+  const bgColor     = isIdle && hovered ? HOVER_STYLE.background : s.background
 
   return (
     <button
-      onClick={isClickable ? onClick : undefined}
-      disabled={!isClickable}
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-left
-        transition-all duration-150 ${s.cursor} ${s.opacity}
-        ${isClickable ? 'hover:border-slate-500 hover:bg-[#1a1d27] active:scale-[0.99]' : ''}`}
+      onClick={isIdle ? onClick : undefined}
+      disabled={!isIdle}
+      onMouseEnter={() => isIdle && setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-left"
       style={{
-        borderColor:     s.border,
-        backgroundColor: s.background,
+        borderColor,
+        backgroundColor: bgColor,
+        opacity:         isDisabled ? 0.5 : 1,
+        cursor:          isIdle ? 'pointer' : 'default',
+        transform:       hovered && isIdle ? 'scale(1.002)' : 'scale(1)',
+        transition:      'border-color 180ms ease, background-color 180ms ease, opacity 180ms ease, transform 120ms ease',
       }}
     >
       {/* 选项标签圆圈 */}
       <span
-        className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold flex-shrink-0 transition-colors duration-150"
-        style={{ backgroundColor: s.labelBg, color: s.labelColor }}
+        className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold flex-shrink-0"
+        style={{
+          backgroundColor: s.labelBg,
+          color:           s.labelColor,
+          transition:      'background-color 180ms ease, color 180ms ease',
+        }}
       >
         {label}
       </span>
       {/* 选项文字 */}
-      <span className="text-sm font-medium transition-colors duration-150" style={{ color: s.textColor }}>
+      <span
+        className="text-sm font-medium"
+        style={{
+          color:      s.textColor,
+          transition: 'color 180ms ease',
+        }}
+      >
         {text}
       </span>
       {/* 正确/错误图标 */}

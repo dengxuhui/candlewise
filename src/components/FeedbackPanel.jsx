@@ -17,8 +17,13 @@ export default function FeedbackPanel({ isCorrect, patternId, onNext, isLast = f
 
   return (
     <div
-      className="overflow-hidden transition-all duration-300 ease-out"
-      style={{ maxHeight: visible ? '600px' : '0px', opacity: visible ? 1 : 0 }}
+      className="overflow-hidden"
+      style={{
+        maxHeight:  visible ? '560px' : '0px',
+        opacity:    visible ? 1 : 0,
+        transform:  visible ? 'translateY(0)' : 'translateY(-6px)',
+        transition: 'max-height 320ms ease, opacity 280ms ease, transform 280ms ease',
+      }}
     >
       <div
         className="rounded-xl border mt-2 p-5 flex flex-col gap-4"
@@ -76,10 +81,21 @@ export default function FeedbackPanel({ isCorrect, patternId, onNext, isLast = f
         <div className="flex justify-end pt-1">
           <button
             onClick={onNext}
-            className="px-5 py-2 rounded-lg font-semibold text-sm text-black transition-all active:scale-[0.98]"
-            style={{ backgroundColor: '#00c896' }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#00a87e')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#00c896')}
+            className="px-5 py-2 rounded-lg font-semibold text-sm text-black"
+            style={{
+              backgroundColor: '#00c896',
+              transition: 'background-color 180ms ease, transform 120ms ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#00a87e'
+              e.currentTarget.style.transform = 'scale(1.03)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#00c896'
+              e.currentTarget.style.transform = 'scale(1)'
+            }}
+            onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.97)')}
+            onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1.03)')}
           >
             {isLast ? '查看结果 →' : '下一题 →'}
           </button>

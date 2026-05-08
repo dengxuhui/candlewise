@@ -8,7 +8,7 @@
  *   height       {number} 图表高度，默认 320
  */
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createChart } from 'lightweight-charts'
 
 // ── 图表配色常量 ──────────────────────────────────────────────────
@@ -25,9 +25,15 @@ const COLORS = {
   markerColor:   '#f59e0b',   // 形态标注颜色
 }
 
+function fmt(v) {
+  if (v == null) return '—'
+  return Number(v).toFixed(2)
+}
+
 export default function CandleChart({ candles = [], patternIndex = -1, height = 320 }) {
   const containerRef = useRef(null)
   const chartRef     = useRef(null)
+  const [hud, setHud] = useState(null) // { date, open, high, low, close, bullish }
 
   useEffect(() => {
     if (!containerRef.current || candles.length === 0) return
@@ -142,6 +148,25 @@ export default function CandleChart({ candles = [], patternIndex = -1, height = 
     // 自适应所有数据到视图
     chart.timeScale().fitContent()
 
+    // ── 十字光标悬停 → OHLC HUD ──────────────────────────────────
+    chart.subscribeCrosshairMove((param) => {
+      if (!param || !param.time || param.seriesData.size === 0) {
+        setHud(null)
+        return
+      }
+      // 取 K线序列的数据
+      const bar = param.seriesData.get(candleSeries)
+      if (!bar) { setHud(null); return }
+      setHud({
+        date:    param.time,
+        open:    bar.open,
+        high:    bar.high,
+        low:     bar.low,
+        close:   bar.close,
+        bullish: bar.close >= bar.open,
+      })
+    })
+
     // ── ResizeObserver 宽度自适应 ──────────────────────────────────
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -158,14 +183,34 @@ export default function CandleChart({ candles = [], patternIndex = -1, height = 
       resizeObserver.disconnect()
       chart.remove()
       chartRef.current = null
+      setHud(null)
     }
   }, [candles, patternIndex, height])
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full rounded-lg overflow-hidden"
-      style={{ height, backgroundColor: COLORS.background }}
-    />
+    <div className="relative w-full rounded-lg overflow-hidden" style={{ backgroundColor: COLORS.background }}>
+      {/* OHLC HUD 数据条 */}
+      <div
+        className="absolute top-0 left-0 right-0 z-10 flex items-center gap-3 px-3 py-1.5 text-xs font-mono pointer-events-none"
+        style={{ backgroundColor: 'rgba(15,17,23,0.85)' }}
+      >
+        {hud ? (
+          <>
+            <span className="text-slate-500">{hud.date}</span>
+            <span className="text-slate-400">O <span className="text-slate-200">{fmt(hud.open)}</span></span>
+            <span className="text-slate-400">H <span className="text-slate-200">{fmt(hud.high)}</span></span>
+            <span className="text-slate-400">L <span className="text-slate-200">{fmt(hud.low)}</span></span>
+            <span className="text-slate-400">C <span style={{ color: hud.bullish ? COLORS.bullish : COLORS.bearish }}>{fmt(hud.close)}</span></span>
+          </>
+        ) : (
+          <span className="text-slate-600">移动光标查看 OHLC 数据</span>
+        )}
+      </div>
+      {/* 图表容器 */}
+      <div
+        ref={containerRef}
+        style={{ height, paddingTop: '28px' }}
+      />
+    </div>
   )
 }
