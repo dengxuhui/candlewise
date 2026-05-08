@@ -9,6 +9,8 @@ export default function Layout() {
 
   const freeMode = useProgressStore((s) => s.freeMode)
   const toggleFreeMode = useProgressStore((s) => s.toggleFreeMode)
+  const colorTheme = useProgressStore((s) => s.colorTheme)
+  const toggleColorTheme = useProgressStore((s) => s.toggleColorTheme)
   const resetProgress = useProgressStore((s) => s.resetProgress)
 
   // 点击菜单外部关闭
@@ -78,6 +80,32 @@ export default function Layout() {
                     <span
                       className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-300"
                       style={{ transform: freeMode ? 'translateX(16px)' : 'translateX(0px)' }}
+                    />
+                  </div>
+                </button>
+
+                <div className="border-t border-[#2a2d3a]" />
+
+                {/* 配色方案 */}
+                <button
+                  onClick={toggleColorTheme}
+                  className="w-full flex items-center justify-between px-4 py-3 text-sm transition-colors hover:bg-[#2a2d3a]"
+                >
+                  <div className="flex flex-col items-start gap-0.5">
+                    <span className="text-slate-300">配色方案</span>
+                    <span className="text-xs text-slate-500">
+                      {colorTheme === 'chinese' ? '红涨绿跌（中国）' : '绿涨红跌（国际）'}
+                    </span>
+                  </div>
+                  {/* 红绿色块示意 */}
+                  <div className="flex gap-1 flex-shrink-0">
+                    <span
+                      className="w-4 h-4 rounded-sm"
+                      style={{ backgroundColor: colorTheme === 'chinese' ? '#ff4d6a' : '#00c896' }}
+                    />
+                    <span
+                      className="w-4 h-4 rounded-sm"
+                      style={{ backgroundColor: colorTheme === 'chinese' ? '#00c896' : '#ff4d6a' }}
                     />
                   </div>
                 </button>

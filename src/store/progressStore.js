@@ -29,10 +29,16 @@ export const useProgressStore = create(
       moduleProgress: buildInitialModuleProgress(),
       practiceHistory: [],
       freeMode: false,
+      colorTheme: 'chinese',   // 'chinese'=红涨绿跌  'western'=绿涨红跌
 
       /** 切换自由模式开关 */
       toggleFreeMode() {
         set((s) => ({ freeMode: !s.freeMode }))
+      },
+
+      /** 切换 K 线配色方案 */
+      toggleColorTheme() {
+        set((s) => ({ colorTheme: s.colorTheme === 'chinese' ? 'western' : 'chinese' }))
       },
 
       /**
@@ -124,6 +130,7 @@ export const useProgressStore = create(
         moduleProgress: s.moduleProgress,
         practiceHistory: s.practiceHistory,
         freeMode: s.freeMode,
+        colorTheme: s.colorTheme,
       }),
     }
   )
