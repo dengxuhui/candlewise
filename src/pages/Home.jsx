@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CURRICULUM, getModuleIndex } from '../data/curriculum.js'
 import { useProgress } from '../hooks/useProgress.js'
+import { useProgressStore } from '../store/progressStore.js'
 
 function DifficultyDots({ level }) {
   return (
@@ -16,25 +17,29 @@ function DifficultyDots({ level }) {
   )
 }
 
-function ProgressBar({ percent }) {
+function ProgressBar({ percent, dim }) {
   return (
     <div className="w-full h-1 rounded-full bg-[#2a2d3a] overflow-hidden">
       <div
         className="h-full rounded-full transition-all duration-500"
-        style={{ width: `${percent}%`, backgroundColor: '#00c896' }}
+        style={{ width: `${percent}%`, backgroundColor: dim ? 'rgba(0,200,150,0.4)' : '#00c896' }}
       />
     </div>
   )
 }
 
-function ModuleCard({ module, index, isUnlocked, progressPercent }) {
+function ModuleCard({ module, index, isUnlocked, progressPercent, freeMode }) {
   const isLocked = !isUnlocked
+  // 自由模式下，原本锁定的模块可以访问，但有视觉区分
+  const freeAccess = freeMode && isLocked
 
   const cardContent = (
     <div
       className={`rounded-xl border p-6 flex flex-col gap-4 transition-all duration-200 ${
-        isLocked
+        isLocked && !freeMode
           ? 'opacity-50 cursor-not-allowed border-[#2a2d3a]'
+          : freeAccess
+          ? 'border-[#2a2d3a] hover:border-[#00c896]/50 hover:bg-[#1a1d27] cursor-pointer opacity-75'
           : 'border-[#2a2d3a] hover:border-[#00c896] hover:bg-[#1a1d27] cursor-pointer'
       }`}
       style={{ backgroundColor: '#1a1d27' }}
@@ -48,7 +53,16 @@ function ModuleCard({ module, index, isUnlocked, progressPercent }) {
             <p className="text-xs text-slate-400 mt-0.5">{module.subtitle}</p>
           </div>
         </div>
-        {isLocked && <span className="text-slate-600 text-xl">🔒</span>}
+        {/* 右上角状态标识 */}
+        {isLocked && !freeMode && <span className="text-slate-600 text-xl">🔒</span>}
+        {freeAccess && (
+          <span
+            className="text-xs font-mono px-2 py-0.5 rounded-full border flex-shrink-0"
+            style={{ color: '#00c896', borderColor: 'rgba(0,200,150,0.4)', backgroundColor: 'rgba(0,200,150,0.08)' }}
+          >
+            自由访问
+          </span>
+        )}
         {!isLocked && progressPercent === 100 && (
           <span className="text-[#00c896] text-xl">✓</span>
         )}
@@ -56,14 +70,14 @@ function ModuleCard({ module, index, isUnlocked, progressPercent }) {
 
       <p className="text-sm text-slate-400 leading-relaxed">{module.description}</p>
 
-      {/* 进度条（已解锁时显示） */}
-      {!isLocked && (
-        <ProgressBar percent={progressPercent} />
+      {/* 进度条（已解锁或自由访问时显示） */}
+      {(!isLocked || freeAccess) && (
+        <ProgressBar percent={progressPercent} dim={freeAccess} />
       )}
 
       <div className="flex items-center justify-between pt-1">
         <DifficultyDots level={module.difficulty} />
-        {!isLocked && (
+        {(!isLocked || freeAccess) && (
           <span className="text-xs text-slate-500 font-mono">
             {progressPercent > 0 ? `${progressPercent}%` : (
               module.lessons.length > 0
@@ -72,7 +86,7 @@ function ModuleCard({ module, index, isUnlocked, progressPercent }) {
             )}
           </span>
         )}
-        {isLocked && (
+        {isLocked && !freeMode && (
           <span className="text-xs text-slate-600">
             完成前置模块后解锁
           </span>
@@ -81,7 +95,8 @@ function ModuleCard({ module, index, isUnlocked, progressPercent }) {
     </div>
   )
 
-  if (isLocked) return cardContent
+  // 不可点击：锁定且非自由模式
+  if (isLocked && !freeMode) return cardContent
 
   return (
     <Link to={`/module/${module.id}`} className="block">
@@ -92,6 +107,7 @@ function ModuleCard({ module, index, isUnlocked, progressPercent }) {
 
 export default function Home() {
   const { isUnlocked, getProgressPercent, moduleProgress } = useProgress()
+  const freeMode = useProgressStore((s) => s.freeMode)
 
   // 统计整体进度
   const totalModules = CURRICULUM.length
@@ -151,10 +167,12 @@ export default function Home() {
               index={getModuleIndex(mod.id)}
               isUnlocked={isUnlocked(mod.id)}
               progressPercent={getProgressPercent(mod.id)}
+              freeMode={freeMode}
             />
           ))}
         </div>
       </div>
+
     </div>
   )
 }

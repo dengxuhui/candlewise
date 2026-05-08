@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useProgress } from '../hooks/useProgress.js'
 import { MODULE_MAP, CURRICULUM } from '../data/curriculum.js'
+import { useProgressStore } from '../store/progressStore.js'
 
 // 从 curriculum.js 动态生成 lesson → 路由参数映射
 // lesson id 格式：lesson_<模块序号>_<课时序号>，如 lesson_1_1
@@ -18,6 +19,7 @@ export default function Module() {
   const { moduleId } = useParams()
   const meta = MODULE_MAP[moduleId]
   const { isLessonCompleted, moduleProgress, isUnlocked } = useProgress()
+  const freeMode = useProgressStore((s) => s.freeMode)
 
   if (!meta) {
     return (
@@ -31,6 +33,8 @@ export default function Module() {
   const isPassed = prog?.passed ?? false
   const completedCount = meta.lessons.filter((l) => isLessonCompleted(l.id)).length
   const unlocked = isUnlocked(moduleId)
+  // 自由模式下，即使未正常解锁也可进入练习
+  const practiceAccessible = unlocked || freeMode
 
   return (
     <div className="max-w-3xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
@@ -112,7 +116,7 @@ export default function Module() {
       {/* 练习入口 */}
       <section>
         <h2 className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-4">练习</h2>
-        {unlocked ? (
+        {practiceAccessible ? (
           <Link
             to={`/module/${moduleId}/practice`}
             className="flex items-center gap-4 p-5 rounded-lg border transition-all"
@@ -123,7 +127,14 @@ export default function Module() {
               <p className="font-semibold text-white">
                 {isPassed ? '重新挑战' : '开始闯关练习'}
               </p>
-              <p className="text-sm text-slate-400 mt-0.5">基于真实历史K线的交互式答题</p>
+              <p className="text-sm text-slate-400 mt-0.5">
+                基于真实历史K线的交互式答题
+                {freeMode && !unlocked && (
+                  <span className="ml-2 text-xs font-mono" style={{ color: '#00c896' }}>
+                    · 自由模式
+                  </span>
+                )}
+              </p>
             </div>
             <span className="ml-auto text-slate-400">→</span>
           </Link>

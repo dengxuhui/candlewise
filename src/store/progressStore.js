@@ -28,6 +28,12 @@ export const useProgressStore = create(
       completedLessons: [],
       moduleProgress: buildInitialModuleProgress(),
       practiceHistory: [],
+      freeMode: false,
+
+      /** 切换自由模式开关 */
+      toggleFreeMode() {
+        set((s) => ({ freeMode: !s.freeMode }))
+      },
 
       /**
        * 标记某课时为已完成，同时更新所属模块的 completed 计数
@@ -117,6 +123,7 @@ export const useProgressStore = create(
         completedLessons: s.completedLessons,
         moduleProgress: s.moduleProgress,
         practiceHistory: s.practiceHistory,
+        freeMode: s.freeMode,
       }),
     }
   )

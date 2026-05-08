@@ -11,6 +11,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useCases } from '../hooks/useCases.js'
 import { useProgress } from '../hooks/useProgress.js'
+import { useProgressStore } from '../store/progressStore.js'
 import { CURRICULUM, MODULE_MAP } from '../data/curriculum.js'
 import { getPatternName, getDistractors } from '../data/patternMeta.js'
 import CandleChart from '../components/CandleChart.jsx'
@@ -59,7 +60,7 @@ function buildQuestion(caseData) {
 
 // ── 子组件：结算页 ──────────────────────────────────────────────────
 
-function ResultScreen({ score, total, moduleId, onRetry }) {
+function ResultScreen({ score, total, moduleId, onRetry, freeMode }) {
   const navigate = useNavigate()
   const passed = score >= Math.ceil(total / 2) // ≥ 3/5 通过
   const moduleMeta = CURRICULUM.find((m) => m.id === moduleId)
@@ -92,14 +93,18 @@ function ResultScreen({ score, total, moduleId, onRetry }) {
           {passed ? '练习通过！' : '继续加油'}
         </h2>
         <p className="text-sm text-slate-400">
-          {passed
+          {freeMode
+            ? passed
+              ? `自由模式 · 成绩已记录`
+              : `自由模式 · 成绩已记录，再练一次吧`
+            : passed
             ? `${moduleMeta?.title ?? ''}模块已解锁完成`
             : `至少答对 ${Math.ceil(total / 2)} 题即可通过，再试一次吧`}
         </p>
       </div>
 
-      {/* 解锁提示 */}
-      {passed && nextModule && (
+      {/* 解锁提示：仅正式模式下通过时展示 */}
+      {!freeMode && passed && nextModule && (
         <div
           className="w-full rounded-xl border p-4 flex flex-wrap items-center gap-3"
           style={{ borderColor: 'rgba(0,200,150,0.3)', backgroundColor: 'rgba(0,200,150,0.06)' }}
@@ -117,6 +122,19 @@ function ResultScreen({ score, total, moduleId, onRetry }) {
           >
             前往 →
           </Link>
+        </div>
+      )}
+
+      {/* 自由模式提示横幅 */}
+      {freeMode && (
+        <div
+          className="w-full rounded-xl border p-4 flex items-center gap-3"
+          style={{ borderColor: 'rgba(0,200,150,0.2)', backgroundColor: 'rgba(0,200,150,0.04)' }}
+        >
+          <span className="text-2xl">🔓</span>
+          <p className="text-sm text-slate-400">
+            自由模式下练习不计入正式进度，但答题记录已保存。
+          </p>
         </div>
       )}
 
@@ -147,6 +165,7 @@ export default function Practice() {
   const { moduleId } = useParams()
   const { loading: casesLoading, error, getRandomCases } = useCases()
   const { recordAnswer, markModulePassed } = useProgress()
+  const freeMode = useProgressStore((s) => s.freeMode)
 
   // 状态机：'loading' | 'playing' | 'result'
   const [phase, setPhase] = useState('loading')
@@ -222,7 +241,10 @@ export default function Practice() {
       const correctCount = [...answers, { correct: selectedOption === questions[currentIndex].correctIndex }]
         .filter((a) => a.correct).length
       const passed = correctCount >= Math.ceil(questions.length / 2)
-      markModulePassed(moduleId, passed)
+      // 自由模式下不写入 moduleProgress，不影响解锁进度链
+      if (!freeMode) {
+        markModulePassed(moduleId, passed)
+      }
       setPhase('result')
     } else {
       setCurrentIndex((i) => i + 1)
@@ -289,6 +311,7 @@ export default function Practice() {
           total={questions.length}
           moduleId={moduleId}
           onRetry={handleRetry}
+          freeMode={freeMode}
         />
       </div>
     )
