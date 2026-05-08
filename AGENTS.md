@@ -4,10 +4,11 @@
 
 ## 项目状态
 
-**当前阶段：初始化前（pre-Phase 1）**。前端代码尚未创建，仅存在：
-- `SPEC.md` — 项目唯一权威规格文档（中文，312行）
+**当前阶段：全部开发阶段已完成（Phase 1 ~ Phase 7）**。项目已可正常运行，包括：
+- `SPEC.md` — 项目唯一权威规格文档
 - `data-scripts/` — Python 数据管道（已完成，数据集已生成）
-- `data-scripts/candlewise_cases.json` — 已生成的题目数据，前端搭建后需复制到 `public/data/`
+- `public/data/candlewise_cases.json` — 题目数据已就位
+- `src/` — 完整前端代码（页面、组件、Hooks、状态管理全部实现）
 
 ## 技术栈（锁定，不可更改）
 
@@ -18,6 +19,7 @@
 | 路由 | React Router v6（Hash 模式） |
 | 图表 | `lightweight-charts`（TradingView OSS） |
 | 状态管理 | Zustand + localStorage |
+| Markdown | `react-markdown` + `remark-gfm` |
 | 数据 | `/public/data/candlewise_cases.json`（静态文件） |
 | 部署 | GitHub Pages（`gh-pages` 分支） |
 | 包管理器 | **npm**（不用 yarn/pnpm） |
@@ -28,15 +30,17 @@
 
 ```
 candlewise/
-├── public/data/candlewise_cases.json   ← 从 data-scripts/ 复制过来
+├── public/data/candlewise_cases.json   ← 题目数据已就位
 ├── src/
 │   ├── main.jsx / App.jsx
 │   ├── pages/        Home, Module, Lesson, Practice
 │   ├── components/   CandleChart, QuestionCard, OptionButton,
-│   │                 FeedbackPanel, ProgressBar, ModuleCard, Layout
+│   │                 FeedbackPanel, ProgressBar, FreeToggle,
+│   │                 LessonMarkdown, Layout
 │   ├── hooks/        useProgress.js, useCases.js
 │   ├── store/        progressStore.js
-│   └── data/         curriculum.js
+│   └── data/         curriculum.js, lessonDemos.js, patternMeta.js,
+│                     lessons/（12 个 .md 课时文案）
 ├── data-scripts/
 ├── SPEC.md
 ├── vite.config.js
@@ -111,5 +115,5 @@ cp candlewise_cases.json ../public/data/
 
 - 路由使用 **Hash 模式**（`/#/path`），这是 GitHub Pages 静态部署的要求。
 - 进度数据仅存储在 `localStorage`，无后端同步。
-- `candlewise_cases.json` 已存在于 `data-scripts/`，Phase 1 搭好 `public/` 目录后立即复制，不要重新生成。
+- `candlewise_cases.json` 已存在于 `public/data/`，无需重新生成。
 - 详细规格参见根目录 `SPEC.md`，所有设计决策以该文件为准。

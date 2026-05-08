@@ -24,6 +24,7 @@
 路由         React Router v6（Hash 模式，兼容 GitHub Pages）
 图表         lightweight-charts（TradingView 开源库，专为K线设计）
 状态管理     Zustand（轻量，无需 Redux）
+Markdown     react-markdown + remark-gfm（课时内容渲染）
 数据来源     /public/data/candlewise_cases.json（静态文件，构建时打包）
 部署         GitHub Pages via gh-pages 分支
 包管理       npm
@@ -58,7 +59,8 @@ candlewise/
 │   │   ├── OptionButton.jsx        # 选项按钮（含正确/错误状态）
 │   │   ├── FeedbackPanel.jsx       # 答题反馈面板
 │   │   ├── ProgressBar.jsx         # 进度条
-│   │   ├── ModuleCard.jsx          # 课程模块卡片
+│   │   ├── FreeToggle.jsx          # 自由模式切换按钮
+│   │   ├── LessonMarkdown.jsx      # Markdown 课时内容渲染组件
 │   │   └── Layout.jsx              # 全局布局（导航栏 + 页脚）
 │   ├── hooks/
 │   │   ├── useProgress.js          # 学习进度管理（localStorage）
@@ -66,7 +68,14 @@ candlewise/
 │   ├── store/
 │   │   └── progressStore.js        # Zustand 全局状态
 │   └── data/
-│       └── curriculum.js           # 课程大纲配置（模块/课时结构）
+│       ├── curriculum.js           # 课程大纲配置（模块/课时结构）
+│       ├── lessonDemos.js          # 课时示例K线数据（静态演示用）
+│       ├── patternMeta.js          # 形态元数据（名称、描述、口诀等）
+│       └── lessons/                # 各课时 Markdown 文案
+│           ├── lesson_1_1.md ~ lesson_1_3.md
+│           ├── lesson_2_1.md ~ lesson_2_3.md
+│           ├── lesson_3_1.md ~ lesson_3_3.md
+│           └── lesson_4_1.md ~ lesson_4_3.md
 ├── data-scripts/                   # Python数据准备脚本（非前端代码）
 │   ├── fetch_data.py
 │   ├── detect_patterns.py
@@ -104,6 +113,9 @@ candlewise/
 - Practice：判断支撑测试、阻力突破（难度 3）
 
 ### Module 4：综合判断（解锁前三关全部完成后）
+- Lesson 4-1：多信号共振分析
+- Lesson 4-2：假突破与陷阱识别
+- Lesson 4-3：实战复盘方法论
 - Practice：多指标共振 + 预测后续走势（难度 3，难度最高）
 
 ---
@@ -322,5 +334,5 @@ Topic：   react, stock-market, technical-analysis, education, candlestick
 
 ---
 
-*最后更新：2026-05-07*  
+*最后更新：2026-05-08*  
 *当前阶段：Phase 7 已完成，全部开发阶段结束*
