@@ -30,6 +30,12 @@ const DEMO_HAMMER = [
 const DEMO_SHOOTING_STAR = [
   { date: '2024-01-01', open: 100, high: 128, low: 97, close: 98, ma5: null, ma20: null },
 ]
+const DEMO_HANGING_MAN = [
+  { date: '2024-01-01', open: 108, high: 110, low: 82, close: 106, ma5: null, ma20: null },
+]
+const DEMO_INVERTED_HAMMER = [
+  { date: '2024-01-01', open: 95, high: 116, low: 93, close: 97, ma5: null, ma20: null },
+]
 const DEMO_DOJI = [
   { date: '2024-01-01', open: 100, high: 115, low: 85, close: 100, ma5: null, ma20: null },
 ]
@@ -55,6 +61,22 @@ const DEMO_BEARISH_ENGULFING = [
   { date: '2024-01-01', open: 100, high: 112, low: 98, close: 110, ma5: null, ma20: null },
   { date: '2024-01-02', open: 113, high: 115, low: 97, close: 99, ma5: null, ma20: null },
 ]
+const DEMO_DARK_CLOUD_COVER = [
+  { date: '2024-01-01', open: 96, high: 118, low: 95, close: 116, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 119, high: 121, low: 102, close: 104, ma5: null, ma20: null },
+]
+const DEMO_PIERCING_LINE = [
+  { date: '2024-01-01', open: 118, high: 119, low: 100, close: 102, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 98, high: 114, low: 96, close: 112, ma5: null, ma20: null },
+]
+const DEMO_HARAMI = [
+  { date: '2024-01-01', open: 112, high: 114, low: 94, close: 96, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 99, high: 104, low: 98, close: 102, ma5: null, ma20: null },
+]
+const DEMO_HARAMI_CROSS = [
+  { date: '2024-01-01', open: 96, high: 116, low: 94, close: 114, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 106, high: 110, low: 102, close: 106, ma5: null, ma20: null },
+]
 
 // lesson_2_3
 const DEMO_THREE_WHITE_SOLDIERS = [
@@ -66,6 +88,20 @@ const DEMO_THREE_BLACK_CROWS = [
   { date: '2024-01-01', open: 120, high: 121, low: 111, close: 113, ma5: null, ma20: null },
   { date: '2024-01-02', open: 115, high: 116, low: 105, close: 107, ma5: null, ma20: null },
   { date: '2024-01-03', open: 109, high: 110, low: 99, close: 101, ma5: null, ma20: null },
+]
+const DEMO_RISING_THREE_METHODS = [
+  { date: '2024-01-01', open: 100, high: 116, low: 99, close: 114, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 113, high: 114, low: 107, close: 108, ma5: null, ma20: null },
+  { date: '2024-01-03', open: 108, high: 110, low: 104, close: 105, ma5: null, ma20: null },
+  { date: '2024-01-04', open: 105, high: 108, low: 103, close: 107, ma5: null, ma20: null },
+  { date: '2024-01-05', open: 108, high: 122, low: 107, close: 121, ma5: null, ma20: null },
+]
+const DEMO_FALLING_THREE_METHODS = [
+  { date: '2024-01-01', open: 122, high: 123, low: 108, close: 110, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 111, high: 116, low: 110, close: 115, ma5: null, ma20: null },
+  { date: '2024-01-03', open: 114, high: 118, low: 113, close: 117, ma5: null, ma20: null },
+  { date: '2024-01-04', open: 116, high: 119, low: 114, close: 115, ma5: null, ma20: null },
+  { date: '2024-01-05', open: 114, high: 115, low: 101, close: 102, ma5: null, ma20: null },
 ]
 
 // lesson_3_1 — support/resistance shown via price + MA lines acting as levels
@@ -241,6 +277,138 @@ const DEMO_MA20_RESISTANCE = [
   { date: '2024-01-05', open: 88, high: 93, low: 83, close: 85, ma5: 89, ma20: 96 },
 ]
 
+// ── lesson_4_1 补充：带趋势背景的启明星与黄昏之星 ──────────────────────────
+const DEMO_MORNING_STAR_CONTEXT = [
+  { date: '2024-01-01', open: 120, high: 122, low: 114, close: 115, ma5: 119, ma20: 116 },
+  { date: '2024-01-02', open: 114, high: 115, low: 108, close: 109, ma5: 117, ma20: 115 },
+  { date: '2024-01-03', open: 108, high: 110, low: 105, close: 106, ma5: 114, ma20: 115 },
+  { date: '2024-01-04', open: 105, high: 107, low: 102, close: 104, ma5: 111, ma20: 114 },
+  // 启明星三根：大阴 + 小星 + 大阳
+  { date: '2024-01-05', open: 103, high: 104, low: 95, close: 96, ma5: 106, ma20: 113 },
+  { date: '2024-01-08', open: 94, high: 98, low: 92, close: 95, ma5: 102, ma20: 113 },
+  { date: '2024-01-09', open: 96, high: 112, low: 95, close: 110, ma5: 102, ma20: 112 },
+]
+const DEMO_EVENING_STAR_CONTEXT = [
+  { date: '2024-01-01', open: 92, high: 98, low: 91, close: 97, ma5: 94, ma20: 90 },
+  { date: '2024-01-02', open: 97, high: 104, low: 96, close: 103, ma5: 97, ma20: 91 },
+  { date: '2024-01-03', open: 103, high: 110, low: 102, close: 109, ma5: 101, ma20: 93 },
+  { date: '2024-01-04', open: 109, high: 115, low: 108, close: 114, ma5: 105, ma20: 95 },
+  // 黄昏之星三根：大阳 + 小星 + 大阴
+  { date: '2024-01-05', open: 115, high: 122, low: 114, close: 121, ma5: 109, ma20: 97 },
+  { date: '2024-01-08', open: 122, high: 124, low: 120, close: 122, ma5: 114, ma20: 99 },
+  { date: '2024-01-09', open: 121, high: 122, low: 107, close: 108, ma5: 114, ma20: 100 },
+]
+
+// ── lesson_4_2 补充：弱化版三白兵与三乌鸦 ──────────────────────────────────
+const DEMO_THREE_WHITE_SOLDIERS_WEAK = [
+  // 有较长上影线的三白兵，说明遇到一定压力
+  { date: '2024-01-01', open: 100, high: 113, low: 99, close: 106, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 105, high: 118, low: 104, close: 110, ma5: null, ma20: null },
+  { date: '2024-01-03', open: 109, high: 124, low: 108, close: 113, ma5: null, ma20: null },
+]
+const DEMO_THREE_BLACK_CROWS_WEAK = [
+  // 有较长下影线的三乌鸦，说明遇到一定承接
+  { date: '2024-01-01', open: 120, high: 121, low: 108, close: 113, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 114, high: 115, low: 103, close: 108, ma5: null, ma20: null },
+  { date: '2024-01-03', open: 109, high: 110, low: 97, close: 103, ma5: null, ma20: null },
+]
+
+// ── lesson_4_3 补充：上升三法细节示意 ──────────────────────────────────────
+const DEMO_RISING_THREE_METHODS_DETAIL = [
+  // 大阳线推动
+  { date: '2024-01-01', open: 98, high: 116, low: 97, close: 114, ma5: null, ma20: null },
+  // 三根小阴回踩（未跌破大阳线开盘）
+  { date: '2024-01-02', open: 113, high: 114, low: 107, close: 108, ma5: null, ma20: null },
+  { date: '2024-01-03', open: 108, high: 112, low: 105, close: 107, ma5: null, ma20: null },
+  { date: '2024-01-04', open: 107, high: 110, low: 104, close: 109, ma5: null, ma20: null },
+  // 再次突破，收高于大阳线收盘
+  { date: '2024-01-05', open: 110, high: 124, low: 109, close: 122, ma5: null, ma20: null },
+]
+
+// ── lesson_5_2 补充：放量突破与缩量假突破 ──────────────────────────────────
+const DEMO_VOLUME_BREAKOUT = [
+  // 价格在阻力位附近整理，最后放量突破
+  { date: '2024-01-01', open: 96, high: 100, low: 93, close: 98, ma5: 97, ma20: 95 },
+  { date: '2024-01-02', open: 98, high: 100, low: 95, close: 99, ma5: 98, ma20: 96 },
+  { date: '2024-01-03', open: 99, high: 100, low: 96, close: 98, ma5: 98, ma20: 96 },
+  { date: '2024-01-04', open: 99, high: 100, low: 97, close: 99, ma5: 98, ma20: 97 },
+  // 放量突破（ma5/ma20暗示K线位置）
+  { date: '2024-01-05', open: 100, high: 110, low: 99, close: 109, ma5: 100, ma20: 97 },
+  { date: '2024-01-08', open: 109, high: 112, low: 106, close: 111, ma5: 103, ma20: 98 },
+]
+const DEMO_VOLUME_FAKE_BREAKOUT = [
+  // 缩量突破后迅速回落（假突破）
+  { date: '2024-01-01', open: 96, high: 100, low: 93, close: 98, ma5: 97, ma20: 95 },
+  { date: '2024-01-02', open: 98, high: 100, low: 95, close: 99, ma5: 98, ma20: 96 },
+  // 缩量刚刚突破100
+  { date: '2024-01-03', open: 100, high: 103, low: 99, close: 101, ma5: 98, ma20: 96 },
+  // 次日迅速回落至100以下
+  { date: '2024-01-04', open: 100, high: 100, low: 93, close: 94, ma5: 98, ma20: 96 },
+  { date: '2024-01-05', open: 93, high: 96, low: 89, close: 91, ma5: 97, ma20: 96 },
+]
+
+// ── lesson_5_3 补充：MA5/MA20 多头排列 ────────────────────────────────────
+const DEMO_MA5_MA20_TREND = [
+  { date: '2024-01-01', open: 100, high: 103, low: 99, close: 102, ma5: 100, ma20: 96 },
+  { date: '2024-01-02', open: 102, high: 106, low: 101, close: 105, ma5: 102, ma20: 97 },
+  { date: '2024-01-03', open: 105, high: 109, low: 104, close: 108, ma5: 104, ma20: 98 },
+  { date: '2024-01-04', open: 107, high: 112, low: 106, close: 111, ma5: 107, ma20: 100 },
+  { date: '2024-01-05', open: 110, high: 116, low: 109, close: 115, ma5: 110, ma20: 102 },
+  { date: '2024-01-08', open: 114, high: 120, low: 113, close: 119, ma5: 114, ma20: 104 },
+]
+
+// ── lesson_6_1 补充：假突破案例 ────────────────────────────────────────────
+const DEMO_FALSE_BREAKOUT = [
+  // 阻力位 = 120（MA线示意）
+  { date: '2024-01-01', open: 112, high: 118, low: 111, close: 116, ma5: 114, ma20: 120 },
+  { date: '2024-01-02', open: 116, high: 122, low: 115, close: 121, ma5: 116, ma20: 120 }, // 缩量假突破
+  { date: '2024-01-03', open: 120, high: 121, low: 112, close: 113, ma5: 116, ma20: 120 }, // 回落
+  { date: '2024-01-04', open: 112, high: 114, low: 107, close: 109, ma5: 115, ma20: 119 },
+  { date: '2024-01-05', open: 108, high: 112, low: 105, close: 107, ma5: 113, ma20: 118 },
+]
+
+// ── lesson_6_2 补充：三重确认综合图 ───────────────────────────────────────
+const DEMO_TRIPLE_CONFIRM_BULLISH = [
+  // 下跌趋势背景（MA20向下）
+  { date: '2024-01-01', open: 120, high: 121, low: 113, close: 114, ma5: 119, ma20: 122 },
+  { date: '2024-01-02', open: 113, high: 114, low: 107, close: 108, ma5: 116, ma20: 121 },
+  { date: '2024-01-03', open: 107, high: 109, low: 103, close: 105, ma5: 113, ma20: 120 },
+  { date: '2024-01-04', open: 104, high: 106, low: 100, close: 102, ma5: 110, ma20: 119 },
+  // 启明星底部（大阴 + 小星 + 大阳），触及支撑位（MA20），放量
+  { date: '2024-01-05', open: 101, high: 103, low: 96, close: 97, ma5: 105, ma20: 118 },
+  { date: '2024-01-08', open: 96, high: 99, low: 94, close: 96, ma5: 100, ma20: 117 },
+  { date: '2024-01-09', open: 97, high: 113, low: 96, close: 112, ma5: 100, ma20: 116 },
+  { date: '2024-01-10', open: 113, high: 117, low: 111, close: 116, ma5: 103, ma20: 115 },
+]
+const DEMO_TRIPLE_CONFIRM_BEARISH = [
+  // 上涨趋势背景（MA20向上）
+  { date: '2024-01-01', open: 92, high: 97, low: 91, close: 96, ma5: 93, ma20: 88 },
+  { date: '2024-01-02', open: 96, high: 102, low: 95, close: 101, ma5: 96, ma20: 90 },
+  { date: '2024-01-03', open: 101, high: 108, low: 100, close: 107, ma5: 100, ma20: 92 },
+  { date: '2024-01-04', open: 107, high: 115, low: 106, close: 114, ma5: 104, ma20: 94 },
+  // 黄昏之星顶部（大阳 + 小星 + 大阴），触及阻力位（MA20附近高位），放量
+  { date: '2024-01-05', open: 115, high: 122, low: 114, close: 121, ma5: 108, ma20: 97 },
+  { date: '2024-01-08', open: 122, high: 124, low: 120, close: 122, ma5: 112, ma20: 99 },
+  { date: '2024-01-09', open: 121, high: 122, low: 108, close: 109, ma5: 114, ma20: 101 },
+  { date: '2024-01-10', open: 108, high: 110, low: 103, close: 104, ma5: 112, ma20: 102 },
+]
+
+// ── lesson_6_3 补充：完整分析框架四步骤图 ─────────────────────────────────
+const DEMO_ANALYSIS_FRAMEWORK = [
+  // Step1: 确认趋势（上升趋势，MA20向上）
+  { date: '2024-01-01', open: 96, high: 102, low: 95, close: 101, ma5: 98, ma20: 94 },
+  { date: '2024-01-02', open: 101, high: 107, low: 100, close: 106, ma5: 101, ma20: 96 },
+  { date: '2024-01-03', open: 105, high: 109, low: 103, close: 107, ma5: 104, ma20: 98 },
+  // Step2: 找关键位（价格回踩MA20）
+  { date: '2024-01-04', open: 106, high: 108, low: 102, close: 104, ma5: 105, ma20: 100 },
+  { date: '2024-01-05', open: 103, high: 105, low: 100, close: 101, ma5: 104, ma20: 101 },
+  // Step3: 识别形态（锤子线出现在MA20附近）
+  { date: '2024-01-08', open: 100, high: 103, low: 94, close: 102, ma5: 104, ma20: 102 },
+  // Step4: 量能确认（次日放量阳线）
+  { date: '2024-01-09', open: 103, high: 114, low: 102, close: 113, ma5: 105, ma20: 103 },
+  { date: '2024-01-10', open: 113, high: 119, low: 112, close: 118, ma5: 107, ma20: 104 },
+]
+
 export const CANDLE_DEMO_MAP = {
   '': { candles: DEMO_CANDLES, caption: '上影线 = 最高价 − max(开盘, 收盘) | 下影线 = min(开盘, 收盘) − 最低价' },
   'ohlc-structure': { candles: DEMO_OHlC_STRUCTURE, caption: '一根K线包含四个价格：开（O）高（H）低（L）收（C）' },
@@ -250,13 +418,21 @@ export const CANDLE_DEMO_MAP = {
   'lower-shadow': { candles: DEMO_LOWER_SHADOW, caption: '下影线：开盘/收盘低于最低价的反弹，代表下方买盘' },
   'hammer': { candles: DEMO_HAMMER, caption: '锤子线：长下影线，短实体，出现在下跌末端' },
   'shooting-star': { candles: DEMO_SHOOTING_STAR, caption: '流星线：长上影线，短实体，出现在上涨末端' },
+  'hanging-man': { candles: DEMO_HANGING_MAN, caption: '吊颈线：形似锤子线，但出现在上涨末端，警惕见顶' },
+  'inverted-hammer': { candles: DEMO_INVERTED_HAMMER, caption: '倒锤子线：长上影短实体，出现在下跌末端需确认' },
   'doji': { candles: DEMO_DOJI, caption: '十字星：开盘价 ≈ 收盘价，多空力量均衡' },
   'morning-star': { candles: DEMO_MORNING_STAR, caption: '启明星：阴线 + 小星线 + 阳线，下跌末端反转信号' },
   'evening-star': { candles: DEMO_EVENING_STAR, caption: '黄昏之星：阳线 + 小星线 + 阴线，上涨末端反转信号' },
   'bullish-engulfing': { candles: DEMO_BULLISH_ENGULFING, caption: '阳线吞没：阳线实体完全包住前一根阴线，看涨反转' },
   'bearish-engulfing': { candles: DEMO_BEARISH_ENGULFING, caption: '阴线吞没：阴线实体完全包住前一根阳线，看跌反转' },
+  'dark-cloud-cover': { candles: DEMO_DARK_CLOUD_COVER, caption: '乌云盖顶：高开回落，收盘压入前阳线实体中部以下' },
+  'piercing-line': { candles: DEMO_PIERCING_LINE, caption: '刺透形态：低开回升，收盘刺入前阴线实体中部以上' },
+  'harami': { candles: DEMO_HARAMI, caption: '孕线：前大后小，第二根实体被包在第一根实体内部' },
+  'harami-cross': { candles: DEMO_HARAMI_CROSS, caption: '十字孕线：孕线结构中第二根为十字星，犹豫更强' },
   'three-white-soldiers': { candles: DEMO_THREE_WHITE_SOLDIERS, caption: '三只白兵：连续三根有秩序的阳线，上涨趋势强势信号' },
   'three-black-crows': { candles: DEMO_THREE_BLACK_CROWS, caption: '三只乌鸦：连续三根有秩序的阴线，下跌趋势强势信号' },
+  'rising-three-methods': { candles: DEMO_RISING_THREE_METHODS, caption: '上升三法：上涨中继结构，回撤后再创新高' },
+  'falling-three-methods': { candles: DEMO_FALLING_THREE_METHODS, caption: '下降三法：下跌中继结构，反弹后再创新低' },
   'support-level': { candles: DEMO_SUPPORT_LEVEL, caption: '支撑位：价格多次下跌后被托住、反弹的价格区域（MA线示意支撑）' },
   'resistance-level': { candles: DEMO_RESISTANCE_LEVEL, caption: '阻力位：价格多次上涨后被压回、回落的价格区域（MA线示意阻力）' },
   'support-resistance-formation': { candles: DEMO_SUPPORT_RESISTANCE_FORMATION, caption: '支撑/阻力的形成：多次触碰同一价位后，该位置成为关键区域' },
@@ -280,4 +456,32 @@ export const CANDLE_DEMO_MAP = {
   'pattern-at-level': { candles: DEMO_PATTERN_AT_LEVEL, caption: '关键位置的形态：锤子线出现在 MA20 支撑附近' },
   'volume-at-pattern': { candles: DEMO_VOLUME_AT_PATTERN, caption: '量的确认：形态出现当天成交量放大，验证反转力度' },
   'full-analysis': { candles: DEMO_FULL_ANALYSIS, caption: '完整四步分析：趋势向上 → MA20支撑 → 锤子线 → 放量反弹' },
+
+  // ── lesson_4_1 补充 key ────────────────────────────────────────────────
+  'morning-star-context': { candles: DEMO_MORNING_STAR_CONTEXT, caption: '启明星背景示例：下跌趋势中出现大阴 + 小星 + 大阳，底部反转' },
+  'evening-star-context': { candles: DEMO_EVENING_STAR_CONTEXT, caption: '黄昏之星背景示例：上涨趋势中出现大阳 + 小星 + 大阴，顶部反转' },
+
+  // ── lesson_4_2 补充 key ────────────────────────────────────────────────
+  'three-white-soldiers-weak': { candles: DEMO_THREE_WHITE_SOLDIERS_WEAK, caption: '弱化三白兵：上影线较长，说明上方有压力，信号强度下降' },
+  'three-black-crows-weak': { candles: DEMO_THREE_BLACK_CROWS_WEAK, caption: '弱化三乌鸦：下影线较长，说明下方有承接，信号强度下降' },
+
+  // ── lesson_4_3 补充 key ────────────────────────────────────────────────
+  'rising-three-methods-detail': { candles: DEMO_RISING_THREE_METHODS_DETAIL, caption: '上升三法细节：大阳推进 → 三根小阴回踩（未破大阳开盘） → 再创新高' },
+
+  // ── lesson_5_2 补充 key ────────────────────────────────────────────────
+  'volume-breakout': { candles: DEMO_VOLUME_BREAKOUT, caption: '放量突破：价格整理后放量突破阻力位，突破可信度高' },
+  'volume-fake-breakout': { candles: DEMO_VOLUME_FAKE_BREAKOUT, caption: '缩量假突破：勉强越过阻力后迅速回落，突破不可信' },
+
+  // ── lesson_5_3 补充 key ────────────────────────────────────────────────
+  'ma5-ma20-trend': { candles: DEMO_MA5_MA20_TREND, caption: 'MA5/MA20 多头排列：MA5 > MA20，价格在两条均线上方运行，趋势健康' },
+
+  // ── lesson_6_1 补充 key ────────────────────────────────────────────────
+  'false-breakout': { candles: DEMO_FALSE_BREAKOUT, caption: '假突破：缩量突破阻力位后快速回落，多方接力不足' },
+
+  // ── lesson_6_2 补充 key ────────────────────────────────────────────────
+  'triple-confirm-bullish': { candles: DEMO_TRIPLE_CONFIRM_BULLISH, caption: '三重看涨确认：启明星形态 + 触及支撑位 + 放量大阳线' },
+  'triple-confirm-bearish': { candles: DEMO_TRIPLE_CONFIRM_BEARISH, caption: '三重看跌确认：黄昏之星形态 + 触及阻力位 + 放量大阴线' },
+
+  // ── lesson_6_3 补充 key ────────────────────────────────────────────────
+  'analysis-framework': { candles: DEMO_ANALYSIS_FRAMEWORK, caption: '实战四步框架：①趋势判断 → ②关键位识别 → ③形态确认 → ④量能验证' },
 }

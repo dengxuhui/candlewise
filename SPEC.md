@@ -71,11 +71,13 @@ candlewise/
 │       ├── curriculum.js           # 课程大纲配置（模块/课时结构）
 │       ├── lessonDemos.js          # 课时示例K线数据（静态演示用）
 │       ├── patternMeta.js          # 形态元数据（名称、描述、口诀等）
-│       └── lessons/                # 各课时 Markdown 文案
+│       └── lessons/                # 各课时 Markdown 文案（共18节）
 │           ├── lesson_1_1.md ~ lesson_1_3.md
 │           ├── lesson_2_1.md ~ lesson_2_3.md
 │           ├── lesson_3_1.md ~ lesson_3_3.md
-│           └── lesson_4_1.md ~ lesson_4_3.md
+│           ├── lesson_4_1.md ~ lesson_4_3.md
+│           ├── lesson_5_1.md ~ lesson_5_3.md
+│           └── lesson_6_1.md ~ lesson_6_3.md
 ├── data-scripts/                   # Python数据准备脚本（非前端代码）
 │   ├── fetch_data.py
 │   ├── detect_patterns.py
@@ -92,31 +94,49 @@ candlewise/
 
 ## 4. 课程结构（curriculum.js 的配置依据）
 
-共 4 个模块，每模块包含若干课时 + 一组练习题。
+共 6 个模块，每模块包含 3 个课时 + 一组练习题。模块 `id` 采用语义化命名（不使用 `module_1_xxx` 风格）。
 
-### Module 1：K线基础 `single_candle`
-- Lesson 1-1：什么是K线（阴阳线、实体、影线）
-- Lesson 1-2：单根K线的四个价格（开高低收）
-- Lesson 1-3：影线的含义（多空博弈）
-- Practice：识别锤子线、流星线、十字星、大阳线、大阴线（难度 1）
+### Module 1：K线基础 `basics`
+- Lesson 1-1：K线的起源与构成
+- Lesson 1-2：读懂一根K线（实体与影线）
+- Lesson 1-3：影线的语言（多空博弈）
+- Practice：识别基础形态（十字星、大阳线、大阴线等，难度 1）
+- unlockRequires：`null`（默认解锁）
 
-### Module 2：组合形态 `pattern`
-- Lesson 2-1：启明星与黄昏之星
-- Lesson 2-2：吞没形态（阳线吞没 / 阴线吞没）
-- Lesson 2-3：三只白兵与三只乌鸦
-- Practice：识别上述 6 种组合形态（难度 2）
+### Module 2：单根反转 `single_reversal`
+- Lesson 2-1：锤子线与吊颈线（位置决定信号）
+- Lesson 2-2：流星线与倒锤子线
+- Lesson 2-3：十字星家族
+- Practice：识别单根反转形态（难度 1）
+- unlockRequires：`["basics"]`
 
-### Module 3：趋势与关键位 `trend`
-- Lesson 3-1：支撑位与阻力位的形成
-- Lesson 3-2：角色转换原则（阻力变支撑）
-- Lesson 3-3：均线：MA5 / MA20 金叉死叉
-- Practice：判断支撑测试、阻力突破（难度 3）
+### Module 3：双根反转 `double_reversal`
+- Lesson 3-1：吞没形态
+- Lesson 3-2：乌云盖顶与刺透形态
+- Lesson 3-3：孕线与十字孕线
+- Practice：识别双根反转形态（难度 2）
+- unlockRequires：`["single_reversal"]`
 
-### Module 4：综合判断（解锁前三关全部完成后）
-- Lesson 4-1：多信号共振分析
-- Lesson 4-2：假突破与陷阱识别
-- Lesson 4-3：实战复盘方法论
-- Practice：多指标共振 + 预测后续走势（难度 3，难度最高）
+### Module 4：三根形态 `triple_pattern`
+- Lesson 4-1：启明星与黄昏之星
+- Lesson 4-2：三白兵与三乌鸦
+- Lesson 4-3：上升三法与下降三法
+- Practice：识别三根反转/持续形态（难度 2）
+- unlockRequires：`["double_reversal"]`
+
+### Module 5：趋势与关键位 `trend`
+- Lesson 5-1：趋势、支撑与阻力
+- Lesson 5-2：角色转换与成交量确认
+- Lesson 5-3：均线系统 MA5 / MA20
+- Practice：判断趋势结构与关键位突破（难度 3）
+- unlockRequires：`["triple_pattern"]`
+
+### Module 6：综合运用 `synthesis`
+- Lesson 6-1：假信号与共振
+- Lesson 6-2：三重确认法
+- Lesson 6-3：实战分析框架
+- Practice：综合题（全模块混合抽题，难度 3）
+- unlockRequires：`["basics", "single_reversal", "double_reversal", "triple_pattern", "trend"]`
 
 ---
 
@@ -124,8 +144,8 @@ candlewise/
 
 ### 5.1 首页 Home.jsx
 - 顶部 Hero：项目名 + 一句话介绍 + "开始学习"按钮
-- 课程模块网格：4 个 ModuleCard，显示模块名、图标、进度百分比、锁定状态
-- 模块解锁逻辑：Module 1 默认解锁，后续模块需上一模块练习通过才解锁
+- 课程模块网格：6 个 ModuleCard，显示模块名、图标、进度百分比、锁定状态
+- 模块解锁逻辑：Module 1 默认解锁，Module 2~5 需前一模块通过，Module 6 需前五模块全部通过
 
 ### 5.2 闯关练习页 Practice.jsx（最核心）
 
@@ -198,7 +218,7 @@ candlewise/
   "source":           "akshare",
   "pattern_id":       "morning_star",
   "pattern_name_zh":  "启明星",
-  "module":           "pattern",
+  "module":           "triple_pattern",
   "difficulty":       2,
   "pattern_index":    15,
   "subsequent_trend": "up",
@@ -229,6 +249,20 @@ candlewise/
 | `difficulty` | 按难度筛选题目 |
 | `ma5` / `ma20` | 叠加均线显示 |
 
+**pattern_id 范围（共 21 种）：**
+
+- `basics`：`doji`, `large_bullish`, `large_bearish`
+- `single_reversal`：`hammer`, `hanging_man`, `shooting_star`, `inverted_hammer`
+- `double_reversal`：`bullish_engulfing`, `bearish_engulfing`, `dark_cloud_cover`, `piercing_line`, `harami`, `harami_cross`
+- `triple_pattern`：`morning_star`, `evening_star`, `three_white_soldiers`, `three_black_crows`, `rising_three_methods`, `falling_three_methods`
+- `trend`：`support_breakout`, `resistance_breakout`
+
+**数据生成约定：**
+
+- 优先使用联网真实数据流程：`fetch_data.py` → `build_dataset.py`
+- 若网络或数据源不可用，使用 `generate_synthetic_data.py` 离线兜底
+- 生成后的 `candlewise_cases.json` 需包含上述全部 21 种 `pattern_id`
+
 ---
 
 ## 7. 进度存储方案
@@ -240,8 +274,8 @@ candlewise/
 {
   completedLessons: ["lesson_1_1", "lesson_1_2"],
   moduleProgress: {
-    "single_candle": { completed: 5, total: 8, passed: true },
-    "pattern":       { completed: 0, total: 8, passed: false }
+    "basics":          { completed: 5, total: 8, passed: true },
+    "single_reversal": { completed: 0, total: 8, passed: false }
   },
   practiceHistory: [
     { caseId: "case_0001", correct: true, timestamp: 1700000000 }
@@ -331,8 +365,11 @@ Topic：   react, stock-market, technical-analysis, education, candlestick
 | Phase 5 | 课程地图（`Home.jsx` 整体进度统计 + `Module.jsx` 课时完成状态） | ✅ 已完成 | 2026-05-07 | OpenCode CLI (darwin) | claude-sonnet-4.6 |
 | Phase 6 | 课时内容页（`Lesson.jsx` Markdown 渲染 + 9 节课文案 + 左侧目录导航） | ✅ 已完成 | 2026-05-07 | OpenCode CLI (darwin) | claude-sonnet-4.6 |
 | Phase 7 | 收尾（响应式适配 + README + 贡献指南） | ✅ 已完成 | 2026-05-07 | OpenCode CLI (darwin) | claude-sonnet-4.6 |
+| Phase 8 | 课程体系重构设计（4模块12课 → 6模块18课，按尼森体系重写） | ✅ 已完成 | 2026-05-08 | OpenCode CLI (darwin) | gpt-5.3-codex |
+| Phase 9 | SPEC 重写与重构施工图落地（模块ID、课时、pattern_id 21种） | ✅ 已完成 | 2026-05-08 | OpenCode CLI (darwin) | gpt-5.3-codex |
+| Phase 10 | 代码与数据重构执行（curriculum/patternMeta/lessons/dataset） | ✅ 已完成 | 2026-05-08 | Cowork (claude-sonnet-4-6) | claude-sonnet-4-6 |
 
 ---
 
 *最后更新：2026-05-08*  
-*当前阶段：Phase 7 已完成，全部开发阶段结束*
+*当前阶段：所有 Phase 已完成*

@@ -4,31 +4,41 @@ import { useProgress } from '../hooks/useProgress.js'
 import { CURRICULUM } from '../data/curriculum.js'
 import LessonMarkdown from '../components/LessonMarkdown.jsx'
 
-// 课时路由 lessonId → 文件名 / 数据 mapping
+// 课时路由 lessonId → 文件名 / 数据 mapping（与 curriculum.js 模块 ID 一一对应）
 const LESSON_DATA = {
-  single_candle: [
-    { lessonId: '1_1', id: 'lesson_1_1', title: '什么是K线（阴阳线、实体、影线）' },
-    { lessonId: '1_2', id: 'lesson_1_2', title: '单根K线的四个价格（开高低收）' },
-    { lessonId: '1_3', id: 'lesson_1_3', title: '影线的含义（多空博弈）' },
+  basics: [
+    { lessonId: '1_1', id: 'lesson_1_1', title: 'K线的起源与构成' },
+    { lessonId: '1_2', id: 'lesson_1_2', title: '读懂一根K线（实体与影线）' },
+    { lessonId: '1_3', id: 'lesson_1_3', title: '影线的语言（多空博弈）' },
   ],
-  pattern: [
-    { lessonId: '2_1', id: 'lesson_2_1', title: '启明星与黄昏之星' },
-    { lessonId: '2_2', id: 'lesson_2_2', title: '吞没形态（阳线吞没 / 阴线吞没）' },
-    { lessonId: '2_3', id: 'lesson_2_3', title: '三只白兵与三只乌鸦' },
+  single_reversal: [
+    { lessonId: '2_1', id: 'lesson_2_1', title: '锤子线与吊颈线（位置决定信号）' },
+    { lessonId: '2_2', id: 'lesson_2_2', title: '流星线与倒锤子线' },
+    { lessonId: '2_3', id: 'lesson_2_3', title: '十字星家族' },
+  ],
+  double_reversal: [
+    { lessonId: '3_1', id: 'lesson_3_1', title: '吞没形态' },
+    { lessonId: '3_2', id: 'lesson_3_2', title: '乌云盖顶与刺透形态' },
+    { lessonId: '3_3', id: 'lesson_3_3', title: '孕线与十字孕线' },
+  ],
+  triple_pattern: [
+    { lessonId: '4_1', id: 'lesson_4_1', title: '启明星与黄昏之星' },
+    { lessonId: '4_2', id: 'lesson_4_2', title: '三白兵与三乌鸦' },
+    { lessonId: '4_3', id: 'lesson_4_3', title: '上升三法与下降三法' },
   ],
   trend: [
-    { lessonId: '3_1', id: 'lesson_3_1', title: '支撑位与阻力位的形成' },
-    { lessonId: '3_2', id: 'lesson_3_2', title: '角色转换原则（阻力变支撑）' },
-    { lessonId: '3_3', id: 'lesson_3_3', title: '均线：MA5 / MA20 金叉死叉' },
+    { lessonId: '5_1', id: 'lesson_5_1', title: '趋势、支撑与阻力' },
+    { lessonId: '5_2', id: 'lesson_5_2', title: '角色转换与成交量确认' },
+    { lessonId: '5_3', id: 'lesson_5_3', title: '均线系统 MA5 / MA20' },
   ],
   synthesis: [
-    { lessonId: '4_1', id: 'lesson_4_1', title: '为什么单一信号不可靠（假信号与共振）' },
-    { lessonId: '4_2', id: 'lesson_4_2', title: '三重确认法：形态 + 均线 + 成交量' },
-    { lessonId: '4_3', id: 'lesson_4_3', title: '实战分析框架：从宏到微四步法' },
+    { lessonId: '6_1', id: 'lesson_6_1', title: '假信号与共振' },
+    { lessonId: '6_2', id: 'lesson_6_2', title: '三重确认法' },
+    { lessonId: '6_3', id: 'lesson_6_3', title: '实战分析框架' },
   ],
 }
 
-// 动态 import 所有 Markdown 文件
+// 动态 import 所有 Markdown 文件（18节）
 const LESSON_FILES = {
   lesson_1_1: () => import('../data/lessons/lesson_1_1.md?raw'),
   lesson_1_2: () => import('../data/lessons/lesson_1_2.md?raw'),
@@ -42,6 +52,12 @@ const LESSON_FILES = {
   lesson_4_1: () => import('../data/lessons/lesson_4_1.md?raw'),
   lesson_4_2: () => import('../data/lessons/lesson_4_2.md?raw'),
   lesson_4_3: () => import('../data/lessons/lesson_4_3.md?raw'),
+  lesson_5_1: () => import('../data/lessons/lesson_5_1.md?raw'),
+  lesson_5_2: () => import('../data/lessons/lesson_5_2.md?raw'),
+  lesson_5_3: () => import('../data/lessons/lesson_5_3.md?raw'),
+  lesson_6_1: () => import('../data/lessons/lesson_6_1.md?raw'),
+  lesson_6_2: () => import('../data/lessons/lesson_6_2.md?raw'),
+  lesson_6_3: () => import('../data/lessons/lesson_6_3.md?raw'),
 }
 
 export default function Lesson() {

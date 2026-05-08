@@ -28,7 +28,9 @@ TARGET_TOTAL = 200
 # 各形态目标分配（大致比例，超出会被截断）
 QUOTA = {
     "hammer":              18,
+    "hanging_man":         12,
     "shooting_star":       15,
+    "inverted_hammer":     12,
     "doji":                12,
     "large_bullish":       12,
     "large_bearish":       12,
@@ -36,10 +38,42 @@ QUOTA = {
     "evening_star":        20,
     "bullish_engulfing":   20,
     "bearish_engulfing":   20,
+    "dark_cloud_cover":    14,
+    "piercing_line":       14,
+    "harami":              14,
+    "harami_cross":        10,
     "three_white_soldiers": 15,
     "three_black_crows":   15,
+    "rising_three_methods": 12,
+    "falling_three_methods": 12,
     "support_breakout":    18,
     "resistance_breakout": 18,
+}
+
+
+# 与 SPEC 对齐：pattern_id -> module_id
+PATTERN_MODULE_MAP = {
+    "doji": "basics",
+    "large_bullish": "basics",
+    "large_bearish": "basics",
+    "hammer": "single_reversal",
+    "hanging_man": "single_reversal",
+    "shooting_star": "single_reversal",
+    "inverted_hammer": "single_reversal",
+    "bullish_engulfing": "double_reversal",
+    "bearish_engulfing": "double_reversal",
+    "dark_cloud_cover": "double_reversal",
+    "piercing_line": "double_reversal",
+    "harami": "double_reversal",
+    "harami_cross": "double_reversal",
+    "morning_star": "triple_pattern",
+    "evening_star": "triple_pattern",
+    "three_white_soldiers": "triple_pattern",
+    "three_black_crows": "triple_pattern",
+    "rising_three_methods": "triple_pattern",
+    "falling_three_methods": "triple_pattern",
+    "support_breakout": "trend",
+    "resistance_breakout": "trend",
 }
 
 
@@ -85,6 +119,322 @@ def compute_rsi(closes, period=14):
             rs = avg_gain / avg_loss
             result.append(round(100 - 100 / (1 + rs), 2))
     return result
+
+
+def body(df, i):
+    return abs(float(df["close"].iloc[i]) - float(df["open"].iloc[i]))
+
+
+def body_top(df, i):
+    return max(float(df["close"].iloc[i]), float(df["open"].iloc[i]))
+
+
+def body_bottom(df, i):
+    return min(float(df["close"].iloc[i]), float(df["open"].iloc[i]))
+
+
+def upper_shadow(df, i):
+    return float(df["high"].iloc[i]) - body_top(df, i)
+
+
+def lower_shadow(df, i):
+    return body_bottom(df, i) - float(df["low"].iloc[i])
+
+
+def candle_range(df, i):
+    return float(df["high"].iloc[i]) - float(df["low"].iloc[i])
+
+
+def is_bullish(df, i):
+    return float(df["close"].iloc[i]) > float(df["open"].iloc[i])
+
+
+def is_bearish(df, i):
+    return float(df["close"].iloc[i]) < float(df["open"].iloc[i])
+
+
+def avg_body(df, i, n=5):
+    start = max(0, i - n)
+    return np.mean([body(df, j) for j in range(start, i)])
+
+
+def has_downtrend(df, start, end):
+    closes = df["close"].iloc[start:end].values
+    return len(closes) >= 2 and closes[-1] < closes[0]
+
+
+def has_uptrend(df, start, end):
+    closes = df["close"].iloc[start:end].values
+    return len(closes) >= 2 and closes[-1] > closes[0]
+
+
+def find_hanging_man(df, trend_bars=5):
+    """吊颈线：上涨趋势末端，小实体+长下影+短上影。"""
+    hits = []
+    for i in range(trend_bars, len(df) - 1):
+        b = body(df, i)
+        if b <= 0:
+            continue
+        if b > avg_body(df, i) * 0.7:
+            continue
+        if lower_shadow(df, i) < b * 2:
+            continue
+        if upper_shadow(df, i) > b * 0.4:
+            continue
+        if not has_uptrend(df, i - trend_bars, i):
+            continue
+        hits.append(i)
+    return hits
+
+
+def find_inverted_hammer(df, trend_bars=5):
+    """倒锤子线：下跌趋势末端，小实体+长上影+短下影。"""
+    hits = []
+    for i in range(trend_bars, len(df) - 1):
+        b = body(df, i)
+        if b <= 0:
+            continue
+        if b > avg_body(df, i) * 0.7:
+            continue
+        if upper_shadow(df, i) < b * 2:
+            continue
+        if lower_shadow(df, i) > b * 0.4:
+            continue
+        if not has_downtrend(df, i - trend_bars, i):
+            continue
+        hits.append(i)
+    return hits
+
+
+def find_dark_cloud_cover(df, trend_bars=5):
+    """乌云盖顶：上涨后大阳线，次日跳高开后收于前阳线实体中点以下。"""
+    hits = []
+    for i in range(trend_bars + 1, len(df) - 1):
+        c1, c2 = i - 1, i
+        if not is_bullish(df, c1):
+            continue
+        if not is_bearish(df, c2):
+            continue
+        if body(df, c1) < avg_body(df, c1) * 1.1:
+            continue
+        if float(df["open"].iloc[c2]) <= float(df["high"].iloc[c1]) * 0.997:
+            continue
+        mid = (float(df["open"].iloc[c1]) + float(df["close"].iloc[c1])) / 2
+        if float(df["close"].iloc[c2]) >= mid:
+            continue
+        if float(df["close"].iloc[c2]) <= float(df["open"].iloc[c1]):
+            continue
+        if not has_uptrend(df, i - trend_bars - 1, i - 1):
+            continue
+        hits.append(c1)
+    return hits
+
+
+def find_piercing_line(df, trend_bars=5):
+    """刺透形态：下跌后大阴线，次日低开高收至前阴线实体中点以上。"""
+    hits = []
+    for i in range(trend_bars + 1, len(df) - 1):
+        c1, c2 = i - 1, i
+        if not is_bearish(df, c1):
+            continue
+        if not is_bullish(df, c2):
+            continue
+        if body(df, c1) < avg_body(df, c1) * 1.1:
+            continue
+        if float(df["open"].iloc[c2]) >= float(df["low"].iloc[c1]) * 1.003:
+            continue
+        mid = (float(df["open"].iloc[c1]) + float(df["close"].iloc[c1])) / 2
+        if float(df["close"].iloc[c2]) <= mid:
+            continue
+        if float(df["close"].iloc[c2]) >= float(df["open"].iloc[c1]):
+            continue
+        if not has_downtrend(df, i - trend_bars - 1, i - 1):
+            continue
+        hits.append(c1)
+    return hits
+
+
+def find_harami(df, trend_bars=5):
+    """孕线：前一根长实体，后一根小实体被完全包含在前者实体内。"""
+    hits = []
+    for i in range(trend_bars + 1, len(df) - 1):
+        c1, c2 = i - 1, i
+        b1 = body(df, c1)
+        b2 = body(df, c2)
+        if b1 < avg_body(df, c1) * 1.2:
+            continue
+        if b2 > b1 * 0.6:
+            continue
+        if body_top(df, c2) > body_top(df, c1):
+            continue
+        if body_bottom(df, c2) < body_bottom(df, c1):
+            continue
+        if not (
+            (is_bearish(df, c1) and has_downtrend(df, i - trend_bars - 1, i - 1))
+            or (is_bullish(df, c1) and has_uptrend(df, i - trend_bars - 1, i - 1))
+        ):
+            continue
+        hits.append(c1)
+    return hits
+
+
+def find_harami_cross(df, trend_bars=5):
+    """十字孕线：孕线的第二根为十字星。"""
+    hits = []
+    for i in range(trend_bars + 1, len(df) - 1):
+        c1, c2 = i - 1, i
+        b1 = body(df, c1)
+        cr2 = candle_range(df, c2)
+        if b1 < avg_body(df, c1) * 1.2 or cr2 <= 0:
+            continue
+        if body(df, c2) / cr2 > 0.08:
+            continue
+        if body_top(df, c2) > body_top(df, c1):
+            continue
+        if body_bottom(df, c2) < body_bottom(df, c1):
+            continue
+        if not (
+            (is_bearish(df, c1) and has_downtrend(df, i - trend_bars - 1, i - 1))
+            or (is_bullish(df, c1) and has_uptrend(df, i - trend_bars - 1, i - 1))
+        ):
+            continue
+        hits.append(c1)
+    return hits
+
+
+def find_rising_three_methods(df, trend_bars=5):
+    """上升三法：长阳 + 三根回调小阴 + 突破长阳高点阳线。"""
+    hits = []
+    for i in range(trend_bars + 4, len(df) - 1):
+        c1, c2, c3, c4, c5 = i - 4, i - 3, i - 2, i - 1, i
+        if not is_bullish(df, c1) or not is_bullish(df, c5):
+            continue
+        if body(df, c1) < avg_body(df, c1) * 1.2:
+            continue
+        if not (is_bearish(df, c2) and is_bearish(df, c3) and is_bearish(df, c4)):
+            continue
+        if max(df["high"].iloc[c2:c4 + 1]) > float(df["high"].iloc[c1]):
+            continue
+        if min(df["low"].iloc[c2:c4 + 1]) < body_bottom(df, c1):
+            continue
+        if float(df["close"].iloc[c5]) <= float(df["high"].iloc[c1]):
+            continue
+        if not has_uptrend(df, i - trend_bars - 4, i - 4):
+            continue
+        hits.append(c1)
+    return hits
+
+
+def find_falling_three_methods(df, trend_bars=5):
+    """下降三法：长阴 + 三根反弹小阳 + 跌破长阴低点阴线。"""
+    hits = []
+    for i in range(trend_bars + 4, len(df) - 1):
+        c1, c2, c3, c4, c5 = i - 4, i - 3, i - 2, i - 1, i
+        if not is_bearish(df, c1) or not is_bearish(df, c5):
+            continue
+        if body(df, c1) < avg_body(df, c1) * 1.2:
+            continue
+        if not (is_bullish(df, c2) and is_bullish(df, c3) and is_bullish(df, c4)):
+            continue
+        if min(df["low"].iloc[c2:c4 + 1]) < float(df["low"].iloc[c1]):
+            continue
+        if max(df["high"].iloc[c2:c4 + 1]) > body_top(df, c1):
+            continue
+        if float(df["close"].iloc[c5]) >= float(df["low"].iloc[c1]):
+            continue
+        if not has_downtrend(df, i - trend_bars - 4, i - 4):
+            continue
+        hits.append(c1)
+    return hits
+
+
+def build_runtime_registry():
+    """基于 detect_patterns 的注册表，补充新形态并统一 module_id。"""
+    registry = []
+    for pattern in PATTERN_REGISTRY:
+        item = dict(pattern)
+        item["module"] = PATTERN_MODULE_MAP.get(item["id"], item.get("module", "trend"))
+        registry.append(item)
+
+    existing = {p["id"] for p in registry}
+    extras = [
+        {
+            "id": "hanging_man",
+            "name_zh": "吊颈线",
+            "module": "single_reversal",
+            "difficulty": 1,
+            "segment_before": 15,
+            "segment_after": 10,
+            "fn": find_hanging_man,
+        },
+        {
+            "id": "inverted_hammer",
+            "name_zh": "倒锤子线",
+            "module": "single_reversal",
+            "difficulty": 1,
+            "segment_before": 15,
+            "segment_after": 10,
+            "fn": find_inverted_hammer,
+        },
+        {
+            "id": "dark_cloud_cover",
+            "name_zh": "乌云盖顶",
+            "module": "double_reversal",
+            "difficulty": 2,
+            "segment_before": 12,
+            "segment_after": 10,
+            "fn": find_dark_cloud_cover,
+        },
+        {
+            "id": "piercing_line",
+            "name_zh": "刺透形态",
+            "module": "double_reversal",
+            "difficulty": 2,
+            "segment_before": 12,
+            "segment_after": 10,
+            "fn": find_piercing_line,
+        },
+        {
+            "id": "harami",
+            "name_zh": "孕线",
+            "module": "double_reversal",
+            "difficulty": 2,
+            "segment_before": 12,
+            "segment_after": 10,
+            "fn": find_harami,
+        },
+        {
+            "id": "harami_cross",
+            "name_zh": "十字孕线",
+            "module": "double_reversal",
+            "difficulty": 2,
+            "segment_before": 12,
+            "segment_after": 10,
+            "fn": find_harami_cross,
+        },
+        {
+            "id": "rising_three_methods",
+            "name_zh": "上升三法",
+            "module": "triple_pattern",
+            "difficulty": 2,
+            "segment_before": 15,
+            "segment_after": 10,
+            "fn": find_rising_three_methods,
+        },
+        {
+            "id": "falling_three_methods",
+            "name_zh": "下降三法",
+            "module": "triple_pattern",
+            "difficulty": 2,
+            "segment_before": 15,
+            "segment_after": 10,
+            "fn": find_falling_three_methods,
+        },
+    ]
+    for p in extras:
+        if p["id"] not in existing:
+            registry.append(p)
+    return registry
 
 
 def slice_segment(df, pattern_start_idx, before, after):
@@ -144,7 +494,7 @@ def make_case(case_id, symbol, name, sector, source,
         "source":           source,
         "pattern_id":       pattern_info["id"],
         "pattern_name_zh":  pattern_info["name_zh"],
-        "module":           pattern_info["module"],
+        "module":           PATTERN_MODULE_MAP.get(pattern_info["id"], pattern_info["module"]),
         "difficulty":       pattern_info["difficulty"],
         "pattern_index":    pattern_pos,   # 片段内形态起始位置（前端用于高亮）
         "subsequent_trend": trend,          # 形态后续真实走势
@@ -190,7 +540,7 @@ def main():
     all_cases = []
     case_counter = 1
     # 打乱形态顺序，让输出更自然
-    registry = list(PATTERN_REGISTRY)
+    registry = build_runtime_registry()
     random.shuffle(registry)
 
     for pattern in registry:
