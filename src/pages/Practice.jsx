@@ -153,7 +153,11 @@ export default function Practice() {
 
   // 响应式图表高度
   const chartWrapRef = useRef(null)
-  const [chartHeight, setChartHeight] = useState(260)
+  const feedbackRef = useRef(null)
+  const [chartHeight, setChartHeight] = useState(() => {
+    const w = window.innerWidth
+    return w < 480 ? 210 : w < 768 ? 260 : 300
+  })
   useEffect(() => {
     function update() {
       const w = window.innerWidth
@@ -204,6 +208,11 @@ export default function Practice() {
     setSelectedOption(idx)
     setAnswers((prev) => [...prev, { correct: isCorrect }])
     recordAnswer(q.caseData.id, isCorrect)
+
+    // 等待反馈面板展开动画后，自动居中定位
+    setTimeout(() => {
+      feedbackRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 350)
   }
 
   // ── 下一题 ────────────────────────────────────────────────────────
@@ -218,6 +227,7 @@ export default function Practice() {
     } else {
       setCurrentIndex((i) => i + 1)
       setSelectedOption(null)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
@@ -343,14 +353,16 @@ export default function Practice() {
         ))}
       </div>
 
-      {/* 反馈面板 */}
-      <FeedbackPanel
-        visible={answered}
-        isCorrect={answered && selectedOption === q.correctIndex}
-        patternId={q.caseData.pattern_id}
-        onNext={handleNext}
-        isLast={isLast}
-      />
+      {/* 反馈面板（预留高度，避免移动端滚动锚点跳变） */}
+      <div ref={feedbackRef} style={{ minHeight: 560 }}>
+        <FeedbackPanel
+          visible={answered}
+          isCorrect={answered && selectedOption === q.correctIndex}
+          patternId={q.caseData.pattern_id}
+          onNext={handleNext}
+          isLast={isLast}
+        />
+      </div>
     </div>
   )
 }

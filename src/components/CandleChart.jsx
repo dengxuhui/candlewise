@@ -32,11 +32,14 @@ function fmt(v) {
 
 export default function CandleChart({ candles = [], patternIndex = -1, height = 320 }) {
   const containerRef = useRef(null)
-  const chartRef     = useRef(null)
+  const chartRef = useRef(null)
+  const candleSeriesRef = useRef(null)
+  const ma5SeriesRef = useRef(null)
+  const ma20SeriesRef = useRef(null)
   const [hud, setHud] = useState(null) // { date, open, high, low, close, bullish }
 
   useEffect(() => {
-    if (!containerRef.current || candles.length === 0) return
+    if (!containerRef.current) return
 
     const container = containerRef.current
     const width = container.clientWidth
@@ -88,68 +91,30 @@ export default function CandleChart({ candles = [], patternIndex = -1, height = 
       wickUpColor:      COLORS.bullish,
       wickDownColor:    COLORS.bearish,
     })
-
-    const candleData = candles.map((c) => ({
-      time:  c.date,
-      open:  c.open,
-      high:  c.high,
-      low:   c.low,
-      close: c.close,
-    }))
-    candleSeries.setData(candleData)
+    candleSeriesRef.current = candleSeries
 
     // ── MA5 均线 ───────────────────────────────────────────────────
-    const ma5Points = candles
-      .filter((c) => c.ma5 !== null && c.ma5 !== undefined)
-      .map((c) => ({ time: c.date, value: c.ma5 }))
-
-    if (ma5Points.length > 0) {
-      const ma5Series = chart.addLineSeries({
-        color:          COLORS.ma5,
-        lineWidth:      1,
-        crosshairMarkerVisible: false,
-        lastValueVisible: false,
-        priceLineVisible: false,
-      })
-      ma5Series.setData(ma5Points)
-    }
+    const ma5Series = chart.addLineSeries({
+      color:          COLORS.ma5,
+      lineWidth:      1,
+      crosshairMarkerVisible: false,
+      lastValueVisible: false,
+      priceLineVisible: false,
+    })
+    ma5SeriesRef.current = ma5Series
 
     // ── MA20 均线 ──────────────────────────────────────────────────
-    const ma20Points = candles
-      .filter((c) => c.ma20 !== null && c.ma20 !== undefined)
-      .map((c) => ({ time: c.date, value: c.ma20 }))
-
-    if (ma20Points.length > 0) {
-      const ma20Series = chart.addLineSeries({
-        color:          COLORS.ma20,
-        lineWidth:      1,
-        crosshairMarkerVisible: false,
-        lastValueVisible: false,
-        priceLineVisible: false,
-      })
-      ma20Series.setData(ma20Points)
-    }
-
-    // ── 形态标注（patternIndex 处） ────────────────────────────────
-    if (patternIndex >= 0 && patternIndex < candles.length) {
-      const markerCandle = candles[patternIndex]
-      candleSeries.setMarkers([
-        {
-          time:     markerCandle.date,
-          position: 'aboveBar',
-          color:    COLORS.markerColor,
-          shape:    'arrowDown',
-          text:     '形态',
-          size:     1,
-        },
-      ])
-    }
-
-    // 自适应所有数据到视图
-    chart.timeScale().fitContent()
+    const ma20Series = chart.addLineSeries({
+      color:          COLORS.ma20,
+      lineWidth:      1,
+      crosshairMarkerVisible: false,
+      lastValueVisible: false,
+      priceLineVisible: false,
+    })
+    ma20SeriesRef.current = ma20Series
 
     // ── 十字光标悬停 → OHLC HUD ──────────────────────────────────
-    chart.subscribeCrosshairMove((param) => {
+    const onCrosshairMove = (param) => {
       if (!param || !param.time || param.seriesData.size === 0) {
         setHud(null)
         return
@@ -165,7 +130,9 @@ export default function CandleChart({ candles = [], patternIndex = -1, height = 
         close:   bar.close,
         bullish: bar.close >= bar.open,
       })
-    })
+    }
+
+    chart.subscribeCrosshairMove(onCrosshairMove)
 
     // ── ResizeObserver 宽度自适应 ──────────────────────────────────
     const resizeObserver = new ResizeObserver((entries) => {
@@ -181,11 +148,65 @@ export default function CandleChart({ candles = [], patternIndex = -1, height = 
     // ── 清理 ──────────────────────────────────────────────────────
     return () => {
       resizeObserver.disconnect()
+      chart.unsubscribeCrosshairMove(onCrosshairMove)
       chart.remove()
       chartRef.current = null
-      setHud(null)
+      candleSeriesRef.current = null
+      ma5SeriesRef.current = null
+      ma20SeriesRef.current = null
     }
-  }, [candles, patternIndex, height])
+  }, [])
+
+  useEffect(() => {
+    const chart = chartRef.current
+    const candleSeries = candleSeriesRef.current
+    const ma5Series = ma5SeriesRef.current
+    const ma20Series = ma20SeriesRef.current
+    if (!chart || !candleSeries || !ma5Series || !ma20Series || candles.length === 0) return
+
+    const candleData = candles.map((c) => ({
+      time:  c.date,
+      open:  c.open,
+      high:  c.high,
+      low:   c.low,
+      close: c.close,
+    }))
+    candleSeries.setData(candleData)
+
+    const ma5Points = candles
+      .filter((c) => c.ma5 !== null && c.ma5 !== undefined)
+      .map((c) => ({ time: c.date, value: c.ma5 }))
+    ma5Series.setData(ma5Points)
+
+    const ma20Points = candles
+      .filter((c) => c.ma20 !== null && c.ma20 !== undefined)
+      .map((c) => ({ time: c.date, value: c.ma20 }))
+    ma20Series.setData(ma20Points)
+
+    if (patternIndex >= 0 && patternIndex < candles.length) {
+      const markerCandle = candles[patternIndex]
+      candleSeries.setMarkers([
+        {
+          time:     markerCandle.date,
+          position: 'aboveBar',
+          color:    COLORS.markerColor,
+          shape:    'arrowDown',
+          text:     '形态',
+          size:     1,
+        },
+      ])
+    } else {
+      candleSeries.setMarkers([])
+    }
+
+    chart.timeScale().fitContent()
+    setHud(null)
+  }, [candles, patternIndex])
+
+  useEffect(() => {
+    if (!chartRef.current) return
+    chartRef.current.applyOptions({ height })
+  }, [height])
 
   return (
     <div className="relative w-full rounded-lg overflow-hidden" style={{ backgroundColor: COLORS.background }}>
