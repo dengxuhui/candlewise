@@ -1,65 +1,22 @@
 import { useParams, Link } from 'react-router-dom'
 import { useProgress } from '../hooks/useProgress.js'
+import { MODULE_MAP, CURRICULUM } from '../data/curriculum.js'
 
-const MODULE_META = {
-  single_candle: {
-    title: 'K线基础',
-    subtitle: '单根形态',
-    icon: '🕯',
-    description: '学习锤子线、流星线、十字星等单根K线形态，理解多空博弈逻辑',
-    lessons: [
-      { id: 'lesson_1_1', title: '什么是K线（阴阳线、实体、影线）' },
-      { id: 'lesson_1_2', title: '单根K线的四个价格（开高低收）' },
-      { id: 'lesson_1_3', title: '影线的含义（多空博弈）' },
-    ],
-  },
-  pattern: {
-    title: '组合形态',
-    subtitle: '多根信号',
-    icon: '📊',
-    description: '识别启明星、黄昏之星、吞没形态等强力的反转与持续信号',
-    lessons: [
-      { id: 'lesson_2_1', title: '启明星与黄昏之星' },
-      { id: 'lesson_2_2', title: '吞没形态（阳线吞没 / 阴线吞没）' },
-      { id: 'lesson_2_3', title: '三只白兵与三只乌鸦' },
-    ],
-  },
-  trend: {
-    title: '趋势与关键位',
-    subtitle: '支撑阻力 · 均线',
-    icon: '📈',
-    description: '掌握支撑阻力位识别、角色转换原则，以及 MA5/MA20 金叉死叉',
-    lessons: [
-      { id: 'lesson_3_1', title: '支撑位与阻力位的形成' },
-      { id: 'lesson_3_2', title: '角色转换原则（阻力变支撑）' },
-      { id: 'lesson_3_3', title: '均线：MA5 / MA20 金叉死叉' },
-    ],
-  },
-  synthesis: {
-    title: '综合判断',
-    subtitle: '多指标共振',
-    icon: '🎯',
-    description: '综合运用所学知识，进行多指标共振分析与走势预测',
-    lessons: [],
-  },
-}
-
-// 从 lesson id 中提取路由参数 (lesson_1_1 → moduleId=single_candle, lessonId=1_1)
-const LESSON_MODULE_MAP = {
-  lesson_1_1: { moduleId: 'single_candle', lessonId: '1_1' },
-  lesson_1_2: { moduleId: 'single_candle', lessonId: '1_2' },
-  lesson_1_3: { moduleId: 'single_candle', lessonId: '1_3' },
-  lesson_2_1: { moduleId: 'pattern', lessonId: '2_1' },
-  lesson_2_2: { moduleId: 'pattern', lessonId: '2_2' },
-  lesson_2_3: { moduleId: 'pattern', lessonId: '2_3' },
-  lesson_3_1: { moduleId: 'trend', lessonId: '3_1' },
-  lesson_3_2: { moduleId: 'trend', lessonId: '3_2' },
-  lesson_3_3: { moduleId: 'trend', lessonId: '3_3' },
-}
+// 从 curriculum.js 动态生成 lesson → 路由参数映射
+// lesson id 格式：lesson_<模块序号>_<课时序号>，如 lesson_1_1
+const LESSON_MODULE_MAP = Object.fromEntries(
+  CURRICULUM.flatMap((mod) =>
+    mod.lessons.map((lesson) => {
+      // lesson_1_1 → lessonId = "1_1"
+      const lessonId = lesson.id.replace('lesson_', '')
+      return [lesson.id, { moduleId: mod.id, lessonId }]
+    })
+  )
+)
 
 export default function Module() {
   const { moduleId } = useParams()
-  const meta = MODULE_META[moduleId]
+  const meta = MODULE_MAP[moduleId]
   const { isLessonCompleted, moduleProgress, isUnlocked } = useProgress()
 
   if (!meta) {

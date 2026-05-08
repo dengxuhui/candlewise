@@ -116,6 +116,109 @@ const DEMO_SUPPORT_TO_RESISTANCE = [
   { date: '2024-01-05', open: 97,  high: 100, low: 86,  close: 88,  ma5: 100, ma20: 100 },
 ]
 
+// lesson_4_1
+const DEMO_FALSE_HAMMER = [
+  { date: '2024-01-01', open: 102, high: 105, low: 78, close: 100, ma5: null, ma20: null },
+]
+const DEMO_FALSE_HAMMER_CONTEXT = [
+  { date: '2023-12-26', open: 118, high: 121, low: 112, close: 114, ma5: null, ma20: null },
+  { date: '2023-12-27', open: 113, high: 116, low: 107, close: 109, ma5: null, ma20: null },
+  { date: '2023-12-28', open: 108, high: 110, low: 103, close: 105, ma5: null, ma20: null },
+  { date: '2023-12-29', open: 104, high: 106, low: 99,  close: 101, ma5: null, ma20: null },
+  { date: '2024-01-01', open: 100, high: 103, low: 78,  close: 99,  ma5: null, ma20: null },
+  { date: '2024-01-02', open: 98,  high: 100, low: 90,  close: 92,  ma5: null, ma20: null },
+  { date: '2024-01-03', open: 91,  high: 94,  low: 85,  close: 87,  ma5: null, ma20: null },
+]
+const DEMO_CONFLUENCE_EXAMPLE = [
+  { date: '2024-01-01', open: 118, high: 121, low: 112, close: 114, ma5: 116, ma20: 104 },
+  { date: '2024-01-02', open: 113, high: 116, low: 107, close: 109, ma5: 113, ma20: 104 },
+  { date: '2024-01-03', open: 108, high: 110, low: 103, close: 105, ma5: 110, ma20: 104 },
+  { date: '2024-01-04', open: 104, high: 107, low: 102, close: 106, ma5: 107, ma20: 104 },
+  { date: '2024-01-05', open: 107, high: 114, low: 106, close: 113, ma5: 108, ma20: 105 },
+]
+
+// lesson_4_2
+const DEMO_MA20_BOUNCE = [
+  { date: '2024-01-01', open: 115, high: 120, low: 112, close: 118, ma5: 116, ma20: 110 },
+  { date: '2024-01-02', open: 117, high: 119, low: 110, close: 112, ma5: 115, ma20: 111 },
+  { date: '2024-01-03', open: 111, high: 114, low: 110, close: 113, ma5: 114, ma20: 111 },
+  { date: '2024-01-04', open: 113, high: 119, low: 112, close: 118, ma5: 114, ma20: 112 },
+  { date: '2024-01-05', open: 118, high: 124, low: 117, close: 123, ma5: 117, ma20: 113 },
+]
+const DEMO_MA20_REJECT = [
+  { date: '2024-01-01', open: 88,  high: 93,  low: 84,  close: 86,  ma5: 90,  ma20: 100 },
+  { date: '2024-01-02', open: 87,  high: 95,  low: 86,  close: 93,  ma5: 89,  ma20: 99  },
+  { date: '2024-01-03', open: 94,  high: 100, low: 92,  close: 94,  ma5: 90,  ma20: 99  },
+  { date: '2024-01-04', open: 93,  high: 97,  low: 87,  close: 89,  ma5: 91,  ma20: 98  },
+  { date: '2024-01-05', open: 88,  high: 92,  low: 82,  close: 84,  ma5: 89,  ma20: 97  },
+]
+const DEMO_VOLUME_CONFIRM = [
+  { date: '2024-01-01', open: 100, high: 104, low: 78,  close: 102, ma5: null, ma20: null },
+  { date: '2024-01-02', open: 103, high: 110, low: 102, close: 109, ma5: null, ma20: null },
+]
+const DEMO_BULLISH_CONFLUENCE = [
+  { date: '2024-01-01', open: 124, high: 127, low: 119, close: 121, ma5: 123, ma20: 115 },
+  { date: '2024-01-02', open: 120, high: 122, low: 115, close: 117, ma5: 121, ma20: 115 },
+  { date: '2024-01-03', open: 116, high: 118, low: 114, close: 116, ma5: 119, ma20: 115 },
+  { date: '2024-01-04', open: 115, high: 117, low: 111, close: 115, ma5: 117, ma20: 115 },
+  { date: '2024-01-05', open: 116, high: 125, low: 115, close: 124, ma5: 118, ma20: 116 },
+]
+const DEMO_BEARISH_CONFLUENCE = [
+  { date: '2024-01-01', open: 90,  high: 105, low: 89,  close: 103, ma5: 96,  ma20: 94  },
+  { date: '2024-01-02', open: 104, high: 115, low: 103, close: 113, ma5: 100, ma20: 95  },
+  { date: '2024-01-03', open: 114, high: 118, low: 112, close: 115, ma5: 106, ma20: 96  },
+  { date: '2024-01-04', open: 114, high: 115, low: 100, close: 102, ma5: 110, ma20: 97  },
+  { date: '2024-01-05', open: 101, high: 103, low: 93,  close: 95,  ma5: 106, ma20: 97  },
+]
+
+// lesson_4_3
+const DEMO_TREND_UP = [
+  { date: '2024-01-01', open: 90,  high: 95,  low: 88,  close: 93,  ma5: 91,  ma20: 88  },
+  { date: '2024-01-02', open: 94,  high: 100, low: 93,  close: 99,  ma5: 94,  ma20: 89  },
+  { date: '2024-01-03', open: 100, high: 106, low: 99,  close: 105, ma5: 97,  ma20: 91  },
+  { date: '2024-01-04', open: 105, high: 109, low: 103, close: 107, ma5: 101, ma20: 93  },
+  { date: '2024-01-05', open: 107, high: 114, low: 106, close: 113, ma5: 103, ma20: 95  },
+  { date: '2024-01-08', open: 113, high: 118, low: 111, close: 116, ma5: 107, ma20: 97  },
+]
+const DEMO_TREND_DOWN = [
+  { date: '2024-01-01', open: 116, high: 118, low: 111, close: 113, ma5: 116, ma20: 120 },
+  { date: '2024-01-02', open: 112, high: 114, low: 107, close: 108, ma5: 114, ma20: 119 },
+  { date: '2024-01-03', open: 107, high: 109, low: 102, close: 103, ma5: 111, ma20: 117 },
+  { date: '2024-01-04', open: 102, high: 104, low: 97,  close: 98,  ma5: 108, ma20: 115 },
+  { date: '2024-01-05', open: 97,  high: 100, low: 93,  close: 94,  ma5: 103, ma20: 113 },
+  { date: '2024-01-08', open: 93,  high: 96,  low: 88,  close: 89,  ma5: 101, ma20: 111 },
+]
+const DEMO_KEY_LEVELS = [
+  { date: '2024-01-01', open: 88,  high: 100, low: 86,  close: 98,  ma5: 90,  ma20: 92  },
+  { date: '2024-01-02', open: 99,  high: 100, low: 95,  close: 96,  ma5: 92,  ma20: 92  },
+  { date: '2024-01-03', open: 96,  high: 100, low: 92,  close: 94,  ma5: 94,  ma20: 93  },
+  { date: '2024-01-04', open: 94,  high: 99,  low: 91,  close: 97,  ma5: 95,  ma20: 93  },
+  { date: '2024-01-05', open: 98,  high: 100, low: 95,  close: 96,  ma5: 96,  ma20: 94  },
+]
+const DEMO_PATTERN_AT_LEVEL = [
+  { date: '2024-01-01', open: 115, high: 120, low: 110, close: 117, ma5: 113, ma20: 106 },
+  { date: '2024-01-02', open: 116, high: 118, low: 110, close: 111, ma5: 113, ma20: 106 },
+  { date: '2024-01-03', open: 110, high: 112, low: 105, close: 107, ma5: 112, ma20: 106 },
+  { date: '2024-01-04', open: 106, high: 108, low: 102, close: 106, ma5: 111, ma20: 106 },
+  { date: '2024-01-05', open: 107, high: 116, low: 106, close: 115, ma5: 111, ma20: 107 },
+]
+const DEMO_VOLUME_AT_PATTERN = [
+  { date: '2024-01-01', open: 115, high: 119, low: 110, close: 117, ma5: 112, ma20: 106 },
+  { date: '2024-01-02', open: 116, high: 118, low: 109, close: 110, ma5: 112, ma20: 106 },
+  { date: '2024-01-03', open: 110, high: 112, low: 104, close: 106, ma5: 112, ma20: 106 },
+  { date: '2024-01-04', open: 105, high: 108, low: 101, close: 105, ma5: 111, ma20: 106 },
+  { date: '2024-01-05', open: 106, high: 117, low: 105, close: 116, ma5: 111, ma20: 107 },
+]
+const DEMO_FULL_ANALYSIS = [
+  { date: '2024-01-01', open: 108, high: 115, low: 106, close: 113, ma5: 110, ma20: 104 },
+  { date: '2024-01-02', open: 114, high: 118, low: 110, close: 116, ma5: 112, ma20: 105 },
+  { date: '2024-01-03', open: 115, high: 117, low: 109, close: 111, ma5: 113, ma20: 106 },
+  { date: '2024-01-04', open: 110, high: 112, low: 104, close: 105, ma5: 113, ma20: 106 },
+  { date: '2024-01-05', open: 104, high: 106, low: 103, close: 105, ma5: 112, ma20: 106 },
+  { date: '2024-01-08', open: 106, high: 116, low: 105, close: 115, ma5: 112, ma20: 107 },
+  { date: '2024-01-09', open: 116, high: 121, low: 114, close: 120, ma5: 114, ma20: 108 },
+]
+
 // lesson_3_3 — MA lines convey the cross / support / resistance
 const DEMO_GOLDEN_CROSS = [
   { date: '2024-01-01', open: 95,  high: 97,  low: 92,  close: 94,  ma5: 93,  ma20: 98  },
@@ -181,6 +284,23 @@ const CANDLE_DEMO_MAP = {
   'death-cross':     { candles: DEMO_DEATH_CROSS,     caption: '死叉：MA5（绿）从上方穿越MA20（橙），看跌信号' },
   'ma20-support':    { candles: DEMO_MA20_SUPPORT,    caption: 'MA20 动态支撑：上升趋势中价格触碰MA20后反弹' },
   'ma20-resistance': { candles: DEMO_MA20_RESISTANCE, caption: 'MA20 动态阻力：下降趋势中价格反弹至MA20后再跌' },
+  // lesson_4_1
+  'false-hammer':         { candles: DEMO_FALSE_HAMMER,         caption: '孤立的锤子线——缺乏背景验证，信号可信度低' },
+  'false-hammer-context': { candles: DEMO_FALSE_HAMMER_CONTEXT, caption: '锤子线出现后价格继续下跌——假信号的真实案例' },
+  'confluence-example':   { candles: DEMO_CONFLUENCE_EXAMPLE,   caption: '共振示例：锤子线 + MA20 支撑 + 均线向上，三者同向' },
+  // lesson_4_2
+  'ma20-bounce':          { candles: DEMO_MA20_BOUNCE,          caption: 'MA20 动态支撑：上升趋势中回调至MA20后反弹' },
+  'ma20-reject':          { candles: DEMO_MA20_REJECT,          caption: 'MA20 动态阻力：下降趋势中反弹至MA20后被压回' },
+  'volume-confirm':       { candles: DEMO_VOLUME_CONFIRM,       caption: '量价配合：锤子线 + 次日放量确认，反转信号增强' },
+  'bullish-confluence':   { candles: DEMO_BULLISH_CONFLUENCE,   caption: '看涨三重共振：锤子线 + MA20 支撑位 + 均线向上' },
+  'bearish-confluence':   { candles: DEMO_BEARISH_CONFLUENCE,   caption: '看跌三重共振：黄昏之星形态 + 触及阻力位 + 第3根放量' },
+  // lesson_4_3
+  'trend-up':             { candles: DEMO_TREND_UP,             caption: '上升趋势：MA20 方向向上，价格在 MA20 上方运行' },
+  'trend-down':           { candles: DEMO_TREND_DOWN,           caption: '下降趋势：MA20 方向向下，价格在 MA20 下方运行' },
+  'key-levels':           { candles: DEMO_KEY_LEVELS,           caption: '关键价位：MA线标示阻力位，价格多次触及后回落' },
+  'pattern-at-level':     { candles: DEMO_PATTERN_AT_LEVEL,     caption: '关键位置的形态：锤子线出现在 MA20 支撑附近' },
+  'volume-at-pattern':    { candles: DEMO_VOLUME_AT_PATTERN,    caption: '量的确认：形态出现当天成交量放大，验证反转力度' },
+  'full-analysis':        { candles: DEMO_FULL_ANALYSIS,        caption: '完整四步分析：趋势向上 → MA20支撑 → 锤子线 → 放量反弹' },
 }
 
 // 课时路由 lessonId → 文件名 / 数据 mapping
@@ -200,6 +320,11 @@ const LESSON_DATA = {
     { lessonId: '3_2', id: 'lesson_3_2', title: '角色转换原则（阻力变支撑）' },
     { lessonId: '3_3', id: 'lesson_3_3', title: '均线：MA5 / MA20 金叉死叉' },
   ],
+  synthesis: [
+    { lessonId: '4_1', id: 'lesson_4_1', title: '为什么单一信号不可靠（假信号与共振）' },
+    { lessonId: '4_2', id: 'lesson_4_2', title: '三重确认法：形态 + 均线 + 成交量' },
+    { lessonId: '4_3', id: 'lesson_4_3', title: '实战分析框架：从宏到微四步法' },
+  ],
 }
 
 // 动态 import 所有 Markdown 文件
@@ -213,6 +338,9 @@ const LESSON_FILES = {
   lesson_3_1: () => import('../data/lessons/lesson_3_1.md?raw'),
   lesson_3_2: () => import('../data/lessons/lesson_3_2.md?raw'),
   lesson_3_3: () => import('../data/lessons/lesson_3_3.md?raw'),
+  lesson_4_1: () => import('../data/lessons/lesson_4_1.md?raw'),
+  lesson_4_2: () => import('../data/lessons/lesson_4_2.md?raw'),
+  lesson_4_3: () => import('../data/lessons/lesson_4_3.md?raw'),
 }
 
 // Markdown 自定义渲染组件（深色金融终端风格）

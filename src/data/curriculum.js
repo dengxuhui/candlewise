@@ -56,7 +56,11 @@ export const CURRICULUM = [
     description: '综合运用所学知识，进行多指标共振分析与走势预测',
     icon: '🎯',
     difficulty: 3,
-    lessons: [], // 无课时，纯练习
+    lessons: [
+      { id: 'lesson_4_1', title: '为什么单一信号不可靠（假信号与共振）' },
+      { id: 'lesson_4_2', title: '三重确认法：形态 + 均线 + 成交量' },
+      { id: 'lesson_4_3', title: '实战分析框架：从宏到微四步法' },
+    ],
     practice: { module: null, difficulty: 3, count: 5 }, // 从所有模块抽题
     unlockRequires: ['single_candle', 'pattern', 'trend'], // 需前三全部通过
   },
