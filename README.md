@@ -11,6 +11,7 @@ Candlewise 是一个仿照 [Brilliant.org](https://brilliant.org) 课程体验�
 ## 特性
 
 - **交互式闯关**：基于真实历史行情数据，每题展示真实K线图，选择形态答案后即时反馈
+- **预测挑战模式**：隐藏后续走势，判断涨跌方向，结束后揭示真实结果并记录历史最高分
 - **结构化课程**：9 大模块循序渐进，覆盖基础形态、反转形态、趋势、成交量、振荡指标到综合判断
 - **专业图表**：集成 TradingView [lightweight-charts](https://github.com/tradingview/lightweight-charts)，含 MA5 / MA20 均线叠加
 - **多维副图指标**：成交量柱图、RSI 折线图、MACD 柱状图，随模块解锁逐步开启
@@ -32,6 +33,13 @@ Candlewise 是一个仿照 [Brilliant.org](https://brilliant.org) 课程体验�
 | Module 7：振荡指标 | `oscillator` | RSI 超买超卖、KDJ、振荡背离信号 | ⭐⭐⭐ |
 | Module 8：趋势动能 | `momentum` | MACD 金叉死叉、柱状图动能、MACD 背离 | ⭐⭐⭐ |
 | Module 9：综合判断 | `synthesis` | 假信号与共振、三重确认法（解锁条件：前八模块全部通过） | ⭐⭐⭐ |
+
+## 练习模式
+
+| 模式 | 入口 | 说明 |
+|---|---|---|
+| 识别模式（模式 A） | 各模块"开始练习"按钮 | 给出 K 线，识别形态类型，即时反馈与解析 |
+| 预测挑战（模式 B） | 首页"预测挑战"板块 | 给出 K 线并隐藏后续走势，判断涨跌方向，结束后揭示真实结果 |
 
 ## 本地开发
 

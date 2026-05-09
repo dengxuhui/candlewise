@@ -4,11 +4,11 @@
 
 ## 项目状态
 
-**当前阶段：Phase 1 ~ Phase 14 全部已完成**。项目已可正常运行，包括：
+**当前阶段：Phase 1 ~ Phase 15 全部已完成**。项目已可正常运行，包括：
 - `SPEC.md` — 项目唯一权威规格文档
 - `data-scripts/` — Python 数据管道（已完成，数据集已生成）
 - `public/data/candlewise_cases.json` — 题目数据已就位（含 MA5/MA20/RSI/MACD/KDJ 字段）
-- `src/` — 完整前端代码（9 模块课程、27 课时 Markdown、副图指标渲染全部实现）
+- `src/` — 完整前端代码（9 模块课程、27 课时 Markdown、副图指标渲染、预测挑战模式全部实现）
 
 ## 技术栈（锁定，不可更改）
 
@@ -33,7 +33,7 @@ candlewise/
 ├── public/data/candlewise_cases.json   ← 题目数据已就位
 ├── src/
 │   ├── main.jsx / App.jsx
-│   ├── pages/        Home, Module, Lesson, Practice
+│   ├── pages/        Home, Module, Lesson, Practice, Predict
 │   ├── components/   CandleChart, QuestionCard, OptionButton,
 │   │                 FeedbackPanel, ProgressBar, FreeToggle,
 │   │                 LessonMarkdown, Layout
@@ -114,10 +114,20 @@ cp candlewise_cases.json ../public/data/
 - `gh-pages` 分支：构建产物（由 `npm run deploy` 推送，不手动操作）
 - 纯静态站点，无服务端渲染
 
+## 路由结构
+
+| 路由 | 页面 | 说明 |
+|---|---|---|
+| `/` | Home | 课程地图 + 预测挑战入口 |
+| `/module/:moduleId` | Module | 模块概览 |
+| `/module/:moduleId/lesson/:lessonId` | Lesson | Markdown 课时 |
+| `/module/:moduleId/practice` | Practice | 识别模式答题（模式 A） |
+| `/predict` | Predict | 预测挑战（模式 B） |
+
 ## 注意事项
 
 - 路由使用 **Hash 模式**（`/#/path`），这是 GitHub Pages 静态部署的要求。
-- 进度数据仅存储在 `localStorage`，无后端同步。
+- 进度数据仅存储在 `localStorage`，无后端同步；预测最高分存储在 `predictBestScore` 字段。
 - `candlewise_cases.json` 已存在于 `public/data/`，无需重新生成。
 - 详细规格参见根目录 `SPEC.md`，所有设计决策以该文件为准。
 

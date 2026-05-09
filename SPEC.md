@@ -235,11 +235,23 @@ candlewise/
 6. 5 题全部完成 → 结算页（得分 + 复盘入口）
 
 **练习模式：**
-- 模式 A（识别模式）：给出K线，问"这是什么形态？"
-- 模式 B（预测模式）：给出K线，隐藏后续，问"之后会涨还是跌？"，结束后揭示真实走势
-- v1 只做模式 A，模式 B 作为后续迭代
+- 模式 A（识别模式）：给出K线，问"这是什么形态？"——入口在各模块练习页
+- 模式 B（预测模式）：给出K线，隐藏后续，问"之后会涨还是跌？"，结束后揭示真实走势，记录历史最高分——入口在首页"预测挑战"板块，路由 `/predict`
 
-### 5.3 课时页 Lesson.jsx
+### 5.4 预测挑战页 Predict.jsx
+
+**路由：** `/predict`
+
+**入口：** 首页 Hero 下方的"预测挑战"板块（独立入口，不属于任何模块）
+
+**交互逻辑：**
+1. 从全量数据集随机抽取 5 题，每题包含后续走势数据（`subsequent_trend`）
+2. 展示主K线图（含MA5/MA20），后续走势部分隐藏（截断 `pattern_index + 3` 以后的K线）
+3. 用户选择"看涨"或"看跌"
+4. 答题后揭示后续走势，高亮真实方向
+5. 5 题结算：显示得分 + 历史最高分（持久化在 localStorage 的 `predictBestScore` 字段）
+
+### 5.5 课时页 Lesson.jsx
 - 左侧：章节导航目录
 - 右侧：Markdown 渲染的课程内容 + 内嵌 K 线示意图（静态）
 - 底部："进入练习"按钮，跳转到对应 Practice 页
@@ -485,8 +497,9 @@ Topic：   react, stock-market, technical-analysis, education, candlestick
 | Phase 12 | 图表组件重构（多副图：成交量 / RSI / MACD，跨图联动实现） | ✅ 已完成 | 2026-05-09 | OpenCode CLI (darwin) | gpt-5.3-codex |
 | Phase 13 | 课程内容扩展（3 新模块 + 9 课时 Markdown + patternMeta + lessonDemos） | ✅ 已完成 | 2026-05-09 | OpenCode CLI (darwin) | gpt-5.3-codex |
 | Phase 14 | 答题系统适配（Practice.jsx 副图联动 + 指标题型文案 + 全流程测试） | ✅ 已完成 | 2026-05-09 | OpenCode CLI (darwin) | gpt-5.3-codex |
+| Phase 15 | 预测挑战模式（模式 B）：Predict.jsx + `/predict` 路由 + 首页挑战入口 + 历史最高分持久化 | ✅ 已完成 | 2026-05-09 | Claude Code CLI (darwin) | claude-sonnet-4-6 |
 
 ---
 
 *最后更新：2026-05-09*  
-*当前阶段：Phase 1~14 已完成*
+*当前阶段：Phase 1~15 已完成*

@@ -32,21 +32,22 @@ npm run deploy   # 构建 + 推送到 gh-pages 分支
 ### 路由结构（`src/App.jsx`）
 
 ```
-/                        → Home（课程地图）
+/                        → Home（课程地图 + 预测挑战入口）
 /module/:moduleId        → Module（模块详情）
 /module/:moduleId/lesson/:lessonId → Lesson（Markdown 课时）
-/module/:moduleId/practice         → Practice（答题练习）
+/module/:moduleId/practice         → Practice（识别模式，模式 A）
+/predict                           → Predict（预测挑战，模式 B）
 ```
 
 ### 数据流
 
 1. `useCases.js`：模块级缓存，首次 fetch `candlewise_cases.json`，后续复用，支持按 `module`/`difficulty` 筛选和随机抽题
-2. `progressStore.js`（Zustand）：持久化 `completedLessons`、`moduleProgress`、`practiceHistory`、`freeMode`、`colorTheme`
+2. `progressStore.js`（Zustand）：持久化 `completedLessons`、`moduleProgress`、`practiceHistory`、`freeMode`、`colorTheme`、`predictBestScore`（预测最高分）
 3. 模块解锁逻辑在 `isModuleUnlocked()`：检查 `unlockRequires` 数组中所有前置模块是否 `passed`
 
 ### 课程配置（`src/data/curriculum.js`）
 
-6 个模块顺序解锁：`basics` → `single_reversal` → `double_reversal` → `triple_pattern` → `trend` → `synthesis`（需前五个全通过）。每模块 3 课时 + 5 题练习，通过条件为 ≥ 3/5 正确。
+9 个模块顺序解锁：`basics` → `single_reversal` → `double_reversal` → `triple_pattern` → `trend` → `volume` → `oscillator` → `momentum` → `synthesis`（需前八个全通过）。每模块 3 课时 + 5 题练习，通过条件为 ≥ 3/5 正确。
 
 ### CandleChart 组件
 
@@ -56,7 +57,7 @@ npm run deploy   # 构建 + 推送到 gh-pages 分支
 
 ### 课时内容
 
-18 个 Markdown 文件在 `src/data/lessons/`，由 `LessonMarkdown.jsx` 通过 `react-markdown` + `remark-gfm` 渲染。
+27 个 Markdown 文件在 `src/data/lessons/`（lesson_1_1 ~ lesson_9_3），由 `LessonMarkdown.jsx` 通过 `react-markdown` + `remark-gfm` 渲染。
 
 ## UI 规范
 
