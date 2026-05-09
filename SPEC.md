@@ -44,7 +44,7 @@ Markdown     react-markdown + remark-gfm（课时内容渲染）
 candlewise/
 ├── public/
 │   └── data/
-│       └── candlewise_cases.json   # 200个K线案例数据集（见第6节）
+│       └── candlewise_cases.json   # ~300个K线案例数据集（见第6节）
 ├── src/
 │   ├── main.jsx                    # 入口
 │   ├── App.jsx                     # 路由根组件
@@ -71,13 +71,16 @@ candlewise/
 │       ├── curriculum.js           # 课程大纲配置（模块/课时结构）
 │       ├── lessonDemos.js          # 课时示例K线数据（静态演示用）
 │       ├── patternMeta.js          # 形态元数据（名称、描述、口诀等）
-│       └── lessons/                # 各课时 Markdown 文案（共18节）
-│           ├── lesson_1_1.md ~ lesson_1_3.md
-│           ├── lesson_2_1.md ~ lesson_2_3.md
-│           ├── lesson_3_1.md ~ lesson_3_3.md
-│           ├── lesson_4_1.md ~ lesson_4_3.md
-│           ├── lesson_5_1.md ~ lesson_5_3.md
-│           └── lesson_6_1.md ~ lesson_6_3.md
+│               └── lessons/                # 各课时 Markdown 文案（共27节）
+│           ├── lesson_1_1.md ~ lesson_1_3.md   # Module 1 K线基础
+│           ├── lesson_2_1.md ~ lesson_2_3.md   # Module 2 单根反转
+│           ├── lesson_3_1.md ~ lesson_3_3.md   # Module 3 双根反转
+│           ├── lesson_4_1.md ~ lesson_4_3.md   # Module 4 三根形态
+│           ├── lesson_5_1.md ~ lesson_5_3.md   # Module 5 趋势与关键位
+│           ├── lesson_6_1.md ~ lesson_6_3.md   # Module 9 综合判断
+│           ├── lesson_7_1.md ~ lesson_7_3.md   # Module 6 成交量分析（新增）
+│           ├── lesson_8_1.md ~ lesson_8_3.md   # Module 7 振荡指标（新增）
+│           └── lesson_9_1.md ~ lesson_9_3.md   # Module 8 趋势动能（新增）
 ├── data-scripts/                   # Python数据准备脚本（非前端代码）
 │   ├── fetch_data.py
 │   ├── detect_patterns.py
@@ -94,7 +97,9 @@ candlewise/
 
 ## 4. 课程结构（curriculum.js 的配置依据）
 
-共 6 个模块，每模块包含 3 个课时 + 一组练习题。模块 `id` 采用语义化命名（不使用 `module_1_xxx` 风格）。
+共 9 个模块，每模块包含 3 个课时 + 一组练习题。模块 `id` 采用语义化命名（不使用 `module_1_xxx` 风格）。
+
+解锁链：`basics → single_reversal → double_reversal → triple_pattern → trend → volume → oscillator → momentum → synthesis`
 
 ### Module 1：K线基础 `basics`
 - Lesson 1-1：K线的起源与构成
@@ -131,12 +136,33 @@ candlewise/
 - Practice：判断趋势结构与关键位突破（难度 3）
 - unlockRequires：`["triple_pattern"]`
 
-### Module 6：综合运用 `synthesis`
+### Module 6：成交量分析 `volume` ⭐ 新增
+- Lesson 7-1：成交量的基础语言
+- Lesson 7-2：量价配合与背离
+- Lesson 7-3：突破的量能验证
+- Practice：识别量能突破与量价背离（难度 2，图表含成交量副图）
+- unlockRequires：`["trend"]`
+
+### Module 7：振荡指标 `oscillator` ⭐ 新增
+- Lesson 8-1：RSI 原理与超买超卖
+- Lesson 8-2：KDJ 与随机振荡
+- Lesson 8-3：振荡背离信号
+- Practice：识别 RSI 超买超卖与背离（难度 3，图表含 RSI 副图）
+- unlockRequires：`["volume"]`
+
+### Module 8：趋势动能 `momentum` ⭐ 新增
+- Lesson 9-1：MACD 构成与金叉死叉
+- Lesson 9-2：MACD 柱状图与动能变化
+- Lesson 9-3：MACD 背离实战
+- Practice：识别 MACD 金叉死叉与背离（难度 3，图表含 MACD 副图）
+- unlockRequires：`["oscillator"]`
+
+### Module 9：综合判断 `synthesis`
 - Lesson 6-1：假信号与共振
 - Lesson 6-2：三重确认法
 - Lesson 6-3：实战分析框架
-- Practice：综合题（全模块混合抽题，难度 3）
-- unlockRequires：`["basics", "single_reversal", "double_reversal", "triple_pattern", "trend"]`
+- Practice：综合题（全模块混合抽题，难度 3，图表含成交量 + RSI + MACD 副图）
+- unlockRequires：`["basics", "single_reversal", "double_reversal", "triple_pattern", "trend", "volume", "oscillator", "momentum"]`
 
 ---
 
@@ -144,8 +170,8 @@ candlewise/
 
 ### 5.1 首页 Home.jsx
 - 顶部 Hero：项目名 + 一句话介绍 + "开始学习"按钮
-- 课程模块网格：6 个 ModuleCard，显示模块名、图标、进度百分比、锁定状态
-- 模块解锁逻辑：Module 1 默认解锁，Module 2~5 需前一模块通过，Module 6 需前五模块全部通过
+- 课程模块网格：9 个 ModuleCard，显示模块名、图标、进度百分比、锁定状态
+- 模块解锁逻辑：Module 1 默认解锁，Module 2~8 需前一模块通过，Module 9（synthesis）需前八模块全部通过
 
 ### 5.2 闯关练习页 Practice.jsx（最核心）
 
@@ -157,6 +183,10 @@ candlewise/
 │                                     │
 │         K 线图（lightweight-charts） │
 │         含 MA5 / MA20 均线叠加       │
+│  ─── 副图分隔（按模块按需显示）───    │
+│  成交量柱图（volume 模块起显示）      │
+│  RSI 折线图（oscillator 模块起显示） │
+│  MACD 柱+线图（momentum 模块起显示） │
 │                                     │
 ├─────────────────────────────────────┤
 │  题目文字                            │
@@ -169,6 +199,32 @@ candlewise/
 │  ✓/✗ + 解析文字 + 知识点链接         │
 └─────────────────────────────────────┘
 ```
+
+**副图指标注入规则（按模块）：**
+
+| 模块 | 显示副图 |
+|---|---|
+| `basics` / `single_reversal` / `double_reversal` / `triple_pattern` / `trend` | 无副图 |
+| `volume` | 成交量柱图 |
+| `oscillator` | 成交量 + RSI |
+| `momentum` | 成交量 + MACD |
+| `synthesis` | 成交量 + RSI + MACD |
+
+**副图技术实现：**
+- 使用 lightweight-charts v4.2 的 `pane` API，在同一 chart 实例中添加多价格面板
+- 主图（pane 0）：K线 + MA5 + MA20
+- 成交量（pane 1）：HistogramSeries
+- RSI（pane 2）：LineSeries + 30/70 参考线
+- MACD（pane 3）：Histogram（柱）+ LineSeries × 2（DIFF/DEA）
+- 十字光标自动联动，时间轴共用，无需额外同步
+
+**响应式副图高度：**
+
+| 屏幕宽度 | 主图高度 | 每个副图高度 |
+|---|---|---|
+| < 480px | 180px | 60px |
+| 480~768px | 220px | 70px |
+| > 768px | 260px | 80px |
 
 **交互逻辑：**
 1. 从数据集按模块/难度筛选案例，随机抽取 5 题一组
@@ -201,7 +257,7 @@ candlewise/
 {
   "meta": {
     "version": "1.0.0",
-    "total_cases": 200,
+    "total_cases": 300,
     "pattern_distribution": { "morning_star": 23, "hammer": 16 }
   },
   "cases": [ ...案例数组... ]
@@ -224,15 +280,21 @@ candlewise/
   "subsequent_trend": "up",
   "candles": [
     {
-      "date":   "2021-03-10",
-      "open":   1920.0,
-      "high":   1950.0,
-      "low":    1905.0,
-      "close":  1938.0,
-      "volume": 3820000,
-      "ma5":    1910.4,
-      "ma20":   1885.2,
-      "rsi":    52.3
+      "date":      "2021-03-10",
+      "open":      1920.0,
+      "high":      1950.0,
+      "low":       1905.0,
+      "close":     1938.0,
+      "volume":    3820000,
+      "ma5":       1910.4,
+      "ma20":      1885.2,
+      "rsi":       52.3,
+      "macd_diff": 0.12,
+      "macd_dea":  0.08,
+      "macd_hist": 0.08,
+      "kdj_k":     45.3,
+      "kdj_d":     42.1,
+      "kdj_j":     51.7
     }
   ]
 }
@@ -245,23 +307,31 @@ candlewise/
 | `candles` | 喂给 lightweight-charts 渲染K线 |
 | `pattern_index` | 高亮标注形态所在位置 |
 | `subsequent_trend` | 预测模式揭晓答案 |
-| `module` | 按模块筛选题目 |
+| `module` | 按模块筛选题目 + 决定显示哪些副图 |
 | `difficulty` | 按难度筛选题目 |
-| `ma5` / `ma20` | 叠加均线显示 |
+| `ma5` / `ma20` | 叠加均线显示（主图） |
+| `volume` | 成交量副图渲染（volume 模块起） |
+| `rsi` | RSI 副图渲染（oscillator 模块起） |
+| `macd_diff` / `macd_dea` / `macd_hist` | MACD 副图渲染（momentum 模块起） |
+| `kdj_k` / `kdj_d` / `kdj_j` | KDJ 数据（oscillator 模块，与 RSI 共用副图区） |
 
-**pattern_id 范围（共 21 种）：**
+**pattern_id 范围（共 29 种）：**
 
 - `basics`：`doji`, `large_bullish`, `large_bearish`
 - `single_reversal`：`hammer`, `hanging_man`, `shooting_star`, `inverted_hammer`
 - `double_reversal`：`bullish_engulfing`, `bearish_engulfing`, `dark_cloud_cover`, `piercing_line`, `harami`, `harami_cross`
 - `triple_pattern`：`morning_star`, `evening_star`, `three_white_soldiers`, `three_black_crows`, `rising_three_methods`, `falling_three_methods`
 - `trend`：`support_breakout`, `resistance_breakout`
+- `volume`：`volume_breakout`, `volume_divergence` ⭐ 新增
+- `oscillator`：`rsi_oversold_reversal`, `rsi_overbought_reversal`, `rsi_divergence` ⭐ 新增
+- `momentum`：`macd_golden_cross`, `macd_dead_cross`, `macd_divergence` ⭐ 新增
 
 **数据生成约定：**
 
 - 优先使用联网真实数据流程：`fetch_data.py` → `build_dataset.py`
 - 若网络或数据源不可用，使用 `generate_synthetic_data.py` 离线兜底
-- 生成后的 `candlewise_cases.json` 需包含上述全部 21 种 `pattern_id`
+- 生成后的 `candlewise_cases.json` 需包含上述全部 29 种 `pattern_id`
+- 指标字段（rsi/macd_xxx/kdj_xxx）在数据前期（窗口期不足）时值为 `null`，前端图表组件需过滤 null 值后再渲染
 
 ---
 
@@ -328,6 +398,47 @@ Phase 6  课时内容页
 Phase 7  收尾
   └─ 响应式适配（移动端）
   └─ README + 贡献指南
+
+Phase 8  课程体系重构设计（4模块12课 → 6模块18课，按尼森体系重写）
+
+Phase 9  SPEC 重写与重构施工图落地（模块ID、课时、pattern_id 21种）
+
+Phase 10  代码与数据重构执行（curriculum/patternMeta/lessons/dataset）
+
+Phase 11  数据脚本扩展 ⭐ 新增
+  └─ build_dataset.py：新增 MACD / KDJ 指标计算函数
+  └─ 新增 8 种指标形态识别函数：
+     volume_breakout, volume_divergence
+     rsi_oversold_reversal, rsi_overbought_reversal, rsi_divergence
+     macd_golden_cross, macd_dead_cross, macd_divergence
+  └─ candle 字段扩展：macd_diff/dea/hist, kdj_k/d/j
+  └─ QUOTA 更新：各新模块 15~20 条，总目标 ~300 条
+  └─ 重新生成 candlewise_cases.json 并放入 public/data/
+
+Phase 12  图表组件重构 ⭐ 新增
+  └─ CandleChart.jsx：基于 lightweight-charts v4.2 pane API
+  └─ 新增 indicators prop（string[]，决定显示哪些副图）
+  └─ pane 0：主图（K线 + MA5 + MA20，现有逻辑不变）
+  └─ pane 1：成交量 HistogramSeries（volume 起）
+  └─ pane 2：RSI LineSeries + 30/70 参考水平线（oscillator 起）
+  └─ pane 3：MACD Histogram + DIFF/DEA LineSeries（momentum 起）
+  └─ 响应式副图高度（三档：60/70/80px）
+
+Phase 13  课程内容扩展 ⭐ 新增
+  └─ curriculum.js：新增 volume / oscillator / momentum 3 个模块
+  └─ synthesis 的 unlockRequires 更新为前8个模块
+  └─ patternMeta.js：新增 8 种指标形态的 name_zh / explanation / mnemonic
+  └─ MODULE_PATTERNS 新增三个模块的 pattern_id 分组
+  └─ lessonDemos.js：新增 ~18 个 Demo 图（含 rsi/macd 数据字段）
+  └─ 新增 9 个课时 Markdown 文件：
+     lesson_7_1~3.md（成交量）
+     lesson_8_1~3.md（RSI/KDJ）
+     lesson_9_1~3.md（MACD）
+
+Phase 14  答题系统适配 ⭐ 新增
+  └─ Practice.jsx：根据 case.module 注入 INDICATOR_CONFIG，传给 CandleChart
+  └─ buildQuestion()：新增指标题型文案（RSI 状态 / MACD 信号）
+  └─ 全流程测试（9 模块 × 5 题，副图渲染与题目类型一一对应）
 ```
 
 ---
@@ -369,7 +480,12 @@ Topic：   react, stock-market, technical-analysis, education, candlestick
 | Phase 9 | SPEC 重写与重构施工图落地（模块ID、课时、pattern_id 21种） | ✅ 已完成 | 2026-05-08 | OpenCode CLI (darwin) | gpt-5.3-codex |
 | Phase 10 | 代码与数据重构执行（curriculum/patternMeta/lessons/dataset） | ✅ 已完成 | 2026-05-08 | Cowork (claude-sonnet-4-6) | claude-sonnet-4-6 |
 
+| Phase 11 | 数据脚本扩展（MACD/KDJ 计算 + 8 种指标形态识别 + 重新生成数据集） | ⏳ 待开发 | — | — | — |
+| Phase 12 | 图表组件重构（pane API 多副图：成交量 / RSI / MACD） | ⏳ 待开发 | — | — | — |
+| Phase 13 | 课程内容扩展（3 新模块 + 9 课时 Markdown + patternMeta + lessonDemos） | ⏳ 待开发 | — | — | — |
+| Phase 14 | 答题系统适配（Practice.jsx 副图联动 + 指标题型文案 + 全流程测试） | ⏳ 待开发 | — | — | — |
+
 ---
 
-*最后更新：2026-05-08*  
-*当前阶段：所有 Phase 已完成*
+*最后更新：2026-05-09*  
+*当前阶段：Phase 1~10 已完成，Phase 11~14 待开发*
