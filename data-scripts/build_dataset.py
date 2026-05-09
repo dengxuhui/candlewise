@@ -23,7 +23,7 @@ OUT_FILE = "candlewise_cases.json"
 MAX_PER_PATTERN = 20
 
 # 总目标案例数
-TARGET_TOTAL = 200
+TARGET_TOTAL = 300
 
 # 各形态目标分配（大致比例，超出会被截断）
 QUOTA = {
@@ -48,6 +48,14 @@ QUOTA = {
     "falling_three_methods": 12,
     "support_breakout":    18,
     "resistance_breakout": 18,
+    "volume_breakout": 18,
+    "volume_divergence": 16,
+    "rsi_oversold_reversal": 16,
+    "rsi_overbought_reversal": 16,
+    "rsi_divergence": 18,
+    "macd_golden_cross": 18,
+    "macd_dead_cross": 18,
+    "macd_divergence": 18,
 }
 
 
@@ -74,6 +82,14 @@ PATTERN_MODULE_MAP = {
     "falling_three_methods": "triple_pattern",
     "support_breakout": "trend",
     "resistance_breakout": "trend",
+    "volume_breakout": "volume",
+    "volume_divergence": "volume",
+    "rsi_oversold_reversal": "oscillator",
+    "rsi_overbought_reversal": "oscillator",
+    "rsi_divergence": "oscillator",
+    "macd_golden_cross": "momentum",
+    "macd_dead_cross": "momentum",
+    "macd_divergence": "momentum",
 }
 
 
@@ -96,29 +112,109 @@ def load_csv(path):
 
 
 def compute_ma(closes, period):
-    result = []
-    for i in range(len(closes)):
-        if i < period - 1:
-            result.append(None)
-        else:
-            result.append(round(float(np.mean(closes[i - period + 1:i + 1])), 4))
-    return result
+    s = pd.Series(closes, dtype="float64")
+    rolled = s.rolling(window=period, min_periods=period).mean().round(4)
+    return [None if pd.isna(v) else float(v) for v in rolled]
 
 
 def compute_rsi(closes, period=14):
-    result = [None] * period
-    for i in range(period, len(closes)):
-        window = closes[i - period:i]
-        gains = [max(window[j] - window[j-1], 0) for j in range(1, len(window))]
-        losses = [max(window[j-1] - window[j], 0) for j in range(1, len(window))]
-        avg_gain = np.mean(gains) if gains else 0
-        avg_loss = np.mean(losses) if losses else 0
-        if avg_loss == 0:
-            result.append(100.0)
-        else:
-            rs = avg_gain / avg_loss
-            result.append(round(100 - 100 / (1 + rs), 2))
-    return result
+    s = pd.Series(closes, dtype="float64")
+    delta = s.diff()
+    gain = delta.clip(lower=0)
+    loss = (-delta).clip(lower=0)
+    avg_gain = gain.rolling(window=period, min_periods=period).mean()
+    avg_loss = loss.rolling(window=period, min_periods=period).mean()
+    rs = avg_gain / avg_loss.replace(0, np.nan)
+    rsi = (100 - 100 / (1 + rs)).round(2)
+    return [None if pd.isna(v) else float(v) for v in rsi]
+
+
+def compute_macd(closes, fast=12, slow=26, signal=9):
+    close_s = pd.Series(closes, dtype="float64")
+    ema_fast = close_s.ewm(span=fast, adjust=False).mean()
+    ema_slow = close_s.ewm(span=slow, adjust=False).mean()
+    diff = ema_fast - ema_slow
+    dea = diff.ewm(span=signal, adjust=False).mean()
+    hist = (diff - dea) * 2
+
+    result_diff = []
+    result_dea = []
+    result_hist = []
+    warmup = slow - 1
+    for i in range(len(closes)):
+        if i < warmup:
+            result_diff.append(None)
+            result_dea.append(None)
+            result_hist.append(None)
+            continue
+        result_diff.append(round(float(diff.iloc[i]), 4))
+        result_dea.append(round(float(dea.iloc[i]), 4))
+        result_hist.append(round(float(hist.iloc[i]), 4))
+    return result_diff, result_dea, result_hist
+
+
+def compute_kdj(highs, lows, closes, n=9):
+    high_s = pd.Series(highs, dtype="float64")
+    low_s = pd.Series(lows, dtype="float64")
+    close_s = pd.Series(closes, dtype="float64")
+
+    low_n = low_s.rolling(window=n, min_periods=n).min()
+    high_n = high_s.rolling(window=n, min_periods=n).max()
+    den = (high_n - low_n).replace(0, np.nan)
+    rsv = ((close_s - low_n) / den * 100).clip(lower=0, upper=100)
+
+    k_values = []
+    d_values = []
+    j_values = []
+    k_prev = 50.0
+    d_prev = 50.0
+
+    for i in range(len(closes)):
+        rsv_i = rsv.iloc[i]
+        if pd.isna(rsv_i):
+            k_values.append(None)
+            d_values.append(None)
+            j_values.append(None)
+            continue
+        k_prev = (2.0 / 3.0) * k_prev + (1.0 / 3.0) * float(rsv_i)
+        d_prev = (2.0 / 3.0) * d_prev + (1.0 / 3.0) * k_prev
+        j_val = 3.0 * k_prev - 2.0 * d_prev
+        k_values.append(round(k_prev, 2))
+        d_values.append(round(d_prev, 2))
+        j_values.append(round(j_val, 2))
+
+    return k_values, d_values, j_values
+
+
+def enrich_indicators(df):
+    closes = df["close"].tolist()
+    highs = df["high"].tolist()
+    lows = df["low"].tolist()
+
+    df = df.copy()
+    df["ma5"] = compute_ma(closes, 5)
+    df["ma20"] = compute_ma(closes, 20)
+    df["rsi"] = compute_rsi(closes, 14)
+    diff, dea, hist = compute_macd(closes)
+    df["macd_diff"] = diff
+    df["macd_dea"] = dea
+    df["macd_hist"] = hist
+    k, d, j = compute_kdj(highs, lows, closes)
+    df["kdj_k"] = k
+    df["kdj_d"] = d
+    df["kdj_j"] = j
+    return df
+
+
+def to_float_or_none(value, digits=4):
+    if value is None:
+        return None
+    try:
+        if pd.isna(value):
+            return None
+    except (TypeError, ValueError):
+        pass
+    return round(float(value), digits)
 
 
 def body(df, i):
@@ -155,7 +251,10 @@ def is_bearish(df, i):
 
 def avg_body(df, i, n=5):
     start = max(0, i - n)
-    return np.mean([body(df, j) for j in range(start, i)])
+    values = [body(df, j) for j in range(start, i)]
+    if not values:
+        return body(df, i)
+    return float(np.mean(values))
 
 
 def has_downtrend(df, start, end):
@@ -325,6 +424,31 @@ def find_rising_three_methods(df, trend_bars=5):
     return hits
 
 
+def find_rising_three_methods_relaxed(df, trend_bars=5):
+    """上升三法（宽松版）：中继阶段允许 1 根小阳。"""
+    hits = []
+    for i in range(trend_bars + 4, len(df) - 1):
+        c1, c2, c3, c4, c5 = i - 4, i - 3, i - 2, i - 1, i
+        if not is_bullish(df, c1) or not is_bullish(df, c5):
+            continue
+        if body(df, c1) < avg_body(df, c1) * 1.1:
+            continue
+        mids = [c2, c3, c4]
+        bearish_count = sum(1 for idx in mids if is_bearish(df, idx))
+        if bearish_count < 2:
+            continue
+        if max(df["high"].iloc[c2:c4 + 1]) > float(df["high"].iloc[c1]) * 1.02:
+            continue
+        if min(df["low"].iloc[c2:c4 + 1]) < body_bottom(df, c1) * 0.98:
+            continue
+        if float(df["close"].iloc[c5]) <= float(df["high"].iloc[c1]) * 0.995:
+            continue
+        if not has_uptrend(df, i - trend_bars - 4, i - 4):
+            continue
+        hits.append(c1)
+    return hits
+
+
 def find_falling_three_methods(df, trend_bars=5):
     """下降三法：长阴 + 三根反弹小阳 + 跌破长阴低点阴线。"""
     hits = []
@@ -345,6 +469,183 @@ def find_falling_three_methods(df, trend_bars=5):
         if not has_downtrend(df, i - trend_bars - 4, i - 4):
             continue
         hits.append(c1)
+    return hits
+
+
+def find_falling_three_methods_relaxed(df, trend_bars=5):
+    """下降三法（宽松版）：中继阶段允许 1 根小阴。"""
+    hits = []
+    for i in range(trend_bars + 4, len(df) - 1):
+        c1, c2, c3, c4, c5 = i - 4, i - 3, i - 2, i - 1, i
+        if not is_bearish(df, c1) or not is_bearish(df, c5):
+            continue
+        if body(df, c1) < avg_body(df, c1) * 1.1:
+            continue
+        mids = [c2, c3, c4]
+        bullish_count = sum(1 for idx in mids if is_bullish(df, idx))
+        if bullish_count < 2:
+            continue
+        if min(df["low"].iloc[c2:c4 + 1]) < float(df["low"].iloc[c1]) * 0.98:
+            continue
+        if max(df["high"].iloc[c2:c4 + 1]) > body_top(df, c1) * 1.02:
+            continue
+        if float(df["close"].iloc[c5]) >= float(df["low"].iloc[c1]) * 1.005:
+            continue
+        if not has_downtrend(df, i - trend_bars - 4, i - 4):
+            continue
+        hits.append(c1)
+    return hits
+
+
+def find_rising_three_methods_combo(df):
+    strict_hits = find_rising_three_methods(df)
+    if strict_hits:
+        return strict_hits
+    return find_rising_three_methods_relaxed(df)
+
+
+def find_falling_three_methods_combo(df):
+    strict_hits = find_falling_three_methods(df)
+    if strict_hits:
+        return strict_hits
+    return find_falling_three_methods_relaxed(df)
+
+
+def find_volume_breakout(df, window=20):
+    """放量突破：收盘突破近窗阻力，且成交量显著放大。"""
+    hits = []
+    for i in range(window + 1, len(df) - 1):
+        resistance = float(df["high"].iloc[i - window:i].max())
+        avg_vol = float(df["volume"].iloc[i - window:i].mean())
+        if avg_vol <= 0:
+            continue
+        if float(df["close"].iloc[i]) > resistance * 1.005 and float(df["volume"].iloc[i]) > avg_vol * 1.5:
+            hits.append(i)
+    return hits
+
+
+def find_volume_divergence(df, window=20):
+    """量价背离：价格创新高/新低但量能未同步强化。"""
+    hits = []
+    for i in range(window + 2, len(df) - 1):
+        closes_win = df["close"].iloc[i - window:i]
+        vols_win = df["volume"].iloc[i - window:i]
+        close_i = float(df["close"].iloc[i])
+        vol_i = float(df["volume"].iloc[i])
+
+        if close_i > float(closes_win.max()) * 1.002 and vol_i < float(vols_win.max()) * 0.75:
+            hits.append(i)
+            continue
+        if close_i < float(closes_win.min()) * 0.998 and vol_i < float(vols_win.mean()) * 0.8:
+            hits.append(i)
+    return hits
+
+
+def find_rsi_oversold_reversal(df, trend_bars=6):
+    """RSI 超卖回升：RSI 从 30 下方回到 30 上方，且价格止跌。"""
+    hits = []
+    for i in range(trend_bars + 1, len(df) - 1):
+        rsi_prev = df["rsi"].iloc[i - 1]
+        rsi_now = df["rsi"].iloc[i]
+        if pd.isna(rsi_prev) or pd.isna(rsi_now):
+            continue
+        if not (rsi_prev < 30 <= rsi_now):
+            continue
+        if float(df["close"].iloc[i]) <= float(df["close"].iloc[i - 1]):
+            continue
+        if not has_downtrend(df, i - trend_bars, i):
+            continue
+        hits.append(i)
+    return hits
+
+
+def find_rsi_overbought_reversal(df, trend_bars=6):
+    """RSI 超买回落：RSI 从 70 上方回到 70 下方，且价格转弱。"""
+    hits = []
+    for i in range(trend_bars + 1, len(df) - 1):
+        rsi_prev = df["rsi"].iloc[i - 1]
+        rsi_now = df["rsi"].iloc[i]
+        if pd.isna(rsi_prev) or pd.isna(rsi_now):
+            continue
+        if not (rsi_prev > 70 >= rsi_now):
+            continue
+        if float(df["close"].iloc[i]) >= float(df["close"].iloc[i - 1]):
+            continue
+        if not has_uptrend(df, i - trend_bars, i):
+            continue
+        hits.append(i)
+    return hits
+
+
+def find_rsi_divergence(df, window=25):
+    """RSI 背离：价格创新高/新低而 RSI 未确认。"""
+    hits = []
+    for i in range(window + 2, len(df) - 1):
+        rsi_now = df["rsi"].iloc[i]
+        if pd.isna(rsi_now):
+            continue
+        win = df.iloc[i - window:i]
+        win_rsi = win["rsi"].dropna()
+        if len(win_rsi) < 5:
+            continue
+
+        close_i = float(df["close"].iloc[i])
+        if close_i > float(win["close"].max()) * 1.002 and float(rsi_now) < float(win_rsi.max()) - 3:
+            hits.append(i)
+            continue
+        if close_i < float(win["close"].min()) * 0.998 and float(rsi_now) > float(win_rsi.min()) + 3:
+            hits.append(i)
+    return hits
+
+
+def find_macd_golden_cross(df):
+    """MACD 金叉：DIFF 上穿 DEA。"""
+    hits = []
+    for i in range(1, len(df) - 1):
+        diff_prev = df["macd_diff"].iloc[i - 1]
+        dea_prev = df["macd_dea"].iloc[i - 1]
+        diff_now = df["macd_diff"].iloc[i]
+        dea_now = df["macd_dea"].iloc[i]
+        if pd.isna(diff_prev) or pd.isna(dea_prev) or pd.isna(diff_now) or pd.isna(dea_now):
+            continue
+        if diff_prev <= dea_prev and diff_now > dea_now:
+            hits.append(i)
+    return hits
+
+
+def find_macd_dead_cross(df):
+    """MACD 死叉：DIFF 下穿 DEA。"""
+    hits = []
+    for i in range(1, len(df) - 1):
+        diff_prev = df["macd_diff"].iloc[i - 1]
+        dea_prev = df["macd_dea"].iloc[i - 1]
+        diff_now = df["macd_diff"].iloc[i]
+        dea_now = df["macd_dea"].iloc[i]
+        if pd.isna(diff_prev) or pd.isna(dea_prev) or pd.isna(diff_now) or pd.isna(dea_now):
+            continue
+        if diff_prev >= dea_prev and diff_now < dea_now:
+            hits.append(i)
+    return hits
+
+
+def find_macd_divergence(df, window=30):
+    """MACD 背离：价格创新高/新低但 MACD 柱未确认。"""
+    hits = []
+    for i in range(window + 2, len(df) - 1):
+        hist_now = df["macd_hist"].iloc[i]
+        if pd.isna(hist_now):
+            continue
+        win = df.iloc[i - window:i]
+        win_hist = win["macd_hist"].dropna()
+        if len(win_hist) < 8:
+            continue
+
+        close_i = float(df["close"].iloc[i])
+        if close_i > float(win["close"].max()) * 1.002 and float(hist_now) < float(win_hist.max()) * 0.7:
+            hits.append(i)
+            continue
+        if close_i < float(win["close"].min()) * 0.998 and float(hist_now) > float(win_hist.min()) * 0.7:
+            hits.append(i)
     return hits
 
 
@@ -419,7 +720,7 @@ def build_runtime_registry():
             "difficulty": 2,
             "segment_before": 15,
             "segment_after": 10,
-            "fn": find_rising_three_methods,
+            "fn": find_rising_three_methods_combo,
         },
         {
             "id": "falling_three_methods",
@@ -428,7 +729,79 @@ def build_runtime_registry():
             "difficulty": 2,
             "segment_before": 15,
             "segment_after": 10,
-            "fn": find_falling_three_methods,
+            "fn": find_falling_three_methods_combo,
+        },
+        {
+            "id": "volume_breakout",
+            "name_zh": "放量突破",
+            "module": "volume",
+            "difficulty": 2,
+            "segment_before": 25,
+            "segment_after": 10,
+            "fn": find_volume_breakout,
+        },
+        {
+            "id": "volume_divergence",
+            "name_zh": "量价背离",
+            "module": "volume",
+            "difficulty": 2,
+            "segment_before": 25,
+            "segment_after": 10,
+            "fn": find_volume_divergence,
+        },
+        {
+            "id": "rsi_oversold_reversal",
+            "name_zh": "RSI 超卖反转",
+            "module": "oscillator",
+            "difficulty": 3,
+            "segment_before": 30,
+            "segment_after": 10,
+            "fn": find_rsi_oversold_reversal,
+        },
+        {
+            "id": "rsi_overbought_reversal",
+            "name_zh": "RSI 超买反转",
+            "module": "oscillator",
+            "difficulty": 3,
+            "segment_before": 30,
+            "segment_after": 10,
+            "fn": find_rsi_overbought_reversal,
+        },
+        {
+            "id": "rsi_divergence",
+            "name_zh": "RSI 背离",
+            "module": "oscillator",
+            "difficulty": 3,
+            "segment_before": 30,
+            "segment_after": 10,
+            "fn": find_rsi_divergence,
+        },
+        {
+            "id": "macd_golden_cross",
+            "name_zh": "MACD 金叉",
+            "module": "momentum",
+            "difficulty": 3,
+            "segment_before": 30,
+            "segment_after": 10,
+            "fn": find_macd_golden_cross,
+        },
+        {
+            "id": "macd_dead_cross",
+            "name_zh": "MACD 死叉",
+            "module": "momentum",
+            "difficulty": 3,
+            "segment_before": 30,
+            "segment_after": 10,
+            "fn": find_macd_dead_cross,
+        },
+        {
+            "id": "macd_divergence",
+            "name_zh": "MACD 背离",
+            "module": "momentum",
+            "difficulty": 3,
+            "segment_before": 30,
+            "segment_after": 10,
+            "fn": find_macd_divergence,
         },
     ]
     for p in extras:
@@ -440,33 +813,35 @@ def build_runtime_registry():
 def slice_segment(df, pattern_start_idx, before, after):
     """
     截取以 pattern_start_idx 为形态起点的K线片段
-    返回：[{date, open, high, low, close, volume, ma5, ma20, rsi}, ...]
+    返回：[{date, open, high, low, close, volume, ma5, ma20, rsi, macd_*, kdj_*}, ...]
     """
     total = len(df)
     seg_start = max(0, pattern_start_idx - before)
     seg_end   = min(total, pattern_start_idx + after + 1)
     seg = df.iloc[seg_start:seg_end].copy().reset_index(drop=True)
 
-    closes = seg["close"].tolist()
-    ma5  = compute_ma(closes, 5)
-    ma20 = compute_ma(closes, 20)
-    rsi  = compute_rsi(closes, 14)
-
     # pattern_index_in_segment：形态起点在片段内的位置
     pattern_pos = pattern_start_idx - seg_start
 
     candles = []
-    for i, row in seg.iterrows():
+    for row in seg.itertuples(index=False):
+        date_val = row.date
         candles.append({
-            "date":   row["date"].strftime("%Y-%m-%d") if hasattr(row["date"], "strftime") else str(row["date"])[:10],
-            "open":   round(float(row["open"]),   3),
-            "high":   round(float(row["high"]),   3),
-            "low":    round(float(row["low"]),    3),
-            "close":  round(float(row["close"]),  3),
-            "volume": int(row["volume"]),
-            "ma5":    ma5[i],
-            "ma20":   ma20[i],
-            "rsi":    rsi[i],
+            "date":   date_val.strftime("%Y-%m-%d") if hasattr(date_val, "strftime") else str(date_val)[:10],
+            "open":   round(float(row.open),   3),
+            "high":   round(float(row.high),   3),
+            "low":    round(float(row.low),    3),
+            "close":  round(float(row.close),  3),
+            "volume": int(row.volume),
+            "ma5":    to_float_or_none(getattr(row, "ma5",  None), 4),
+            "ma20":   to_float_or_none(getattr(row, "ma20", None), 4),
+            "rsi":    to_float_or_none(getattr(row, "rsi",  None), 2),
+            "macd_diff": to_float_or_none(getattr(row, "macd_diff", None), 4),
+            "macd_dea":  to_float_or_none(getattr(row, "macd_dea",  None), 4),
+            "macd_hist": to_float_or_none(getattr(row, "macd_hist", None), 4),
+            "kdj_k":  to_float_or_none(getattr(row, "kdj_k", None), 2),
+            "kdj_d":  to_float_or_none(getattr(row, "kdj_d", None), 2),
+            "kdj_j":  to_float_or_none(getattr(row, "kdj_j", None), 2),
         })
 
     return candles, pattern_pos
@@ -488,10 +863,10 @@ def make_case(case_id, symbol, name, sector, source,
 
     return {
         "id":               case_id,
-        "symbol":           symbol,
-        "name":             name,
-        "sector":           sector,
-        "source":           source,
+        "symbol":           str(symbol),
+        "name":             str(name),
+        "sector":           str(sector),
+        "source":           str(source),
         "pattern_id":       pattern_info["id"],
         "pattern_name_zh":  pattern_info["name_zh"],
         "module":           PATTERN_MODULE_MAP.get(pattern_info["id"], pattern_info["module"]),
@@ -501,6 +876,18 @@ def make_case(case_id, symbol, name, sector, source,
         "candles":          candles,
         "total_candles":    len(candles),
     }
+
+
+def derive_symbol_from_filename(fname):
+    base = fname.replace(".csv", "")
+    if base.startswith("a_"):
+        raw = base[2:]
+        if raw.isdigit():
+            return raw.zfill(6)
+        return raw
+    if base.startswith("intl_"):
+        return base[5:].replace("idx", "^").replace("_", ".")
+    return base
 
 
 # ──────────────────────────────────────────
@@ -525,8 +912,15 @@ def main():
         df = load_csv(os.path.join(RAW_DIR, fname))
         if df is None or len(df) < 60:
             continue
+        df = enrich_indicators(df)
+
+        symbol_from_file = derive_symbol_from_filename(fname)
+        symbol_value = df["symbol"].iloc[0] if "symbol" in df.columns else symbol_from_file
+        if symbol_from_file.startswith("0") and str(symbol_value).isdigit():
+            symbol_value = symbol_from_file
+
         meta = {
-            "symbol": df["symbol"].iloc[0] if "symbol" in df.columns else fname,
+            "symbol": symbol_value,
             "name":   df["name"].iloc[0]   if "name"   in df.columns else fname,
             "sector": df["sector"].iloc[0] if "sector" in df.columns else "未知",
             "source": df["source"].iloc[0] if "source" in df.columns else "unknown",
@@ -543,9 +937,10 @@ def main():
     registry = build_runtime_registry()
     random.shuffle(registry)
 
-    for pattern in registry:
+    for i, pattern in enumerate(registry):
         pid = pattern["id"]
         quota = QUOTA.get(pid, MAX_PER_PATTERN)
+        print(f"  [{i+1}/{len(registry)}] 搜索形态: {pid} (目标 {quota} 条) ...", flush=True)
         collected = 0
         hits_pool = []
 
@@ -598,9 +993,21 @@ def main():
 
         print(f"  [ok] {pattern['name_zh']:12s}  采集 {collected:3d} 个案例")
 
-    # 打乱顺序后限制总数
+    # 打乱顺序后限制总数（优先保证每个形态至少保留1条）
     random.shuffle(all_cases)
-    all_cases = all_cases[:TARGET_TOTAL]
+    grouped = {}
+    for case in all_cases:
+        grouped.setdefault(case["pattern_id"], []).append(case)
+
+    protected = []
+    used_case_ids = set()
+    for pid in sorted(grouped.keys()):
+        choice = grouped[pid][0]
+        protected.append(choice)
+        used_case_ids.add(id(choice))
+
+    remaining = [case for case in all_cases if id(case) not in used_case_ids]
+    all_cases = (protected + remaining)[:TARGET_TOTAL]
 
     # 按难度重新排序（便于课程设计）
     all_cases.sort(key=lambda x: (x["difficulty"], x["module"]))
@@ -618,8 +1025,9 @@ def main():
     print(f"\n── 数据集统计 ──")
     print(f"总案例数：{len(all_cases)}")
     print(f"\n按形态：")
+    name_lookup = {p["id"]: p["name_zh"] for p in registry}
     for pid, cnt in sorted(pattern_counts.items(), key=lambda x: -x[1]):
-        name = next((p["name_zh"] for p in PATTERN_REGISTRY if p["id"] == pid), pid)
+        name = name_lookup.get(pid, pid)
         print(f"  {name:12s}  {cnt:3d}")
     print(f"\n按模块：{dict(module_counts)}")
     print(f"按难度：{dict(diff_counts)}")
