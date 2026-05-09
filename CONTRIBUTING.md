@@ -14,10 +14,7 @@ cd candlewise
 # 2. 安装前端依赖
 npm install
 
-# 3. 复制数据集
-cp data-scripts/candlewise_cases.json public/data/
-
-# 4. 启动开发服务器
+# 3. 启动开发服务器
 npm run dev
 ```
 
@@ -100,7 +97,8 @@ cp candlewise_cases.json ../public/data/
 ## 常见贡献方向
 
 - **新增形态**：在 `src/data/patternMeta.js` 和数据管道中添加新的 K 线形态识别和题目
-- **课程文案**：改进 `src/data/lessons/` 中的 Markdown 课时内容
+- **课程文案**：改进 `src/data/lessons/` 中的 Markdown 课时内容（共 27 个文件，lesson_1_1 ~ lesson_9_3）
+- **指标模块**：完善 volume / oscillator / momentum 模块的题目数据和解析文案
 - **UI/UX**：改进视觉设计，参考 `SPEC.md` 中的设计规范
 - **国际化**：添加英文版界面支持
 - **无障碍**：改进键盘导航和屏幕阅读器支持

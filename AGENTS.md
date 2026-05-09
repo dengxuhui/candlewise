@@ -4,11 +4,11 @@
 
 ## 项目状态
 
-**当前阶段：全部开发阶段已完成（Phase 1 ~ Phase 7）**。项目已可正常运行，包括：
+**当前阶段：Phase 1 ~ Phase 14 全部已完成**。项目已可正常运行，包括：
 - `SPEC.md` — 项目唯一权威规格文档
 - `data-scripts/` — Python 数据管道（已完成，数据集已生成）
-- `public/data/candlewise_cases.json` — 题目数据已就位
-- `src/` — 完整前端代码（页面、组件、Hooks、状态管理全部实现）
+- `public/data/candlewise_cases.json` — 题目数据已就位（含 MA5/MA20/RSI/MACD/KDJ 字段）
+- `src/` — 完整前端代码（9 模块课程、27 课时 Markdown、副图指标渲染全部实现）
 
 ## 技术栈（锁定，不可更改）
 
@@ -17,7 +17,7 @@
 | 前端框架 | React 18 + Vite |
 | 样式 | Tailwind CSS v3 |
 | 路由 | React Router v6（Hash 模式） |
-| 图表 | `lightweight-charts`（TradingView OSS） |
+| 图表 | `lightweight-charts` v4（TradingView OSS） |
 | 状态管理 | Zustand + localStorage |
 | Markdown | `react-markdown` + `remark-gfm` |
 | 数据 | `/public/data/candlewise_cases.json`（静态文件） |
@@ -40,7 +40,7 @@ candlewise/
 │   ├── hooks/        useProgress.js, useCases.js
 │   ├── store/        progressStore.js
 │   └── data/         curriculum.js, lessonDemos.js, patternMeta.js,
-│                     lessons/（12 个 .md 课时文案）
+│                     lessons/（27 个 .md 课时文案，lesson_1_1 ~ lesson_9_3）
 ├── data-scripts/
 ├── SPEC.md
 ├── vite.config.js
@@ -48,25 +48,13 @@ candlewise/
 └── package.json
 ```
 
-## 开发命令（Phase 1 后有效）
+## 开发命令
 
 ```bash
-npm run dev       # 本地开发服务器
+npm run dev       # 本地开发服务器（http://localhost:5173/candlewise/）
 npm run build     # 构建到 dist/
 npm run deploy    # gh-pages -d dist（部署到 GitHub Pages）
 ```
-
-## 开发阶段顺序
-
-严格按 SPEC.md 中的顺序执行：
-
-1. Vite + React + Tailwind + React Router + GitHub Pages 配置
-2. 数据层（`useCases.js`、`progressStore.js` + Zustand）
-3. `CandleChart.jsx`（lightweight-charts，含 MA5/MA20）
-4. `Practice.jsx` 完整答题流程
-5. `Home.jsx` 课程地图
-6. `Lesson.jsx` Markdown 渲染
-7. 响应式设计 + README
 
 ## UI 设计规范
 
@@ -79,17 +67,32 @@ npm run deploy    # gh-pages -d dist（部署到 GitHub Pages）
 ## Practice 页面布局（核心页面）
 
 ```
-进度条 → K线图（含MA5/MA20） → 题目文本 → A/B/C选项 → 反馈面板
+进度条 → K线图（含MA5/MA20）+ 按模块按需显示副图 → 题目文本 → A/B/C选项 → 反馈面板
 ```
 
-## 课程模块结构
+副图注入规则：
+
+| 模块 | 副图 |
+|---|---|
+| basics / single_reversal / double_reversal / triple_pattern / trend | 无 |
+| volume | 成交量柱图 |
+| oscillator | 成交量 + RSI |
+| momentum | 成交量 + MACD |
+| synthesis | 成交量 + RSI + MACD |
+
+## 课程模块结构（9 个模块）
 
 | 模块 | ID | 难度 | 知识点 |
 |---|---|---|---|
-| Module 1 | `single_candle` | 1 | 锤子线、射击之星、十字星、大阳/阴线 |
-| Module 2 | `pattern` | 2 | 晨星、暮星、吞没形态、三白兵/三黑鸦 |
-| Module 3 | `trend` | 3 | 支撑阻力位、MA5/MA20 金叉死叉 |
-| Module 4 | 综合 | 3 | 解锁条件：前三模块全部完成 |
+| Module 1 | `basics` | 1 | 十字星、大阳线、大阴线 |
+| Module 2 | `single_reversal` | 1 | 锤子线、吊颈线、流星线、倒锤子线、十字星家族 |
+| Module 3 | `double_reversal` | 2 | 吞没形态、乌云盖顶、刺透形态、孕线 |
+| Module 4 | `triple_pattern` | 2 | 启明星、黄昏之星、三白兵、三乌鸦、三法形态 |
+| Module 5 | `trend` | 3 | 支撑阻力位、角色转换、MA5/MA20 金叉死叉 |
+| Module 6 | `volume` | 2 | 量价配合、量价背离、突破量能验证 |
+| Module 7 | `oscillator` | 3 | RSI 超买超卖、KDJ、振荡背离 |
+| Module 8 | `momentum` | 3 | MACD 金叉死叉、柱状图动能、MACD 背离 |
+| Module 9 | `synthesis` | 3 | 假信号共振、三重确认法（需前八模块全通过） |
 
 ## 数据管道（已完成）
 
@@ -99,7 +102,7 @@ npm run deploy    # gh-pages -d dist（部署到 GitHub Pages）
 cd data-scripts
 pip install akshare yfinance pandas numpy
 python fetch_data.py          # 拉取原始行情数据到 raw_data/
-python build_dataset.py       # 生成 candlewise_cases.json
+python build_dataset.py       # 生成 candlewise_cases.json（含全部指标字段）
 cp candlewise_cases.json ../public/data/
 ```
 

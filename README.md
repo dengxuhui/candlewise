@@ -11,8 +11,9 @@ Candlewise 是一个仿照 [Brilliant.org](https://brilliant.org) 课程体验�
 ## 特性
 
 - **交互式闯关**：基于真实历史行情数据，每题展示真实K线图，选择形态答案后即时反馈
-- **结构化课程**：4 大模块（单根形态 → 组合形态 → 趋势关键位 → 综合判断），循序渐进
+- **结构化课程**：9 大模块循序渐进，覆盖基础形态、反转形态、趋势、成交量、振荡指标到综合判断
 - **专业图表**：集成 TradingView [lightweight-charts](https://github.com/tradingview/lightweight-charts)，含 MA5 / MA20 均线叠加
+- **多维副图指标**：成交量柱图、RSI 折线图、MACD 柱状图，随模块解锁逐步开启
 - **进度持久化**：学习进度存储在本地 localStorage，无需注册登录
 - **模块解锁机制**：完成前置模块练习后才能解锁下一模块
 - **响应式设计**：适配手机、平板、桌面端
@@ -20,12 +21,17 @@ Candlewise 是一个仿照 [Brilliant.org](https://brilliant.org) 课程体验�
 
 ## 课程结构
 
-| 模块 | 知识点 | 难度 |
-|---|---|---|
-| Module 1：K线基础 | 锤子线、流星线、十字星、大阳/阴线 | ⭐ |
-| Module 2：组合形态 | 启明星、黄昏之星、吞没形态、三白兵/三黑鸦 | ⭐⭐ |
-| Module 3：趋势与关键位 | 支撑阻力位、角色转换、MA5/MA20 金叉死叉 | ⭐⭐⭐ |
-| Module 4：综合判断 | 多指标共振，解锁条件：前三模块全部通过 | ⭐⭐⭐ |
+| 模块 | ID | 知识点 | 难度 |
+|---|---|---|---|
+| Module 1：K线基础 | `basics` | 十字星、大阳线、大阴线 | ⭐ |
+| Module 2：单根反转 | `single_reversal` | 锤子线、吊颈线、流星线、倒锤子线、十字星家族 | ⭐ |
+| Module 3：双根反转 | `double_reversal` | 吞没形态、乌云盖顶、刺透形态、孕线 | ⭐⭐ |
+| Module 4：三根形态 | `triple_pattern` | 启明星、黄昏之星、三白兵、三乌鸦、三法形态 | ⭐⭐ |
+| Module 5：趋势与关键位 | `trend` | 支撑阻力位、角色转换、MA5/MA20 金叉死叉 | ⭐⭐⭐ |
+| Module 6：成交量分析 | `volume` | 量价配合、量价背离、突破的量能验证 | ⭐⭐ |
+| Module 7：振荡指标 | `oscillator` | RSI 超买超卖、KDJ、振荡背离信号 | ⭐⭐⭐ |
+| Module 8：趋势动能 | `momentum` | MACD 金叉死叉、柱状图动能、MACD 背离 | ⭐⭐⭐ |
+| Module 9：综合判断 | `synthesis` | 假信号与共振、三重确认法（解锁条件：前八模块全部通过） | ⭐⭐⭐ |
 
 ## 本地开发
 
@@ -39,14 +45,11 @@ cd candlewise
 # 安装依赖
 npm install
 
-# 复制数据集（首次需要）
-cp data-scripts/candlewise_cases.json public/data/
-
 # 启动开发服务器
 npm run dev
 ```
 
-浏览器访问 `http://localhost:5173`
+浏览器访问 `http://localhost:5173/candlewise/`
 
 ## 构建与部署
 
@@ -54,7 +57,7 @@ npm run dev
 # 构建到 dist/
 npm run build
 
-# 部署到 GitHub Pages（需要先在 package.json 配置 homepage）
+# 部署到 GitHub Pages
 npm run deploy
 ```
 
@@ -69,12 +72,13 @@ npm run deploy
 | 路由 | React Router v6（Hash 模式） |
 | 图表 | lightweight-charts v4（TradingView OSS） |
 | 状态管理 | Zustand + localStorage |
+| Markdown | react-markdown + remark-gfm |
 | 数据 | 静态 JSON（`/public/data/candlewise_cases.json`） |
 | 部署 | GitHub Pages via `gh-pages` |
 
 ## 数据集
 
-题目数据来源于 `data-scripts/` 目录中的 Python 数据管道，使用 [akshare](https://github.com/akfamily/akshare) 拉取真实 A 股历史行情数据，自动检测 K 线形态并生成标注数据集。
+题目数据来源于 `data-scripts/` 目录中的 Python 数据管道，使用 [akshare](https://github.com/akfamily/akshare) 拉取真实 A 股历史行情数据，自动检测 K 线形态并生成标注数据集（含 MA5/MA20/RSI/MACD/KDJ 等指标字段）。
 
 如需重新生成：
 
