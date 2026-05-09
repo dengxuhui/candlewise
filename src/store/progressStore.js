@@ -28,6 +28,8 @@ export const useProgressStore = create(
       completedLessons: [],
       moduleProgress: buildInitialModuleProgress(),
       practiceHistory: [],
+      predictHistory: [],
+      predictBestScore: 0,
       freeMode: false,
       colorTheme: 'chinese',   // 'chinese'=红涨绿跌  'western'=绿涨红跌
 
@@ -113,6 +115,18 @@ export const useProgressStore = create(
         )
       },
 
+      /**
+       * 记录一轮预测挑战结果，更新历史最高分
+       * @param {Array<{caseId, correct, timestamp}>} results
+       */
+      recordPredictSession(results) {
+        const score = results.filter((r) => r.correct).length
+        set((s) => ({
+          predictHistory: [...s.predictHistory, ...results],
+          predictBestScore: Math.max(s.predictBestScore, score),
+        }))
+      },
+
       /** 重置所有进度（开发/调试用） */
       resetProgress() {
         set({
@@ -129,6 +143,8 @@ export const useProgressStore = create(
         completedLessons: s.completedLessons,
         moduleProgress: s.moduleProgress,
         practiceHistory: s.practiceHistory,
+        predictHistory: s.predictHistory,
+        predictBestScore: s.predictBestScore,
         freeMode: s.freeMode,
         colorTheme: s.colorTheme,
       }),

@@ -108,6 +108,7 @@ function ModuleCard({ module, index, isUnlocked, progressPercent, freeMode }) {
 export default function Home() {
   const { isUnlocked, getProgressPercent, moduleProgress } = useProgress()
   const freeMode = useProgressStore((s) => s.freeMode)
+  const predictBestScore = useProgressStore((s) => s.predictBestScore)
 
   // 统计整体进度
   const totalModules = CURRICULUM.length
@@ -171,6 +172,63 @@ export default function Home() {
             />
           ))}
         </div>
+      </div>
+
+      {/* 挑战板块 */}
+      <div className="mt-10">
+        <h2 className="text-sm font-mono text-slate-500 uppercase tracking-widest mb-6">
+          挑战板块
+        </h2>
+        <Link to="/predict" className="block">
+          <div
+            className="rounded-xl border p-6 flex flex-col gap-4 transition-all duration-200 border-[#2a2d3a] hover:border-[#00c896] cursor-pointer"
+            style={{ backgroundColor: '#1a1d27' }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#1e2130')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#1a1d27')}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">🎯</span>
+                <div>
+                  <p className="text-xs text-slate-500 font-mono">Challenge</p>
+                  <h3 className="font-semibold text-white text-lg leading-tight">预测挑战</h3>
+                  <p className="text-xs text-slate-400 mt-0.5">综合判断 · 预测K线后续走势</p>
+                </div>
+              </div>
+              {predictBestScore > 0 && (
+                <span
+                  className="text-xs font-mono px-2 py-0.5 rounded-full border flex-shrink-0"
+                  style={{
+                    color: '#00c896',
+                    borderColor: 'rgba(0,200,150,0.4)',
+                    backgroundColor: 'rgba(0,200,150,0.08)',
+                  }}
+                >
+                  最高 {predictBestScore}/10
+                </span>
+              )}
+            </div>
+
+            <p className="text-sm text-slate-400 leading-relaxed">
+              给出K线形态，隐藏后续走势，检验你对涨跌方向的判断力。300 题 · 全模块覆盖 · 难度可选。
+            </p>
+
+            <div className="flex items-center justify-between pt-1">
+              <div className="flex gap-1">
+                {[1, 2, 3].map((i) => (
+                  <span
+                    key={i}
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: '#00c896' }}
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-slate-500 font-mono">
+                {predictBestScore > 0 ? `历史最高 ${predictBestScore}/10` : '暂无记录，开始挑战'}
+              </span>
+            </div>
+          </div>
+        </Link>
       </div>
 
     </div>
