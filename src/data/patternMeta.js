@@ -1,6 +1,6 @@
 /**
  * patternMeta.js — K线形态元数据
- * 覆盖 SPEC.md 约定的 21 种 pattern_id
+ * 覆盖 SPEC.md 约定的 29 种 pattern_id
  */
 
 export const PATTERN_META = {
@@ -181,6 +181,76 @@ export const PATTERN_META = {
       '价格有效突破阻力位后，原阻力常转为后续回踩支撑。' +
       '结合放量与回踩企稳，可提升判断可靠度。',
   },
+
+  // volume
+  volume_breakout: {
+    name_zh: '放量突破',
+    module: 'volume',
+    mnemonic: '价过关键位，量要同步放大',
+    explanation:
+      '价格向上突破关键阻力位时，若成交量同步显著放大，通常说明资金参与度提升。' +
+      '放量突破的持续性一般高于缩量突破。',
+  },
+  volume_divergence: {
+    name_zh: '量价背离',
+    module: 'volume',
+    mnemonic: '价创新高低，量不跟要警惕',
+    explanation:
+      '当价格继续创新高但成交量未同步放大，或价格创新低但量能未继续放大，常提示趋势动能衰减。' +
+      '背离本身不是反转确认，需结合后续价格行为验证。',
+  },
+
+  // oscillator
+  rsi_oversold_reversal: {
+    name_zh: 'RSI 超卖反转',
+    module: 'oscillator',
+    mnemonic: 'RSI 低于30，反弹概率升',
+    explanation:
+      'RSI 进入 30 以下超卖区，代表短期抛压可能接近极值。' +
+      '若随后 RSI 回升并配合价格止跌，常见阶段性反弹机会。',
+  },
+  rsi_overbought_reversal: {
+    name_zh: 'RSI 超买回落',
+    module: 'oscillator',
+    mnemonic: 'RSI 高于70，回撤风险增',
+    explanation:
+      'RSI 进入 70 以上超买区，代表短期追涨动能可能透支。' +
+      '若随后 RSI 拐头下行并配合价格走弱，常提示阶段性回调风险。',
+  },
+  rsi_divergence: {
+    name_zh: 'RSI 背离',
+    module: 'oscillator',
+    mnemonic: '价走一边，RSI走另一边',
+    explanation:
+      '价格创新高但 RSI 未创新高，或价格创新低但 RSI 未创新低，称为 RSI 背离。' +
+      '该信号反映动能衰减，常用于预警趋势拐点。',
+  },
+
+  // momentum
+  macd_golden_cross: {
+    name_zh: 'MACD 金叉',
+    module: 'momentum',
+    mnemonic: 'DIFF 上穿 DEA，多头动能增强',
+    explanation:
+      'MACD 中 DIFF 线由下向上穿越 DEA 线，通常视为动能由弱转强。' +
+      '若金叉发生在零轴上方或伴随放量，信号质量通常更高。',
+  },
+  macd_dead_cross: {
+    name_zh: 'MACD 死叉',
+    module: 'momentum',
+    mnemonic: 'DIFF 下穿 DEA，空头动能增强',
+    explanation:
+      'MACD 中 DIFF 线由上向下跌破 DEA 线，通常视为动能由强转弱。' +
+      '若死叉发生在零轴下方或伴随放量下跌，信号压制更明显。',
+  },
+  macd_divergence: {
+    name_zh: 'MACD 背离',
+    module: 'momentum',
+    mnemonic: '价新高低，MACD不同步',
+    explanation:
+      '价格创新高而 MACD 未创新高，或价格创新低而 MACD 未创新低，说明趋势动能可能背离。' +
+      '背离用于提前预警，不等于立即反转，需等待价格确认。',
+  },
 }
 
 /**
@@ -206,6 +276,9 @@ export const MODULE_PATTERNS = {
     'falling_three_methods',
   ],
   trend: ['support_breakout', 'resistance_breakout'],
+  volume: ['volume_breakout', 'volume_divergence'],
+  oscillator: ['rsi_oversold_reversal', 'rsi_overbought_reversal', 'rsi_divergence'],
+  momentum: ['macd_golden_cross', 'macd_dead_cross', 'macd_divergence'],
 }
 
 /**
@@ -223,11 +296,20 @@ export function getPatternName(patternId) {
  * @returns {string[]} 干扰项的中文名数组
  */
 export function getDistractors(correctPatternId, moduleId, count = 2) {
-  const pool = (MODULE_PATTERNS[moduleId] ?? []).filter((p) => p !== correctPatternId)
-  const shuffled = [...pool]
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  const modulePool = (MODULE_PATTERNS[moduleId] ?? []).filter((p) => p !== correctPatternId)
+  const fallbackPool = Object.keys(PATTERN_META).filter(
+    (p) => p !== correctPatternId && !modulePool.includes(p)
+  )
+
+  const shuffle = (arr) => {
+    const next = [...arr]
+    for (let i = next.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[next[i], next[j]] = [next[j], next[i]]
+    }
+    return next
   }
-  return shuffled.slice(0, count).map((p) => getPatternName(p))
+
+  const merged = [...shuffle(modulePool), ...shuffle(fallbackPool)]
+  return merged.slice(0, count).map((p) => getPatternName(p))
 }

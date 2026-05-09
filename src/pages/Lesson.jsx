@@ -31,6 +31,21 @@ const LESSON_DATA = {
     { lessonId: '5_2', id: 'lesson_5_2', title: '角色转换与成交量确认' },
     { lessonId: '5_3', id: 'lesson_5_3', title: '均线系统 MA5 / MA20' },
   ],
+  volume: [
+    { lessonId: '7_1', id: 'lesson_7_1', title: '成交量的基础语言' },
+    { lessonId: '7_2', id: 'lesson_7_2', title: '量价配合与背离' },
+    { lessonId: '7_3', id: 'lesson_7_3', title: '突破的量能验证' },
+  ],
+  oscillator: [
+    { lessonId: '8_1', id: 'lesson_8_1', title: 'RSI 原理与超买超卖' },
+    { lessonId: '8_2', id: 'lesson_8_2', title: 'KDJ 与随机振荡' },
+    { lessonId: '8_3', id: 'lesson_8_3', title: '振荡背离信号' },
+  ],
+  momentum: [
+    { lessonId: '9_1', id: 'lesson_9_1', title: 'MACD 构成与金叉死叉' },
+    { lessonId: '9_2', id: 'lesson_9_2', title: 'MACD 柱状图与动能变化' },
+    { lessonId: '9_3', id: 'lesson_9_3', title: 'MACD 背离实战' },
+  ],
   synthesis: [
     { lessonId: '6_1', id: 'lesson_6_1', title: '假信号与共振' },
     { lessonId: '6_2', id: 'lesson_6_2', title: '三重确认法' },
@@ -38,7 +53,7 @@ const LESSON_DATA = {
   ],
 }
 
-// 动态 import 所有 Markdown 文件（18节）
+// 动态 import 所有 Markdown 文件（27节）
 const LESSON_FILES = {
   lesson_1_1: () => import('../data/lessons/lesson_1_1.md?raw'),
   lesson_1_2: () => import('../data/lessons/lesson_1_2.md?raw'),
@@ -55,6 +70,15 @@ const LESSON_FILES = {
   lesson_5_1: () => import('../data/lessons/lesson_5_1.md?raw'),
   lesson_5_2: () => import('../data/lessons/lesson_5_2.md?raw'),
   lesson_5_3: () => import('../data/lessons/lesson_5_3.md?raw'),
+  lesson_7_1: () => import('../data/lessons/lesson_7_1.md?raw'),
+  lesson_7_2: () => import('../data/lessons/lesson_7_2.md?raw'),
+  lesson_7_3: () => import('../data/lessons/lesson_7_3.md?raw'),
+  lesson_8_1: () => import('../data/lessons/lesson_8_1.md?raw'),
+  lesson_8_2: () => import('../data/lessons/lesson_8_2.md?raw'),
+  lesson_8_3: () => import('../data/lessons/lesson_8_3.md?raw'),
+  lesson_9_1: () => import('../data/lessons/lesson_9_1.md?raw'),
+  lesson_9_2: () => import('../data/lessons/lesson_9_2.md?raw'),
+  lesson_9_3: () => import('../data/lessons/lesson_9_3.md?raw'),
   lesson_6_1: () => import('../data/lessons/lesson_6_1.md?raw'),
   lesson_6_2: () => import('../data/lessons/lesson_6_2.md?raw'),
   lesson_6_3: () => import('../data/lessons/lesson_6_3.md?raw'),

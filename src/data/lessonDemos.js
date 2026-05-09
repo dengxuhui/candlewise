@@ -409,6 +409,159 @@ const DEMO_ANALYSIS_FRAMEWORK = [
   { date: '2024-01-10', open: 113, high: 119, low: 112, close: 118, ma5: 107, ma20: 104 },
 ]
 
+// ── lesson_7_x 成交量分析 ─────────────────────────────────────────────────
+const DEMO_INDICATORS = {
+  volumeOnly: ['volume'],
+  volumeRsi: ['volume', 'rsi'],
+  volumeMacd: ['volume', 'macd'],
+}
+
+const DEMO_VOLUME_LANGUAGE_RISING = [
+  { date: '2024-02-01', open: 100, high: 103, low: 99, close: 102, ma5: 100, ma20: 96, volume: 1200000, rsi: 52, macd_diff: 0.12, macd_dea: 0.08, macd_hist: 0.08, kdj_k: 56, kdj_d: 52, kdj_j: 64 },
+  { date: '2024-02-02', open: 102, high: 106, low: 101, close: 105, ma5: 101, ma20: 97, volume: 1480000, rsi: 56, macd_diff: 0.19, macd_dea: 0.12, macd_hist: 0.14, kdj_k: 61, kdj_d: 55, kdj_j: 73 },
+  { date: '2024-02-05', open: 105, high: 109, low: 104, close: 108, ma5: 103, ma20: 98, volume: 1710000, rsi: 60, macd_diff: 0.28, macd_dea: 0.17, macd_hist: 0.22, kdj_k: 66, kdj_d: 59, kdj_j: 80 },
+  { date: '2024-02-06', open: 108, high: 113, low: 107, close: 112, ma5: 106, ma20: 99, volume: 1980000, rsi: 64, macd_diff: 0.37, macd_dea: 0.23, macd_hist: 0.28, kdj_k: 71, kdj_d: 63, kdj_j: 87 },
+  { date: '2024-02-07', open: 112, high: 116, low: 111, close: 115, ma5: 109, ma20: 100, volume: 2260000, rsi: 68, macd_diff: 0.46, macd_dea: 0.3, macd_hist: 0.32, kdj_k: 75, kdj_d: 67, kdj_j: 91 },
+]
+
+const DEMO_VOLUME_LANGUAGE_FADING = [
+  { date: '2024-02-01', open: 104, high: 108, low: 103, close: 107, ma5: 103, ma20: 99, volume: 2320000, rsi: 64, macd_diff: 0.42, macd_dea: 0.31, macd_hist: 0.22, kdj_k: 74, kdj_d: 69, kdj_j: 84 },
+  { date: '2024-02-02', open: 107, high: 111, low: 106, close: 110, ma5: 105, ma20: 100, volume: 2050000, rsi: 66, macd_diff: 0.46, macd_dea: 0.35, macd_hist: 0.22, kdj_k: 76, kdj_d: 71, kdj_j: 86 },
+  { date: '2024-02-05', open: 110, high: 114, low: 109, close: 113, ma5: 108, ma20: 101, volume: 1780000, rsi: 67, macd_diff: 0.49, macd_dea: 0.39, macd_hist: 0.2, kdj_k: 77, kdj_d: 73, kdj_j: 85 },
+  { date: '2024-02-06', open: 113, high: 116, low: 111, close: 114, ma5: 110, ma20: 102, volume: 1520000, rsi: 66, macd_diff: 0.48, macd_dea: 0.42, macd_hist: 0.12, kdj_k: 74, kdj_d: 73, kdj_j: 76 },
+  { date: '2024-02-07', open: 114, high: 115, low: 109, close: 110, ma5: 111, ma20: 103, volume: 1680000, rsi: 59, macd_diff: 0.39, macd_dea: 0.41, macd_hist: -0.04, kdj_k: 63, kdj_d: 70, kdj_j: 49 },
+]
+
+const DEMO_VOLUME_SPIKE_REVERSAL = [
+  { date: '2024-02-08', open: 116, high: 118, low: 111, close: 112, ma5: 113, ma20: 104, volume: 1720000, rsi: 55, macd_diff: 0.31, macd_dea: 0.38, macd_hist: -0.14, kdj_k: 58, kdj_d: 66, kdj_j: 42 },
+  { date: '2024-02-09', open: 112, high: 114, low: 108, close: 109, ma5: 112, ma20: 104, volume: 1850000, rsi: 51, macd_diff: 0.22, macd_dea: 0.35, macd_hist: -0.26, kdj_k: 51, kdj_d: 62, kdj_j: 29 },
+  { date: '2024-02-12', open: 109, high: 110, low: 101, close: 103, ma5: 110, ma20: 103, volume: 3180000, rsi: 42, macd_diff: 0.03, macd_dea: 0.28, macd_hist: -0.5, kdj_k: 39, kdj_d: 54, kdj_j: 9 },
+  { date: '2024-02-13', open: 103, high: 106, low: 100, close: 105, ma5: 108, ma20: 103, volume: 2420000, rsi: 45, macd_diff: -0.04, macd_dea: 0.22, macd_hist: -0.52, kdj_k: 42, kdj_d: 50, kdj_j: 25 },
+  { date: '2024-02-14', open: 106, high: 109, low: 104, close: 108, ma5: 107, ma20: 103, volume: 1960000, rsi: 50, macd_diff: 0.04, macd_dea: 0.18, macd_hist: -0.28, kdj_k: 49, kdj_d: 49, kdj_j: 49 },
+]
+
+const DEMO_VOLUME_PRICE_SYNC = [
+  { date: '2024-02-15', open: 98, high: 100, low: 96, close: 99, ma5: 98, ma20: 95, volume: 980000, rsi: 51, macd_diff: 0.08, macd_dea: 0.05, macd_hist: 0.06, kdj_k: 54, kdj_d: 52, kdj_j: 58 },
+  { date: '2024-02-16', open: 99, high: 103, low: 98, close: 102, ma5: 99, ma20: 96, volume: 1230000, rsi: 56, macd_diff: 0.15, macd_dea: 0.08, macd_hist: 0.14, kdj_k: 60, kdj_d: 55, kdj_j: 70 },
+  { date: '2024-02-19', open: 102, high: 106, low: 101, close: 105, ma5: 101, ma20: 97, volume: 1490000, rsi: 60, macd_diff: 0.24, macd_dea: 0.13, macd_hist: 0.22, kdj_k: 66, kdj_d: 59, kdj_j: 80 },
+  { date: '2024-02-20', open: 105, high: 109, low: 104, close: 108, ma5: 103, ma20: 98, volume: 1780000, rsi: 64, macd_diff: 0.33, macd_dea: 0.19, macd_hist: 0.28, kdj_k: 71, kdj_d: 63, kdj_j: 87 },
+  { date: '2024-02-21', open: 108, high: 113, low: 107, close: 112, ma5: 106, ma20: 99, volume: 2050000, rsi: 68, macd_diff: 0.42, macd_dea: 0.26, macd_hist: 0.32, kdj_k: 76, kdj_d: 67, kdj_j: 94 },
+]
+
+const DEMO_VOLUME_PRICE_DIVERGENCE = [
+  { date: '2024-02-15', open: 98, high: 101, low: 97, close: 100, ma5: 99, ma20: 96, volume: 2060000, rsi: 58, macd_diff: 0.21, macd_dea: 0.16, macd_hist: 0.1, kdj_k: 62, kdj_d: 58, kdj_j: 70 },
+  { date: '2024-02-16', open: 100, high: 104, low: 99, close: 103, ma5: 100, ma20: 97, volume: 1890000, rsi: 61, macd_diff: 0.26, macd_dea: 0.19, macd_hist: 0.14, kdj_k: 66, kdj_d: 60, kdj_j: 78 },
+  { date: '2024-02-19', open: 103, high: 108, low: 102, close: 107, ma5: 102, ma20: 98, volume: 1640000, rsi: 64, macd_diff: 0.31, macd_dea: 0.22, macd_hist: 0.18, kdj_k: 69, kdj_d: 63, kdj_j: 81 },
+  { date: '2024-02-20', open: 107, high: 111, low: 106, close: 110, ma5: 104, ma20: 99, volume: 1390000, rsi: 65, macd_diff: 0.34, macd_dea: 0.25, macd_hist: 0.18, kdj_k: 70, kdj_d: 65, kdj_j: 80 },
+  { date: '2024-02-21', open: 110, high: 113, low: 108, close: 112, ma5: 106, ma20: 100, volume: 1180000, rsi: 63, macd_diff: 0.31, macd_dea: 0.27, macd_hist: 0.08, kdj_k: 66, kdj_d: 65, kdj_j: 68 },
+]
+
+const DEMO_BREAKOUT_VOLUME_VALIDATION = [
+  { date: '2024-02-22', open: 96, high: 100, low: 95, close: 99, ma5: 98, ma20: 96, volume: 1020000, rsi: 51, macd_diff: 0.05, macd_dea: 0.03, macd_hist: 0.04, kdj_k: 53, kdj_d: 51, kdj_j: 57 },
+  { date: '2024-02-23', open: 99, high: 100, low: 97, close: 98, ma5: 98, ma20: 96, volume: 960000, rsi: 49, macd_diff: 0.03, macd_dea: 0.03, macd_hist: 0, kdj_k: 50, kdj_d: 50, kdj_j: 50 },
+  { date: '2024-02-26', open: 98, high: 101, low: 97, close: 100, ma5: 99, ma20: 96, volume: 1080000, rsi: 52, macd_diff: 0.06, macd_dea: 0.04, macd_hist: 0.04, kdj_k: 54, kdj_d: 51, kdj_j: 60 },
+  { date: '2024-02-27', open: 100, high: 112, low: 99, close: 111, ma5: 102, ma20: 97, volume: 2840000, rsi: 66, macd_diff: 0.28, macd_dea: 0.11, macd_hist: 0.34, kdj_k: 74, kdj_d: 58, kdj_j: 106 },
+  { date: '2024-02-28', open: 111, high: 115, low: 109, close: 114, ma5: 105, ma20: 98, volume: 2130000, rsi: 70, macd_diff: 0.41, macd_dea: 0.18, macd_hist: 0.46, kdj_k: 80, kdj_d: 64, kdj_j: 112 },
+]
+
+// ── lesson_8_x 振荡指标 ───────────────────────────────────────────────────
+const DEMO_RSI_OVERBOUGHT_ZONE = [
+  { date: '2024-03-01', open: 102, high: 107, low: 101, close: 106, ma5: 103, ma20: 98, volume: 1320000, rsi: 66, macd_diff: 0.32, macd_dea: 0.19, macd_hist: 0.26, kdj_k: 78, kdj_d: 68, kdj_j: 98 },
+  { date: '2024-03-04', open: 106, high: 111, low: 105, close: 110, ma5: 105, ma20: 99, volume: 1460000, rsi: 71, macd_diff: 0.41, macd_dea: 0.24, macd_hist: 0.34, kdj_k: 83, kdj_d: 73, kdj_j: 103 },
+  { date: '2024-03-05', open: 110, high: 114, low: 109, close: 113, ma5: 108, ma20: 100, volume: 1590000, rsi: 74, macd_diff: 0.49, macd_dea: 0.3, macd_hist: 0.38, kdj_k: 86, kdj_d: 77, kdj_j: 104 },
+  { date: '2024-03-06', open: 113, high: 115, low: 108, close: 109, ma5: 109, ma20: 101, volume: 1640000, rsi: 67, macd_diff: 0.44, macd_dea: 0.33, macd_hist: 0.22, kdj_k: 72, kdj_d: 75, kdj_j: 66 },
+  { date: '2024-03-07', open: 109, high: 111, low: 104, close: 105, ma5: 109, ma20: 101, volume: 1580000, rsi: 59, macd_diff: 0.31, macd_dea: 0.33, macd_hist: -0.04, kdj_k: 58, kdj_d: 70, kdj_j: 34 },
+]
+
+const DEMO_RSI_OVERSOLD_ZONE = [
+  { date: '2024-03-01', open: 118, high: 119, low: 112, close: 113, ma5: 117, ma20: 122, volume: 1720000, rsi: 38, macd_diff: -0.42, macd_dea: -0.31, macd_hist: -0.22, kdj_k: 29, kdj_d: 36, kdj_j: 15 },
+  { date: '2024-03-04', open: 113, high: 114, low: 107, close: 108, ma5: 115, ma20: 121, volume: 1850000, rsi: 33, macd_diff: -0.52, macd_dea: -0.37, macd_hist: -0.3, kdj_k: 23, kdj_d: 31, kdj_j: 7 },
+  { date: '2024-03-05', open: 108, high: 109, low: 101, close: 102, ma5: 112, ma20: 120, volume: 2060000, rsi: 28, macd_diff: -0.65, macd_dea: -0.45, macd_hist: -0.4, kdj_k: 18, kdj_d: 26, kdj_j: 2 },
+  { date: '2024-03-06', open: 102, high: 106, low: 100, close: 105, ma5: 109, ma20: 119, volume: 1910000, rsi: 33, macd_diff: -0.58, macd_dea: -0.48, macd_hist: -0.2, kdj_k: 28, kdj_d: 27, kdj_j: 30 },
+  { date: '2024-03-07', open: 105, high: 109, low: 104, close: 108, ma5: 107, ma20: 118, volume: 1760000, rsi: 38, macd_diff: -0.49, macd_dea: -0.48, macd_hist: -0.02, kdj_k: 36, kdj_d: 30, kdj_j: 48 },
+]
+
+const DEMO_RSI_CENTERLINE = [
+  { date: '2024-03-08', open: 96, high: 99, low: 95, close: 98, ma5: 97, ma20: 96, volume: 1010000, rsi: 46, macd_diff: 0.01, macd_dea: 0.02, macd_hist: -0.02, kdj_k: 48, kdj_d: 49, kdj_j: 46 },
+  { date: '2024-03-11', open: 98, high: 102, low: 97, close: 101, ma5: 98, ma20: 96, volume: 1120000, rsi: 49, macd_diff: 0.04, macd_dea: 0.02, macd_hist: 0.04, kdj_k: 52, kdj_d: 50, kdj_j: 56 },
+  { date: '2024-03-12', open: 101, high: 104, low: 100, close: 103, ma5: 100, ma20: 97, volume: 1250000, rsi: 52, macd_diff: 0.09, macd_dea: 0.04, macd_hist: 0.1, kdj_k: 58, kdj_d: 53, kdj_j: 68 },
+  { date: '2024-03-13', open: 103, high: 107, low: 102, close: 106, ma5: 102, ma20: 97, volume: 1380000, rsi: 57, macd_diff: 0.15, macd_dea: 0.07, macd_hist: 0.16, kdj_k: 64, kdj_d: 57, kdj_j: 78 },
+  { date: '2024-03-14', open: 106, high: 110, low: 105, close: 109, ma5: 104, ma20: 98, volume: 1490000, rsi: 61, macd_diff: 0.22, macd_dea: 0.1, macd_hist: 0.24, kdj_k: 69, kdj_d: 61, kdj_j: 85 },
+]
+
+const DEMO_KDJ_GOLDEN_CROSS = [
+  { date: '2024-03-15', open: 94, high: 96, low: 90, close: 91, ma5: 95, ma20: 100, volume: 1620000, rsi: 35, macd_diff: -0.34, macd_dea: -0.24, macd_hist: -0.2, kdj_k: 18, kdj_d: 26, kdj_j: 2 },
+  { date: '2024-03-18', open: 91, high: 93, low: 88, close: 89, ma5: 93, ma20: 99, volume: 1730000, rsi: 32, macd_diff: -0.39, macd_dea: -0.28, macd_hist: -0.22, kdj_k: 16, kdj_d: 22, kdj_j: 4 },
+  { date: '2024-03-19', open: 89, high: 94, low: 88, close: 93, ma5: 92, ma20: 99, volume: 1690000, rsi: 38, macd_diff: -0.33, macd_dea: -0.29, macd_hist: -0.08, kdj_k: 28, kdj_d: 24, kdj_j: 36 },
+  { date: '2024-03-20', open: 93, high: 98, low: 92, close: 97, ma5: 93, ma20: 98, volume: 1810000, rsi: 44, macd_diff: -0.22, macd_dea: -0.28, macd_hist: 0.12, kdj_k: 44, kdj_d: 30, kdj_j: 72 },
+  { date: '2024-03-21', open: 97, high: 101, low: 96, close: 100, ma5: 94, ma20: 98, volume: 1880000, rsi: 49, macd_diff: -0.12, macd_dea: -0.25, macd_hist: 0.26, kdj_k: 58, kdj_d: 39, kdj_j: 96 },
+]
+
+const DEMO_KDJ_DEATH_CROSS = [
+  { date: '2024-03-15', open: 106, high: 110, low: 105, close: 109, ma5: 104, ma20: 98, volume: 1540000, rsi: 66, macd_diff: 0.38, macd_dea: 0.25, macd_hist: 0.26, kdj_k: 84, kdj_d: 74, kdj_j: 104 },
+  { date: '2024-03-18', open: 109, high: 113, low: 108, close: 112, ma5: 106, ma20: 99, volume: 1610000, rsi: 69, macd_diff: 0.44, macd_dea: 0.29, macd_hist: 0.3, kdj_k: 87, kdj_d: 79, kdj_j: 103 },
+  { date: '2024-03-19', open: 112, high: 114, low: 109, close: 110, ma5: 108, ma20: 100, volume: 1580000, rsi: 64, macd_diff: 0.41, macd_dea: 0.31, macd_hist: 0.2, kdj_k: 74, kdj_d: 77, kdj_j: 68 },
+  { date: '2024-03-20', open: 110, high: 111, low: 104, close: 105, ma5: 109, ma20: 101, volume: 1720000, rsi: 56, macd_diff: 0.29, macd_dea: 0.31, macd_hist: -0.04, kdj_k: 58, kdj_d: 71, kdj_j: 32 },
+  { date: '2024-03-21', open: 105, high: 106, low: 99, close: 101, ma5: 108, ma20: 101, volume: 1840000, rsi: 49, macd_diff: 0.16, macd_dea: 0.28, macd_hist: -0.24, kdj_k: 42, kdj_d: 61, kdj_j: 4 },
+]
+
+const DEMO_RSI_DIVERGENCE_DEMO = [
+  { date: '2024-03-22', open: 98, high: 100, low: 93, close: 94, ma5: 97, ma20: 101, volume: 1950000, rsi: 29, macd_diff: -0.41, macd_dea: -0.28, macd_hist: -0.26, kdj_k: 20, kdj_d: 29, kdj_j: 2 },
+  { date: '2024-03-25', open: 94, high: 97, low: 92, close: 96, ma5: 96, ma20: 100, volume: 1710000, rsi: 34, macd_diff: -0.35, macd_dea: -0.29, macd_hist: -0.12, kdj_k: 29, kdj_d: 29, kdj_j: 29 },
+  { date: '2024-03-26', open: 96, high: 98, low: 91, close: 92, ma5: 95, ma20: 100, volume: 2030000, rsi: 33, macd_diff: -0.33, macd_dea: -0.3, macd_hist: -0.06, kdj_k: 27, kdj_d: 28, kdj_j: 25 },
+  { date: '2024-03-27', open: 92, high: 96, low: 90, close: 95, ma5: 94, ma20: 99, volume: 1760000, rsi: 39, macd_diff: -0.25, macd_dea: -0.29, macd_hist: 0.08, kdj_k: 38, kdj_d: 31, kdj_j: 52 },
+  { date: '2024-03-28', open: 95, high: 99, low: 94, close: 98, ma5: 95, ma20: 99, volume: 1690000, rsi: 45, macd_diff: -0.16, macd_dea: -0.26, macd_hist: 0.2, kdj_k: 49, kdj_d: 37, kdj_j: 73 },
+]
+
+// ── lesson_9_x MACD 动能 ─────────────────────────────────────────────────
+const DEMO_MACD_GOLDEN_CROSS = [
+  { date: '2024-04-01', open: 94, high: 96, low: 90, close: 91, ma5: 95, ma20: 101, volume: 1820000, rsi: 36, macd_diff: -0.42, macd_dea: -0.31, macd_hist: -0.22, kdj_k: 24, kdj_d: 30, kdj_j: 12 },
+  { date: '2024-04-02', open: 91, high: 93, low: 88, close: 89, ma5: 93, ma20: 100, volume: 1910000, rsi: 33, macd_diff: -0.46, macd_dea: -0.35, macd_hist: -0.22, kdj_k: 20, kdj_d: 27, kdj_j: 6 },
+  { date: '2024-04-03', open: 89, high: 94, low: 88, close: 93, ma5: 92, ma20: 100, volume: 1760000, rsi: 39, macd_diff: -0.37, macd_dea: -0.35, macd_hist: -0.04, kdj_k: 31, kdj_d: 28, kdj_j: 37 },
+  { date: '2024-04-04', open: 93, high: 98, low: 92, close: 97, ma5: 92, ma20: 99, volume: 1840000, rsi: 45, macd_diff: -0.25, macd_dea: -0.33, macd_hist: 0.16, kdj_k: 45, kdj_d: 33, kdj_j: 69 },
+  { date: '2024-04-05', open: 97, high: 102, low: 96, close: 101, ma5: 94, ma20: 99, volume: 1930000, rsi: 51, macd_diff: -0.11, macd_dea: -0.29, macd_hist: 0.36, kdj_k: 58, kdj_d: 41, kdj_j: 92 },
+]
+
+const DEMO_MACD_DEATH_CROSS = [
+  { date: '2024-04-01', open: 108, high: 112, low: 107, close: 111, ma5: 106, ma20: 100, volume: 1620000, rsi: 67, macd_diff: 0.41, macd_dea: 0.29, macd_hist: 0.24, kdj_k: 82, kdj_d: 74, kdj_j: 98 },
+  { date: '2024-04-02', open: 111, high: 115, low: 110, close: 114, ma5: 108, ma20: 101, volume: 1690000, rsi: 70, macd_diff: 0.45, macd_dea: 0.33, macd_hist: 0.24, kdj_k: 85, kdj_d: 78, kdj_j: 99 },
+  { date: '2024-04-03', open: 114, high: 116, low: 109, close: 110, ma5: 109, ma20: 102, volume: 1710000, rsi: 63, macd_diff: 0.37, macd_dea: 0.34, macd_hist: 0.06, kdj_k: 72, kdj_d: 76, kdj_j: 64 },
+  { date: '2024-04-04', open: 110, high: 111, low: 104, close: 105, ma5: 110, ma20: 102, volume: 1860000, rsi: 55, macd_diff: 0.24, macd_dea: 0.32, macd_hist: -0.16, kdj_k: 57, kdj_d: 70, kdj_j: 31 },
+  { date: '2024-04-05', open: 105, high: 106, low: 99, close: 101, ma5: 108, ma20: 102, volume: 1980000, rsi: 48, macd_diff: 0.11, macd_dea: 0.28, macd_hist: -0.34, kdj_k: 43, kdj_d: 61, kdj_j: 7 },
+]
+
+const DEMO_MACD_HIST_EXPANSION = [
+  { date: '2024-04-08', open: 99, high: 102, low: 98, close: 101, ma5: 99, ma20: 96, volume: 1180000, rsi: 53, macd_diff: 0.12, macd_dea: 0.09, macd_hist: 0.06, kdj_k: 55, kdj_d: 52, kdj_j: 61 },
+  { date: '2024-04-09', open: 101, high: 105, low: 100, close: 104, ma5: 100, ma20: 97, volume: 1290000, rsi: 57, macd_diff: 0.2, macd_dea: 0.12, macd_hist: 0.16, kdj_k: 61, kdj_d: 55, kdj_j: 73 },
+  { date: '2024-04-10', open: 104, high: 108, low: 103, close: 107, ma5: 102, ma20: 98, volume: 1410000, rsi: 61, macd_diff: 0.29, macd_dea: 0.16, macd_hist: 0.26, kdj_k: 67, kdj_d: 59, kdj_j: 83 },
+  { date: '2024-04-11', open: 107, high: 112, low: 106, close: 111, ma5: 105, ma20: 99, volume: 1560000, rsi: 65, macd_diff: 0.39, macd_dea: 0.21, macd_hist: 0.36, kdj_k: 73, kdj_d: 63, kdj_j: 93 },
+  { date: '2024-04-12', open: 111, high: 116, low: 110, close: 115, ma5: 108, ma20: 100, volume: 1680000, rsi: 69, macd_diff: 0.49, macd_dea: 0.27, macd_hist: 0.44, kdj_k: 78, kdj_d: 68, kdj_j: 98 },
+]
+
+const DEMO_MACD_HIST_CONTRACTION = [
+  { date: '2024-04-08', open: 115, high: 117, low: 111, close: 112, ma5: 114, ma20: 108, volume: 1740000, rsi: 62, macd_diff: 0.41, macd_dea: 0.22, macd_hist: 0.38, kdj_k: 74, kdj_d: 66, kdj_j: 90 },
+  { date: '2024-04-09', open: 112, high: 113, low: 108, close: 109, ma5: 113, ma20: 108, volume: 1680000, rsi: 58, macd_diff: 0.37, macd_dea: 0.25, macd_hist: 0.24, kdj_k: 67, kdj_d: 66, kdj_j: 69 },
+  { date: '2024-04-10', open: 109, high: 110, low: 105, close: 106, ma5: 111, ma20: 107, volume: 1620000, rsi: 54, macd_diff: 0.31, macd_dea: 0.26, macd_hist: 0.1, kdj_k: 59, kdj_d: 64, kdj_j: 49 },
+  { date: '2024-04-11', open: 106, high: 108, low: 102, close: 103, ma5: 108, ma20: 107, volume: 1690000, rsi: 49, macd_diff: 0.22, macd_dea: 0.25, macd_hist: -0.06, kdj_k: 48, kdj_d: 59, kdj_j: 26 },
+  { date: '2024-04-12', open: 103, high: 105, low: 99, close: 100, ma5: 106, ma20: 106, volume: 1820000, rsi: 44, macd_diff: 0.11, macd_dea: 0.22, macd_hist: -0.22, kdj_k: 36, kdj_d: 51, kdj_j: 6 },
+]
+
+const DEMO_MACD_BULLISH_DIVERGENCE = [
+  { date: '2024-04-15', open: 97, high: 99, low: 92, close: 93, ma5: 96, ma20: 101, volume: 1860000, rsi: 30, macd_diff: -0.48, macd_dea: -0.31, macd_hist: -0.34, kdj_k: 21, kdj_d: 30, kdj_j: 3 },
+  { date: '2024-04-16', open: 93, high: 95, low: 90, close: 91, ma5: 95, ma20: 100, volume: 1790000, rsi: 29, macd_diff: -0.44, macd_dea: -0.33, macd_hist: -0.22, kdj_k: 19, kdj_d: 27, kdj_j: 3 },
+  { date: '2024-04-17', open: 91, high: 93, low: 89, close: 90, ma5: 93, ma20: 100, volume: 1710000, rsi: 32, macd_diff: -0.38, macd_dea: -0.34, macd_hist: -0.08, kdj_k: 23, kdj_d: 26, kdj_j: 17 },
+  { date: '2024-04-18', open: 90, high: 95, low: 89, close: 94, ma5: 92, ma20: 99, volume: 1680000, rsi: 38, macd_diff: -0.28, macd_dea: -0.33, macd_hist: 0.1, kdj_k: 36, kdj_d: 29, kdj_j: 50 },
+  { date: '2024-04-19', open: 94, high: 99, low: 93, close: 98, ma5: 93, ma20: 99, volume: 1730000, rsi: 45, macd_diff: -0.16, macd_dea: -0.3, macd_hist: 0.28, kdj_k: 49, kdj_d: 35, kdj_j: 77 },
+]
+
+const DEMO_MACD_BEARISH_DIVERGENCE = [
+  { date: '2024-04-15', open: 104, high: 109, low: 103, close: 108, ma5: 103, ma20: 98, volume: 1490000, rsi: 66, macd_diff: 0.46, macd_dea: 0.27, macd_hist: 0.38, kdj_k: 81, kdj_d: 72, kdj_j: 99 },
+  { date: '2024-04-16', open: 108, high: 113, low: 107, close: 112, ma5: 105, ma20: 99, volume: 1560000, rsi: 69, macd_diff: 0.5, macd_dea: 0.31, macd_hist: 0.38, kdj_k: 84, kdj_d: 76, kdj_j: 100 },
+  { date: '2024-04-17', open: 112, high: 116, low: 111, close: 115, ma5: 108, ma20: 100, volume: 1470000, rsi: 67, macd_diff: 0.47, macd_dea: 0.34, macd_hist: 0.26, kdj_k: 80, kdj_d: 77, kdj_j: 86 },
+  { date: '2024-04-18', open: 115, high: 117, low: 112, close: 113, ma5: 110, ma20: 101, volume: 1520000, rsi: 62, macd_diff: 0.39, macd_dea: 0.35, macd_hist: 0.08, kdj_k: 70, kdj_d: 75, kdj_j: 60 },
+  { date: '2024-04-19', open: 113, high: 114, low: 107, close: 108, ma5: 111, ma20: 102, volume: 1680000, rsi: 55, macd_diff: 0.26, macd_dea: 0.33, macd_hist: -0.14, kdj_k: 56, kdj_d: 69, kdj_j: 30 },
+]
+
 export const CANDLE_DEMO_MAP = {
   '': { candles: DEMO_CANDLES, caption: '上影线 = 最高价 − max(开盘, 收盘) | 下影线 = min(开盘, 收盘) − 最低价' },
   'ohlc-structure': { candles: DEMO_OHlC_STRUCTURE, caption: '一根K线包含四个价格：开（O）高（H）低（L）收（C）' },
@@ -484,4 +637,28 @@ export const CANDLE_DEMO_MAP = {
 
   // ── lesson_6_3 补充 key ────────────────────────────────────────────────
   'analysis-framework': { candles: DEMO_ANALYSIS_FRAMEWORK, caption: '实战四步框架：①趋势判断 → ②关键位识别 → ③形态确认 → ④量能验证' },
+
+  // ── lesson_7_x 成交量分析 ───────────────────────────────────────────────
+  'volume-language-rising': { candles: DEMO_VOLUME_LANGUAGE_RISING, indicators: DEMO_INDICATORS.volumeOnly, caption: '温和上涨 + 量能递增：趋势延续时常见的健康量价结构' },
+  'volume-language-fading': { candles: DEMO_VOLUME_LANGUAGE_FADING, indicators: DEMO_INDICATORS.volumeOnly, caption: '价格仍创新高但量能递减：上涨动能衰减，需警惕回落' },
+  'volume-spike-reversal': { candles: DEMO_VOLUME_SPIKE_REVERSAL, indicators: DEMO_INDICATORS.volumeOnly, caption: '高位长阴放巨量：筹码集中换手后，阶段性转弱概率上升' },
+  'volume-price-sync': { candles: DEMO_VOLUME_PRICE_SYNC, indicators: DEMO_INDICATORS.volumeOnly, caption: '量价齐升：价格上行伴随成交量放大，多头推进更扎实' },
+  'volume-price-divergence': { candles: DEMO_VOLUME_PRICE_DIVERGENCE, indicators: DEMO_INDICATORS.volumeOnly, caption: '量价背离：价格创新高但量能持续走低，追涨意愿减弱' },
+  'breakout-volume-validation': { candles: DEMO_BREAKOUT_VOLUME_VALIDATION, indicators: DEMO_INDICATORS.volumeOnly, caption: '突破量能验证：关键位突破需明显放量，后续延续概率更高' },
+
+  // ── lesson_8_x 振荡指标 ───────────────────────────────────────────────
+  'rsi-overbought-zone': { candles: DEMO_RSI_OVERBOUGHT_ZONE, indicators: DEMO_INDICATORS.volumeRsi, caption: 'RSI 进入 70 以上超买区：趋势强但短线回撤风险上升' },
+  'rsi-oversold-zone': { candles: DEMO_RSI_OVERSOLD_ZONE, indicators: DEMO_INDICATORS.volumeRsi, caption: 'RSI 进入 30 以下超卖区：抛压接近极值，反弹概率提升' },
+  'rsi-centerline': { candles: DEMO_RSI_CENTERLINE, indicators: DEMO_INDICATORS.volumeRsi, caption: 'RSI 上穿 50 中轴：多头动能重新占优，常作为趋势确认' },
+  'kdj-golden-cross': { candles: DEMO_KDJ_GOLDEN_CROSS, indicators: DEMO_INDICATORS.volumeRsi, caption: 'KDJ 低位金叉：K 线向上穿越 D 线，短线反弹信号增强' },
+  'kdj-death-cross': { candles: DEMO_KDJ_DEATH_CROSS, indicators: DEMO_INDICATORS.volumeRsi, caption: 'KDJ 高位死叉：K 线下穿 D 线，短线回调压力增大' },
+  'rsi-divergence-demo': { candles: DEMO_RSI_DIVERGENCE_DEMO, indicators: DEMO_INDICATORS.volumeRsi, caption: 'RSI 底背离：价格创新低但 RSI 未创新低，动能转强预警' },
+
+  // ── lesson_9_x MACD 动能 ───────────────────────────────────────────────
+  'macd-golden-cross': { candles: DEMO_MACD_GOLDEN_CROSS, indicators: DEMO_INDICATORS.volumeMacd, caption: 'MACD 金叉：DIFF 上穿 DEA，动能由弱转强' },
+  'macd-death-cross': { candles: DEMO_MACD_DEATH_CROSS, indicators: DEMO_INDICATORS.volumeMacd, caption: 'MACD 死叉：DIFF 下穿 DEA，动能由强转弱' },
+  'macd-hist-expansion': { candles: DEMO_MACD_HIST_EXPANSION, indicators: DEMO_INDICATORS.volumeMacd, caption: '柱状图扩张：多头动能持续增强，趋势推进更顺畅' },
+  'macd-hist-contraction': { candles: DEMO_MACD_HIST_CONTRACTION, indicators: DEMO_INDICATORS.volumeMacd, caption: '柱状图收缩转负：多头动能衰退，回撤风险抬升' },
+  'macd-bullish-divergence': { candles: DEMO_MACD_BULLISH_DIVERGENCE, indicators: DEMO_INDICATORS.volumeMacd, caption: 'MACD 底背离：价格新低但 MACD 未新低，空头动能减弱' },
+  'macd-bearish-divergence': { candles: DEMO_MACD_BEARISH_DIVERGENCE, indicators: DEMO_INDICATORS.volumeMacd, caption: 'MACD 顶背离：价格新高但 MACD 未新高，多头动能减弱' },
 }

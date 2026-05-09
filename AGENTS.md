@@ -117,3 +117,8 @@ cp candlewise_cases.json ../public/data/
 - 进度数据仅存储在 `localStorage`，无后端同步。
 - `candlewise_cases.json` 已存在于 `public/data/`，无需重新生成。
 - 详细规格参见根目录 `SPEC.md`，所有设计决策以该文件为准。
+
+## Agent 行为约束
+
+- **禁止启动长期运行的进程**：任务完成后不得运行 `npm run dev`、`npm start` 或任何会持续占用终端的服务器进程。验证构建结果请用 `npm run build`（会自动退出）。
+- 重新生成数据集后，必须执行 `cp data-scripts/candlewise_cases.json public/data/candlewise_cases.json` 同步到前端目录。

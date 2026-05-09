@@ -22,6 +22,18 @@ import FeedbackPanel from '../components/FeedbackPanel.jsx'
 
 // ── 题目生成工具函数 ─────────────────────────────────────────────────
 
+const INDICATOR_CONFIG = {
+  basics: [],
+  single_reversal: [],
+  double_reversal: [],
+  triple_pattern: [],
+  trend: [],
+  volume: ['volume'],
+  oscillator: ['volume', 'rsi'],
+  momentum: ['volume', 'macd'],
+  synthesis: ['volume', 'rsi', 'macd'],
+}
+
 /** Fisher-Yates 打乱 */
 function shuffle(arr) {
   const a = [...arr]
@@ -46,9 +58,44 @@ function buildQuestion(caseData) {
   const correctIndex = shuffled.indexOf(correctName)
 
   const patternDate = caseData.candles?.[caseData.pattern_index]?.date ?? ''
-  const question = patternDate
+
+  let question = patternDate
     ? `请观察 ${patternDate} 附近被标注的K线，它属于哪种形态？`
     : '图中出现了什么K线形态？'
+
+  if (caseData.module === 'volume') {
+    question = patternDate
+      ? `请结合 ${patternDate} 附近的价格与成交量柱变化，这里最可能是哪类量价信号？`
+      : '请结合价格与成交量变化，图中最可能是什么量价信号？'
+  }
+
+  if (caseData.module === 'oscillator') {
+    question = patternDate
+      ? `请观察 ${patternDate} 附近 RSI 与价格关系，这里最可能出现了什么 RSI 信号？`
+      : '请结合 RSI 曲线与价格关系，图中最可能是什么 RSI 信号？'
+  }
+
+  if (caseData.module === 'momentum') {
+    question = patternDate
+      ? `请观察 ${patternDate} 附近 MACD（DIFF/DEA 与柱状图）变化，这里最可能是什么 MACD 信号？`
+      : '请结合 MACD 线与柱状图变化，图中最可能是什么 MACD 信号？'
+  }
+
+  if (caseData.module === 'synthesis') {
+    if (caseData.pattern_id.startsWith('rsi_')) {
+      question = patternDate
+        ? `综合判断：请观察 ${patternDate} 附近 RSI 与价格关系，这里对应哪类 RSI 信号？`
+        : '综合判断：请结合 RSI 与价格关系，图中最可能是什么信号？'
+    } else if (caseData.pattern_id.startsWith('macd_')) {
+      question = patternDate
+        ? `综合判断：请观察 ${patternDate} 附近 MACD 变化，这里对应哪类 MACD 信号？`
+        : '综合判断：请结合 MACD 线与柱状图变化，图中最可能是什么信号？'
+    } else if (caseData.pattern_id.startsWith('volume_')) {
+      question = patternDate
+        ? `综合判断：请结合 ${patternDate} 附近量价配合，这里最可能属于哪类量价信号？`
+        : '综合判断：请结合量价关系，图中最可能是什么信号？'
+    }
+  }
 
   return {
     question,
@@ -286,6 +333,7 @@ export default function Practice() {
   const q        = questions[currentIndex]
   const answered = selectedOption !== null
   const isLast   = currentIndex + 1 >= questions.length
+  const indicators = INDICATOR_CONFIG[q.caseData.module] ?? []
 
   // 计算当前得分（包括本题）
   const currentScore = answered
@@ -355,6 +403,7 @@ export default function Practice() {
           candles={q.caseData.candles}
           patternIndex={q.caseData.pattern_index}
           height={chartHeight}
+          indicators={indicators}
         />
       </div>
 

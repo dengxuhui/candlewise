@@ -50,7 +50,12 @@ const mdComponents = {
             className="rounded-xl overflow-hidden border mb-3"
             style={{ borderColor: '#2a2d3a' }}
           >
-            <CandleChart candles={demo.candles} patternIndex={-1} height={160} />
+            <CandleChart
+              candles={demo.candles}
+              patternIndex={-1}
+              height={160}
+              indicators={demo.indicators ?? []}
+            />
           </div>
           <p className="text-xs text-slate-500 text-center mt-2">{demo.caption}</p>
         </div>

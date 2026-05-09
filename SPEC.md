@@ -211,12 +211,12 @@ candlewise/
 | `synthesis` | 成交量 + RSI + MACD |
 
 **副图技术实现：**
-- 使用 lightweight-charts v4.2 的 `pane` API，在同一 chart 实例中添加多价格面板
-- 主图（pane 0）：K线 + MA5 + MA20
-- 成交量（pane 1）：HistogramSeries
-- RSI（pane 2）：LineSeries + 30/70 参考线
-- MACD（pane 3）：Histogram（柱）+ LineSeries × 2（DIFF/DEA）
-- 十字光标自动联动，时间轴共用，无需额外同步
+- 使用 lightweight-charts v4.2 实现主图与副图拆分渲染（主图 + 多个副图实例）
+- 主图：K线 + MA5 + MA20
+- 成交量副图：HistogramSeries
+- RSI 副图：LineSeries + 30/70 参考线
+- MACD 副图：Histogram（柱）+ LineSeries × 2（DIFF/DEA）
+- 十字光标与可视区间在主/副图间自动联动
 
 **响应式副图高度：**
 
@@ -416,7 +416,7 @@ Phase 11  数据脚本扩展 ⭐ 新增
   └─ 重新生成 candlewise_cases.json 并放入 public/data/
 
 Phase 12  图表组件重构 ⭐ 新增
-  └─ CandleChart.jsx：基于 lightweight-charts v4.2 pane API
+  └─ CandleChart.jsx：基于 lightweight-charts v4.2 多图联动实现副图
   └─ 新增 indicators prop（string[]，决定显示哪些副图）
   └─ pane 0：主图（K线 + MA5 + MA20，现有逻辑不变）
   └─ pane 1：成交量 HistogramSeries（volume 起）
@@ -439,6 +439,7 @@ Phase 14  答题系统适配 ⭐ 新增
   └─ Practice.jsx：根据 case.module 注入 INDICATOR_CONFIG，传给 CandleChart
   └─ buildQuestion()：新增指标题型文案（RSI 状态 / MACD 信号）
   └─ 全流程测试（9 模块 × 5 题，副图渲染与题目类型一一对应）
+  └─ 干扰选项兜底：模块题型不足 3 个时，自动补充跨模块干扰项
 ```
 
 ---
@@ -480,12 +481,12 @@ Topic：   react, stock-market, technical-analysis, education, candlestick
 | Phase 9 | SPEC 重写与重构施工图落地（模块ID、课时、pattern_id 21种） | ✅ 已完成 | 2026-05-08 | OpenCode CLI (darwin) | gpt-5.3-codex |
 | Phase 10 | 代码与数据重构执行（curriculum/patternMeta/lessons/dataset） | ✅ 已完成 | 2026-05-08 | Cowork (claude-sonnet-4-6) | claude-sonnet-4-6 |
 
-| Phase 11 | 数据脚本扩展（MACD/KDJ 计算 + 8 种指标形态识别 + 重新生成数据集） | ⏳ 待开发 | — | — | — |
-| Phase 12 | 图表组件重构（pane API 多副图：成交量 / RSI / MACD） | ⏳ 待开发 | — | — | — |
-| Phase 13 | 课程内容扩展（3 新模块 + 9 课时 Markdown + patternMeta + lessonDemos） | ⏳ 待开发 | — | — | — |
-| Phase 14 | 答题系统适配（Practice.jsx 副图联动 + 指标题型文案 + 全流程测试） | ⏳ 待开发 | — | — | — |
+| Phase 11 | 数据脚本扩展（MACD/KDJ 计算 + 8 种指标形态识别 + 重新生成数据集） | ✅ 已完成 | 2026-05-09 | OpenCode CLI (darwin) | claude-sonnet-4.6 |
+| Phase 12 | 图表组件重构（多副图：成交量 / RSI / MACD，跨图联动实现） | ✅ 已完成 | 2026-05-09 | OpenCode CLI (darwin) | gpt-5.3-codex |
+| Phase 13 | 课程内容扩展（3 新模块 + 9 课时 Markdown + patternMeta + lessonDemos） | ✅ 已完成 | 2026-05-09 | OpenCode CLI (darwin) | gpt-5.3-codex |
+| Phase 14 | 答题系统适配（Practice.jsx 副图联动 + 指标题型文案 + 全流程测试） | ✅ 已完成 | 2026-05-09 | OpenCode CLI (darwin) | gpt-5.3-codex |
 
 ---
 
 *最后更新：2026-05-09*  
-*当前阶段：Phase 1~10 已完成，Phase 11~14 待开发*
+*当前阶段：Phase 1~14 已完成*
