@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { CURRICULUM, getModuleIndex } from '../data/curriculum.js'
 import { useProgress } from '../hooks/useProgress.js'
 import { useProgressStore } from '../store/progressStore.js'
+import { useCases } from '../hooks/useCases.js'
 
 function DifficultyDots({ level }) {
   return (
@@ -109,6 +110,8 @@ export default function Home() {
   const { isUnlocked, getProgressPercent, moduleProgress } = useProgress()
   const freeMode = useProgressStore((s) => s.freeMode)
   const predictBestScore = useProgressStore((s) => s.predictBestScore)
+  // 在首页提前预热数据加载，利用模块级缓存，使进入 Practice/Predict 页时无需等待
+  useCases()
 
   // 统计整体进度
   const totalModules = CURRICULUM.length
