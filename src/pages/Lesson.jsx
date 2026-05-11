@@ -53,35 +53,12 @@ const LESSON_DATA = {
   ],
 }
 
-// 动态 import 所有 Markdown 文件（27节）
-const LESSON_FILES = {
-  lesson_1_1: () => import('../data/lessons/lesson_1_1.md?raw'),
-  lesson_1_2: () => import('../data/lessons/lesson_1_2.md?raw'),
-  lesson_1_3: () => import('../data/lessons/lesson_1_3.md?raw'),
-  lesson_2_1: () => import('../data/lessons/lesson_2_1.md?raw'),
-  lesson_2_2: () => import('../data/lessons/lesson_2_2.md?raw'),
-  lesson_2_3: () => import('../data/lessons/lesson_2_3.md?raw'),
-  lesson_3_1: () => import('../data/lessons/lesson_3_1.md?raw'),
-  lesson_3_2: () => import('../data/lessons/lesson_3_2.md?raw'),
-  lesson_3_3: () => import('../data/lessons/lesson_3_3.md?raw'),
-  lesson_4_1: () => import('../data/lessons/lesson_4_1.md?raw'),
-  lesson_4_2: () => import('../data/lessons/lesson_4_2.md?raw'),
-  lesson_4_3: () => import('../data/lessons/lesson_4_3.md?raw'),
-  lesson_5_1: () => import('../data/lessons/lesson_5_1.md?raw'),
-  lesson_5_2: () => import('../data/lessons/lesson_5_2.md?raw'),
-  lesson_5_3: () => import('../data/lessons/lesson_5_3.md?raw'),
-  lesson_7_1: () => import('../data/lessons/lesson_7_1.md?raw'),
-  lesson_7_2: () => import('../data/lessons/lesson_7_2.md?raw'),
-  lesson_7_3: () => import('../data/lessons/lesson_7_3.md?raw'),
-  lesson_8_1: () => import('../data/lessons/lesson_8_1.md?raw'),
-  lesson_8_2: () => import('../data/lessons/lesson_8_2.md?raw'),
-  lesson_8_3: () => import('../data/lessons/lesson_8_3.md?raw'),
-  lesson_9_1: () => import('../data/lessons/lesson_9_1.md?raw'),
-  lesson_9_2: () => import('../data/lessons/lesson_9_2.md?raw'),
-  lesson_9_3: () => import('../data/lessons/lesson_9_3.md?raw'),
-  lesson_6_1: () => import('../data/lessons/lesson_6_1.md?raw'),
-  lesson_6_2: () => import('../data/lessons/lesson_6_2.md?raw'),
-  lesson_6_3: () => import('../data/lessons/lesson_6_3.md?raw'),
+// 通过 fetch 加载静态 Markdown 文件（public/lessons/），规避 Vite chunk 分包在 GitHub Pages 的 MIME type 问题
+function fetchLesson(id) {
+  return fetch(`${import.meta.env.BASE_URL}lessons/${id}.md`).then((res) => {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    return res.text()
+  })
 }
 
 export default function Lesson() {
@@ -99,17 +76,16 @@ export default function Lesson() {
   useEffect(() => {
     if (!currentLesson) return
     setLoading(true)
-    const loader = LESSON_FILES[currentLesson.id]
-    if (!loader) {
-      setLoading(false)
-      return
-    }
-    loader()
-      .then((mod) => {
-        setContent(mod.default)
+    setContent(null)
+    fetchLesson(currentLesson.id)
+      .then((text) => {
+        setContent(text)
         setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch((err) => {
+        console.error('[Lesson] 加载 Markdown 失败:', currentLesson.id, err)
+        setLoading(false)
+      })
   }, [currentLesson?.id])
 
   useEffect(() => {
