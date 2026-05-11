@@ -2,7 +2,8 @@
 slim_dataset.py — 精简并压缩 candlewise_cases.json
 
 功能：
-  1. 去掉 case 级别的冗余元数据字段：sector、source、pattern_index
+  1. 去掉 case 级别的冗余元数据字段：sector、source
+     （pattern_index 必须保留，Predict 页用于截取 playing 阶段可见 K 线范围）
   2. 去掉 candle 级别的 KDJ 指标字段：kdj_k、kdj_d、kdj_j
      （当前代码库中 KDJ 无任何组件使用；若未来需要，重跑 build_dataset.py 后再次执行本脚本）
   3. 输出为无空白符的压缩 JSON（去除换行 / 缩进），约减少 45% 体积
@@ -28,10 +29,11 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 INPUT_PATH = os.path.join(SCRIPT_DIR, '..', 'public', 'data', 'candlewise_cases.json')
 OUTPUT_PATH = INPUT_PATH  # 直接覆盖原文件
 
-# 保留的 case 级别字段（去掉 sector / source / pattern_index）
+# 保留的 case 级别字段（去掉 sector / source）
+# 注意：pattern_index 必须保留，Predict 页用它截取 playing 阶段可见 K 线范围
 KEEP_CASE_KEYS = {
     'id', 'symbol', 'name', 'module', 'difficulty',
-    'pattern_id', 'pattern_name_zh', 'subsequent_trend', 'total_candles',
+    'pattern_id', 'pattern_name_zh', 'pattern_index', 'subsequent_trend', 'total_candles',
 }
 
 # 保留的 candle 级别字段（去掉 kdj_k / kdj_d / kdj_j）

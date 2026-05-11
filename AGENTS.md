@@ -107,7 +107,7 @@ cp candlewise_cases.json ../public/data/
 python slim_dataset.py        # ⚠️ 必须执行：精简字段 + 压缩 JSON（~3.9MB → ~1.7MB）
 ```
 
-**重要**：每次重新生成数据后，必须执行 `slim_dataset.py`，否则 `public/data/candlewise_cases.json` 将包含冗余字段（`sector`/`source`/`pattern_index`/`kdj_*`）和格式化空白符，导致前端首次加载体积膨胀至 ~3.9 MB。
+**重要**：每次重新生成数据后，必须执行 `slim_dataset.py`，否则 `public/data/candlewise_cases.json` 将包含冗余字段（`sector`/`source`/`kdj_*`）和格式化空白符，导致前端首次加载体积膨胀至 ~3.9 MB。
 
 `slim_dataset.py` 保留的 candle 字段：`date/open/high/low/close/volume/ma5/ma20/rsi/macd_diff/macd_dea/macd_hist`（KDJ 当前无组件使用，如需恢复请先修改 `slim_dataset.py` 中的 `KEEP_CANDLE_KEYS`）。
 
