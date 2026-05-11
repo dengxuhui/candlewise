@@ -154,7 +154,7 @@ export default function Layout() {
 
       {/* 页脚 */}
       <footer className="border-t border-[#2a2d3a] py-6 text-center text-sm text-slate-600">
-        <p>Candlewise · 开源 K 线学习平台 · MIT License</p>
+        <p>Candlewise v{__APP_VERSION__} · 开源 K 线学习平台 · MIT License</p>
       </footer>
 
       {/* 确认弹窗 */}
