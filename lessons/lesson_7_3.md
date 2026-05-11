@@ -1,4 +1,4 @@
-const n=`# 突破的量能验证
+# 突破的量能验证
 
 突破是交易中最常见也最容易踩坑的信号。关键区别常常只有一个：**量**。
 
@@ -6,8 +6,8 @@ const n=`# 突破的量能验证
 
 ## 真突破的核心特征
 
-\`\`\`candle-demo:breakout-volume-validation
-\`\`\`
+```candle-demo:breakout-volume-validation
+```
 
 价格突破关键阻力位时，如果出现明显放量，通常意味着：
 
@@ -19,8 +19,8 @@ const n=`# 突破的量能验证
 
 ## 假突破常见画像
 
-\`\`\`candle-demo:volume-fake-breakout
-\`\`\`
+```candle-demo:volume-fake-breakout
+```
 
 假突破通常具备以下特征：
 
@@ -56,4 +56,3 @@ const n=`# 突破的量能验证
 - 缩量突破后快速回落，多为假突破
 
 你现在已经掌握了量能分析的核心语言。下一模块将进入振荡指标：**RSI 与 KDJ**。
-`;export{n as default};

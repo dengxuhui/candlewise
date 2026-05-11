@@ -1,4 +1,4 @@
-const n=`# 量价配合与背离
+# 量价配合与背离
 
 你已经知道了量价四象限。真正的实战关键在于：识别"同步"与"背离"。
 
@@ -6,8 +6,8 @@ const n=`# 量价配合与背离
 
 ## 量价配合：趋势更可信
 
-\`\`\`candle-demo:volume-price-sync
-\`\`\`
+```candle-demo:volume-price-sync
+```
 
 当价格上行且成交量同步放大，通常表示：
 
@@ -21,8 +21,8 @@ const n=`# 量价配合与背离
 
 ## 量价背离：动能衰减预警
 
-\`\`\`candle-demo:volume-price-divergence
-\`\`\`
+```candle-demo:volume-price-divergence
+```
 
 价格不断创出新高，但成交量持续走低，说明上涨越来越"费力"。这是典型的**量价顶背离**预警。
 
@@ -57,4 +57,3 @@ const n=`# 量价配合与背离
 - 背离后需等待"位置 + 形态 + 量能"三维确认
 
 下一节我们聚焦最实用的场景：**突破时怎么用成交量判断真假**。
-`;export{n as default};

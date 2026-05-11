@@ -1,4 +1,4 @@
-const n=`# 上升三法与下降三法
+# 上升三法与下降三法
 
 **上升三法**（Rising Three Methods）和**下降三法**（Falling Three Methods）是趋势**中继形态**，不是反转信号。它们告诉你：趋势暂时喘息，但主方向未变，原有趋势大概率将继续。
 
@@ -8,8 +8,8 @@ const n=`# 上升三法与下降三法
 
 ### 形态结构
 
-\`\`\`candle-demo:rising-three-methods
-\`\`\`
+```candle-demo:rising-three-methods
+```
 
 ### 识别规则
 
@@ -23,8 +23,8 @@ const n=`# 上升三法与下降三法
 
 ### 细节示意
 
-\`\`\`candle-demo:rising-three-methods-detail
-\`\`\`
+```candle-demo:rising-three-methods-detail
+```
 
 关键约束：中间的小阴线**不得跌破**第1根大阳线的开盘价。否则代表回调过深，中继结构不成立。
 
@@ -43,8 +43,8 @@ const n=`# 上升三法与下降三法
 
 ### 形态结构
 
-\`\`\`candle-demo:falling-three-methods
-\`\`\`
+```candle-demo:falling-three-methods
+```
 
 ### 识别规则
 
@@ -104,4 +104,3 @@ const n=`# 上升三法与下降三法
 - **下降三法** = 下跌中大阴 + 小阳反弹（未破范围） + 大阴再创低 → 下跌延续
 - 三法形态是**中继信号**，不是反转信号，需区别于启明星/黄昏之星
 - 中间回调的约束条件是识别有效三法形态的关键
-`;export{n as default};

@@ -1,4 +1,4 @@
-const n=`# MACD 背离实战
+# MACD 背离实战
 
 MACD 背离是趋势末端的重要预警工具，尤其适用于识别"价格仍在走，但动能已掉队"的阶段。
 
@@ -15,8 +15,8 @@ MACD 背离是趋势末端的重要预警工具，尤其适用于识别"价格�
 
 ## 底背离示例（看涨预警）
 
-\`\`\`candle-demo:macd-bullish-divergence
-\`\`\`
+```candle-demo:macd-bullish-divergence
+```
 
 价格刷新低点，但 MACD 低点抬高，说明空头推进效率下降。后续若出现放量阳线或关键位站回，反弹质量更高。
 
@@ -24,8 +24,8 @@ MACD 背离是趋势末端的重要预警工具，尤其适用于识别"价格�
 
 ## 顶背离示例（看跌预警）
 
-\`\`\`candle-demo:macd-bearish-divergence
-\`\`\`
+```candle-demo:macd-bearish-divergence
+```
 
 价格创出新高，但 MACD 高点回落，说明多头边际动力不足。若随后跌破支撑，阶段回撤概率上升。
 
@@ -56,4 +56,3 @@ MACD 背离是趋势末端的重要预警工具，尤其适用于识别"价格�
 - MACD 背离是动能衰减预警工具
 - 背离后必须等待价格与量能确认
 - 真正可执行的机会来自"背离 + 结构 + 量能"三者共振
-`;export{n as default};

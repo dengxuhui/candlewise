@@ -1,4 +1,4 @@
-const n=`# 流星线与倒锤子线
+# 流星线与倒锤子线
 
 **流星线**（Shooting Star）和**倒锤子线**（Inverted Hammer）外形相同——长上影线、短实体、位于 K 线下部，但它们出现的**位置**和**信号含义**截然相反。这一对形态是锤子线/吊颈线的"镜像版本"。
 
@@ -8,8 +8,8 @@ const n=`# 流星线与倒锤子线
 
 ### 形态结构
 
-\`\`\`candle-demo:shooting-star
-\`\`\`
+```candle-demo:shooting-star
+```
 
 ### 形态特征
 
@@ -40,8 +40,8 @@ const n=`# 流星线与倒锤子线
 
 ### 形态结构
 
-\`\`\`candle-demo:inverted-hammer
-\`\`\`
+```candle-demo:inverted-hammer
+```
 
 ### 形态特征
 
@@ -104,4 +104,3 @@ const n=`# 流星线与倒锤子线
 - **倒锤子线** = 下跌末端 + 长上影线 → 底部试探（看涨，强制需确认）
 - 两者外形相同，位置决定信号方向
 - 倒锤子线是四种形态中**可靠性最低**的，单独使用风险最高
-`;export{n as default};

@@ -1,4 +1,4 @@
-const n=`# 三重确认法
+# 三重确认法
 
 上节课我们理解了共振的逻辑。这节课将三个维度系统化，形成可操作的**三重确认法**（Triple Confirmation）——一套在实战中应用多指标共振的标准化流程。
 
@@ -18,8 +18,8 @@ const n=`# 三重确认法
 
 ## 三重看涨确认示例
 
-\`\`\`candle-demo:triple-confirm-bullish
-\`\`\`
+```candle-demo:triple-confirm-bullish
+```
 
 图中展示了一个完整的三重看涨确认过程：
 
@@ -35,8 +35,8 @@ const n=`# 三重确认法
 
 ## 三重看跌确认示例
 
-\`\`\`candle-demo:triple-confirm-bearish
-\`\`\`
+```candle-demo:triple-confirm-bearish
+```
 
 同样的逻辑，应用于顶部：
 
@@ -52,8 +52,8 @@ const n=`# 三重确认法
 
 ## 看涨共振参考
 
-\`\`\`candle-demo:bullish-confluence
-\`\`\`
+```candle-demo:bullish-confluence
+```
 
 另一个典型看涨共振场景：锤子线出现在 MA20 支撑附近，同时均线方向向上，三要素齐备。
 
@@ -61,8 +61,8 @@ const n=`# 三重确认法
 
 ## 看跌共振参考
 
-\`\`\`candle-demo:bearish-confluence
-\`\`\`
+```candle-demo:bearish-confluence
+```
 
 典型看跌共振场景：黄昏之星形态 + 触及历史阻力位 + 放量大阴线，三要素齐备。
 
@@ -70,7 +70,7 @@ const n=`# 三重确认法
 
 ## 实操判断流程
 
-\`\`\`
+```
 ① 看趋势方向（MA20 方向 + 高点低点结构）
          ↓
 ② 找关键价位（支撑位 / 阻力位 / MA20 附近）
@@ -80,7 +80,7 @@ const n=`# 三重确认法
 ④ 检查成交量（形态当日或次日是否放量）
          ↓
 三重均确认 → 高置信度信号
-\`\`\`
+```
 
 ---
 
@@ -103,4 +103,3 @@ const n=`# 三重确认法
 - 看涨三重：下跌末端/关键支撑 + 底部反转形态 + 放量阳线
 - 看跌三重：上涨末端/关键阻力 + 顶部反转形态 + 放量阴线
 - 通过层级越多，信号可靠性越高；只有一重时坚决观望
-`;export{n as default};

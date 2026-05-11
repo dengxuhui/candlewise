@@ -1,4 +1,4 @@
-const n=`# MACD 柱状图与动能变化
+# MACD 柱状图与动能变化
 
 很多初学者只看金叉死叉，忽略了 MACD 的核心信息源：柱状图。
 
@@ -15,8 +15,8 @@ const n=`# MACD 柱状图与动能变化
 
 ## 动能增强（柱体扩张）
 
-\`\`\`candle-demo:macd-hist-expansion
-\`\`\`
+```candle-demo:macd-hist-expansion
+```
 
 柱状图连续放大，说明 DIFF 与 DEA 的差距在扩大，多头动能在增强。价格往往更容易出现顺势推进。
 
@@ -24,8 +24,8 @@ const n=`# MACD 柱状图与动能变化
 
 ## 动能衰减（柱体收缩）
 
-\`\`\`candle-demo:macd-hist-contraction
-\`\`\`
+```candle-demo:macd-hist-contraction
+```
 
 柱状图逐步缩短，甚至由正转负，说明多头力量开始衰退。此时即便价格尚未明显转跌，也应提高防守意识。
 
@@ -46,4 +46,3 @@ const n=`# MACD 柱状图与动能变化
 - 在实战中，柱状图常用于提前预判交叉质量
 
 下一节我们学习 MACD 中最实战化的高价值信号：背离。
-`;export{n as default};

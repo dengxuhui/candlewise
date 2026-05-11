@@ -1,4 +1,4 @@
-const n=`# 角色转换与成交量确认
+# 角色转换与成交量确认
 
 上一课我们学习了支撑与阻力。这节课进一步讲解两个关键概念：**角色转换**（Role Reversal）——支撑与阻力如何相互转化，以及**成交量**如何用来验证价格突破的真实性。
 
@@ -8,8 +8,8 @@ const n=`# 角色转换与成交量确认
 
 当价格**有效跌破**支撑位后，原来的支撑位往往**转变为阻力位**。
 
-\`\`\`candle-demo:support-to-resistance
-\`\`\`
+```candle-demo:support-to-resistance
+```
 
 ### 为什么会发生角色转换？
 
@@ -23,8 +23,8 @@ const n=`# 角色转换与成交量确认
 
 当价格**有效突破**阻力位后，原来的阻力位往往**转变为支撑位**。
 
-\`\`\`candle-demo:resistance-to-support
-\`\`\`
+```candle-demo:resistance-to-support
+```
 
 ### 为什么会发生角色转换？
 
@@ -43,15 +43,15 @@ const n=`# 角色转换与成交量确认
 
 ### 放量突破——可信度高
 
-\`\`\`candle-demo:volume-breakout
-\`\`\`
+```candle-demo:volume-breakout
+```
 
 价格在整理后**放量突破**阻力位，意味着大量资金参与推动，突破具有实质意义。
 
 ### 缩量假突破——警惕
 
-\`\`\`candle-demo:volume-fake-breakout
-\`\`\`
+```candle-demo:volume-fake-breakout
+```
 
 若突破时成交量极小，说明参与者寥寥，多为**试探性行为**。这种突破往往很快回落，被称为"假突破"（False Breakout）。
 
@@ -68,8 +68,8 @@ const n=`# 角色转换与成交量确认
 
 ### 放量确认示例
 
-\`\`\`candle-demo:volume-confirm
-\`\`\`
+```candle-demo:volume-confirm
+```
 
 锤子线出现后，次日放量大阳线确认，反转信号大幅增强。
 
@@ -92,4 +92,3 @@ const n=`# 角色转换与成交量确认
 - **阻力变支撑**：突破阻力后，持仓多方在原位加仓，形成买盘
 - **放量突破** = 真实有效；**缩量突破** = 假突破风险高
 - 成交量是 K 线形态信号的重要验证维度，不可忽视
-`;export{n as default};

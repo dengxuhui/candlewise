@@ -1,4 +1,4 @@
-const n=`# 吞没形态
+# 吞没形态
 
 **吞没形态**（Engulfing Pattern）是最直观、最可靠的双根反转 K 线之一。第二根 K 线的实体**完全覆盖**（吞没）第一根 K 线的实体，代表多空力量发生了决定性的逆转。
 
@@ -8,8 +8,8 @@ const n=`# 吞没形态
 
 ### 形态结构
 
-\`\`\`candle-demo:bullish-engulfing
-\`\`\`
+```candle-demo:bullish-engulfing
+```
 
 ### 识别规则
 
@@ -36,8 +36,8 @@ const n=`# 吞没形态
 
 ### 形态结构
 
-\`\`\`candle-demo:bearish-engulfing
-\`\`\`
+```candle-demo:bearish-engulfing
+```
 
 ### 识别规则
 
@@ -96,4 +96,3 @@ const n=`# 吞没形态
 - **阴线吞没** = 上涨末端，大阴线吞没阳线 → 顶部反转（看跌）
 - 吞没幅度越大、配合成交量越好，信号越可靠
 - 是双根反转形态中**最直观、最常用**的形态之一
-`;export{n as default};

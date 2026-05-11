@@ -1,4 +1,4 @@
-const n=`# 趋势、支撑与阻力
+# 趋势、支撑与阻力
 
 在 K 线形态之上，有一个更宏观的框架：**趋势**（Trend）与**关键价位**（Key Levels）。所有形态信号的可靠性，都必须在这个框架下评估。
 
@@ -16,15 +16,15 @@ const n=`# 趋势、支撑与阻力
 
 ### 上升趋势示例
 
-\`\`\`candle-demo:trend-up
-\`\`\`
+```candle-demo:trend-up
+```
 
 价格高点与低点均逐步抬升，MA20 方向向上，是典型上升趋势结构。
 
 ### 下降趋势示例
 
-\`\`\`candle-demo:trend-down
-\`\`\`
+```candle-demo:trend-down
+```
 
 价格高点与低点均逐步下移，MA20 方向向下，是典型下降趋势结构。
 
@@ -34,8 +34,8 @@ const n=`# 趋势、支撑与阻力
 
 **支撑位**是价格多次下跌后被买盘托住、发生反弹的价格区域。
 
-\`\`\`candle-demo:support-level
-\`\`\`
+```candle-demo:support-level
+```
 
 ### 支撑位的形成原因
 
@@ -55,8 +55,8 @@ const n=`# 趋势、支撑与阻力
 
 **阻力位**是价格多次上涨后遭遇卖压、发生回落的价格区域。
 
-\`\`\`candle-demo:resistance-level
-\`\`\`
+```candle-demo:resistance-level
+```
 
 ### 阻力位的形成原因
 
@@ -68,8 +68,8 @@ const n=`# 趋势、支撑与阻力
 
 ## 支撑与阻力的形成过程
 
-\`\`\`candle-demo:support-resistance-formation
-\`\`\`
+```candle-demo:support-resistance-formation
+```
 
 一个关键价位通常需要**至少两次触碰**才能确立。触碰次数越多，该位置越成为市场共识。
 
@@ -94,4 +94,3 @@ const n=`# 趋势、支撑与阻力
 - **阻力位** = 价格多次回落的区域，卖盘集中
 - 趋势与关键位是所有 K 线形态信号的**背景框架**
 - 没有趋势背景的形态信号，可靠性大幅降低
-`;export{n as default};

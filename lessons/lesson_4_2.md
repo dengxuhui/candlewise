@@ -1,4 +1,4 @@
-const n=`# 三白兵与三乌鸦
+# 三白兵与三乌鸦
 
 **三白兵**（Three White Soldiers）和**三乌鸦**（Three Black Crows）是趋势延续或趋势转换中最强势的三根 K 线形态——连续三根有序推进，代表多方或空方主导的**持续性力量**。
 
@@ -8,8 +8,8 @@ const n=`# 三白兵与三乌鸦
 
 ### 形态结构
 
-\`\`\`candle-demo:three-white-soldiers
-\`\`\`
+```candle-demo:three-white-soldiers
+```
 
 ### 识别规则
 
@@ -33,8 +33,8 @@ const n=`# 三白兵与三乌鸦
 
 ## 弱化版三白兵
 
-\`\`\`candle-demo:three-white-soldiers-weak
-\`\`\`
+```candle-demo:three-white-soldiers-weak
+```
 
 当三白兵的上影线较长时，说明多方在推高过程中遇到了一定卖压，反转/延续信号的可靠性有所下降。**上影线越长，需越谨慎。**
 
@@ -44,8 +44,8 @@ const n=`# 三白兵与三乌鸦
 
 ### 形态结构
 
-\`\`\`candle-demo:three-black-crows
-\`\`\`
+```candle-demo:three-black-crows
+```
 
 ### 识别规则
 
@@ -69,8 +69,8 @@ const n=`# 三白兵与三乌鸦
 
 ## 弱化版三乌鸦
 
-\`\`\`candle-demo:three-black-crows-weak
-\`\`\`
+```candle-demo:three-black-crows-weak
+```
 
 三乌鸦出现较长下影线时，说明下方买盘开始抵抗，空方压制力度减弱，信号可靠性降低。
 
@@ -112,4 +112,3 @@ const n=`# 三白兵与三乌鸦
 - **三乌鸦** = 三根有序阴线逐日下降 → 空方强势信号（看跌）
 - 影线越短、实体越大、成交量越配合，信号越可靠
 - 在极端价位出现时，反而要警惕力竭反转的可能
-`;export{n as default};

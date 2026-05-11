@@ -1,4 +1,4 @@
-const n=`# 启明星与黄昏之星
+# 启明星与黄昏之星
 
 **启明星**（Morning Star）和**黄昏之星**（Evening Star）是 K 线体系中最经典的三根反转形态。它们结构对称、逻辑清晰，是判断趋势转折最常用的双确认信号之一。
 
@@ -8,8 +8,8 @@ const n=`# 启明星与黄昏之星
 
 ### 形态结构
 
-\`\`\`candle-demo:morning-star
-\`\`\`
+```candle-demo:morning-star
+```
 
 ### 识别规则
 
@@ -30,8 +30,8 @@ const n=`# 启明星与黄昏之星
 
 ### 实战背景示例
 
-\`\`\`candle-demo:morning-star-context
-\`\`\`
+```candle-demo:morning-star-context
+```
 
 启明星在下跌趋势末端出现，形态信号的可靠性来自背景中的明确跌势。
 
@@ -46,8 +46,8 @@ const n=`# 启明星与黄昏之星
 
 ### 形态结构
 
-\`\`\`candle-demo:evening-star
-\`\`\`
+```candle-demo:evening-star
+```
 
 ### 识别规则
 
@@ -68,8 +68,8 @@ const n=`# 启明星与黄昏之星
 
 ### 实战背景示例
 
-\`\`\`candle-demo:evening-star-context
-\`\`\`
+```candle-demo:evening-star-context
+```
 
 黄昏之星在上涨趋势末端出现，三根组合完整描述了多方由强转弱的全过程。
 
@@ -116,4 +116,3 @@ const n=`# 启明星与黄昏之星
 - **启明星** = 下跌末端，阴 + 星 + 阳 → 底部反转（看涨）
 - **黄昏之星** = 上涨末端，阳 + 星 + 阴 → 顶部反转（看跌）
 - 三根形态的可靠性高于单根与双根，但仍需配合趋势背景与量能确认
-`;export{n as default};

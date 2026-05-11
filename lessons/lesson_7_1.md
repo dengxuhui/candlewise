@@ -1,4 +1,4 @@
-const n=`# 成交量的基础语言
+# 成交量的基础语言
 
 在价格图之外，成交量是判断市场"真实性"的核心维度。价格告诉你方向，成交量告诉你**力度**。
 
@@ -28,8 +28,8 @@ const n=`# 成交量的基础语言
 
 ## 案例 1：上涨配合放量
 
-\`\`\`candle-demo:volume-language-rising
-\`\`\`
+```candle-demo:volume-language-rising
+```
 
 价格逐步抬升，同时成交量逐级放大，说明上行过程有增量资金接力，是相对健康的趋势推进结构。
 
@@ -37,8 +37,8 @@ const n=`# 成交量的基础语言
 
 ## 案例 2：上涨但量能衰减
 
-\`\`\`candle-demo:volume-language-fading
-\`\`\`
+```candle-demo:volume-language-fading
+```
 
 价格仍在创新高，但成交量持续下降，代表追涨意愿减弱。此时不一定立刻反转，但继续大幅上行的概率会下降。
 
@@ -46,8 +46,8 @@ const n=`# 成交量的基础语言
 
 ## 放量长阴与情绪拐点
 
-\`\`\`candle-demo:volume-spike-reversal
-\`\`\`
+```candle-demo:volume-spike-reversal
+```
 
 高位放出异常巨量并出现长阴线，常见于分歧急剧放大阶段：
 
@@ -67,4 +67,3 @@ const n=`# 成交量的基础语言
 - 异常放量长阴常提示短线节奏切换
 
 下一节进入更关键的话题：**量价配合与背离**。
-`;export{n as default};

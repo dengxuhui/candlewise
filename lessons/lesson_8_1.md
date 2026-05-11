@@ -1,4 +1,4 @@
-const n=`# RSI 原理与超买超卖
+# RSI 原理与超买超卖
 
 RSI（Relative Strength Index，相对强弱指标）是最常用的振荡指标之一，用于衡量一段时间内上涨与下跌力度的相对关系。
 
@@ -16,8 +16,8 @@ RSI 越高，说明近期上涨动能越强；RSI 越低，说明近期下跌动
 
 ## 超买区（RSI > 70）
 
-\`\`\`candle-demo:rsi-overbought-zone
-\`\`\`
+```candle-demo:rsi-overbought-zone
+```
 
 RSI 进入超买区不代表马上下跌，它更多表示：
 
@@ -29,8 +29,8 @@ RSI 进入超买区不代表马上下跌，它更多表示：
 
 ## 超卖区（RSI < 30）
 
-\`\`\`candle-demo:rsi-oversold-zone
-\`\`\`
+```candle-demo:rsi-oversold-zone
+```
 
 RSI 进入超卖区也不代表马上反转，它通常表示：
 
@@ -42,8 +42,8 @@ RSI 进入超卖区也不代表马上反转，它通常表示：
 
 ## RSI 中轴 50 的意义
 
-\`\`\`candle-demo:rsi-centerline
-\`\`\`
+```candle-demo:rsi-centerline
+```
 
 很多交易者会把 RSI 的 50 视为趋势过滤器：
 
@@ -70,4 +70,3 @@ RSI 进入超卖区也不代表马上反转，它通常表示：
 - RSI 信号必须与价格结构和关键位配合使用
 
 下一节我们学习另一个高灵敏振荡指标：**KDJ**。
-`;export{n as default};
