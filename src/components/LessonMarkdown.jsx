@@ -2,8 +2,10 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import CandleChart from './CandleChart.jsx'
 import { CANDLE_DEMO_MAP } from '../data/lessonDemos.js'
+import { useProgressStore } from '../store/progressStore.js'
 
-const mdComponents = {
+function buildMdComponents(colorTheme) {
+  return {
   h1: ({ children }) => (
     <h1 className="text-2xl font-bold text-white mb-6 pb-3 border-b border-[#2a2d3a]">{children}</h1>
   ),
@@ -57,7 +59,7 @@ const mdComponents = {
               indicators={demo.indicators ?? []}
             />
           </div>
-          <p className="text-xs text-slate-500 text-center mt-2">{demo.caption}</p>
+          <p className="text-xs text-slate-500 text-center mt-2">{typeof demo.caption === 'function' ? demo.caption(colorTheme) : demo.caption}</p>
         </div>
       )
     }
@@ -99,9 +101,12 @@ const mdComponents = {
     <td className="px-3 py-2 text-slate-300">{children}</td>
   ),
   hr: () => <hr className="border-[#2a2d3a] my-6" />,
+  }
 }
 
 export default function LessonMarkdown({ content }) {
+  const colorTheme = useProgressStore((s) => s.colorTheme)
+  const mdComponents = buildMdComponents(colorTheme)
   return (
     <div className="prose prose-invert max-w-none">
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>

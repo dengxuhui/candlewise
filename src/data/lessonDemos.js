@@ -565,8 +565,8 @@ const DEMO_MACD_BEARISH_DIVERGENCE = [
 export const CANDLE_DEMO_MAP = {
   '': { candles: DEMO_CANDLES, caption: '上影线 = 最高价 − max(开盘, 收盘) | 下影线 = min(开盘, 收盘) − 最低价' },
   'ohlc-structure': { candles: DEMO_OHlC_STRUCTURE, caption: '一根K线包含四个价格：开（O）高（H）低（L）收（C）' },
-  'ohlc-bullish': { candles: DEMO_OHLC_BULLISH, caption: '阳线：收盘价 > 开盘价，实体为绿色' },
-  'ohlc-bearish': { candles: DEMO_OHLC_BEARISH, caption: '阴线：收盘价 < 开盘价，实体为红色' },
+  'ohlc-bullish': { candles: DEMO_OHLC_BULLISH, caption: (t) => t === 'chinese' ? '阳线：收盘价 > 开盘价，实体为红色（涨色）' : '阳线：收盘价 > 开盘价，实体为绿色（涨色）' },
+  'ohlc-bearish': { candles: DEMO_OHLC_BEARISH, caption: (t) => t === 'chinese' ? '阴线：收盘价 < 开盘价，实体为绿色（跌色）' : '阴线：收盘价 < 开盘价，实体为红色（跌色）' },
   'upper-shadow': { candles: DEMO_UPPER_SHADOW, caption: '上影线：最高价高出收盘/开盘价的部分，代表上方卖压' },
   'lower-shadow': { candles: DEMO_LOWER_SHADOW, caption: '下影线：开盘/收盘低于最低价的反弹，代表下方买盘' },
   'hammer': { candles: DEMO_HAMMER, caption: '锤子线：长下影线，短实体，出现在下跌末端' },
